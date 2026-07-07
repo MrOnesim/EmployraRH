@@ -3,7 +3,11 @@ import { render, screen } from '@testing-library/react';
 import OrgChartPage from '../pages/OrgChartPage';
 
 vi.mock('../context/AppContext', () => ({
-  useApp: () => ({
+  useApp: () => ({}),
+}));
+
+vi.mock('../context/DataContext', () => ({
+  useData: () => ({
     employees: [
       {
         id: '1',

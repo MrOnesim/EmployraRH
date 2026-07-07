@@ -4,10 +4,15 @@ import FintechPage from '../pages/FintechPage';
 
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
+    currentUser: { id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' },
+  }),
+}));
+
+vi.mock('../context/DataContext', () => ({
+  useData: () => ({
     salaryAdvances: [],
     salaryTransfers: [],
     employees: [{ id: 'emp1', firstName: 'Kofi', lastName: 'Mensah', salary: 1000000 }],
-    currentUser: { id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' },
     requestSalaryAdvance: vi.fn(),
     approveSalaryAdvance: vi.fn(),
     paySalaryAdvance: vi.fn(),

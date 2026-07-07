@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { ChevronDown } from 'lucide-react';
 
@@ -53,24 +54,32 @@ function FAQItem({ faq }: { faq: (typeof faqs)[0] }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border-b border-gray-100 last:border-0">
+    <div className="border-b border-gray-150 last:border-0">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between py-5 text-left group"
+        className="w-full flex items-center justify-between py-5 text-left group outline-none cursor-pointer"
       >
-        <span className="text-base font-medium text-gray-700 group-hover:text-gray-900 transition-colors pr-4">
+        <span className={`text-base font-semibold transition-colors pr-4 ${open ? 'text-blue-700 font-bold' : 'text-gray-700 group-hover:text-gray-900'}`}>
           {faq.q}
         </span>
         <ChevronDown
           size={18}
-          className={`text-gray-400 shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+          className={`text-gray-400 shrink-0 transition-transform duration-350 ${open ? 'rotate-180 text-blue-600' : ''}`}
         />
       </button>
-      <div
-        className={`overflow-hidden transition-all duration-300 ${open ? 'max-h-96 pb-5' : 'max-h-0'}`}
-      >
-        <p className="text-gray-500 text-sm leading-relaxed">{faq.a}</p>
-      </div>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <p className="text-gray-500 text-sm leading-relaxed pb-5">{faq.a}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

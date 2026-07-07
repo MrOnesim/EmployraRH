@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleEnum {
+  SUPER_ADMIN
+  ADMIN
+  RH
+  MANAGER
+  DEPARTMENT_HEAD
+  EMPLOYEE
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  currency  String   @default("EUR")
+  country   String   @default("FR")
+  logo      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members   Member[]
+  employees Employee[]
+  meetings  Meeting[]
+  payrollConfig PayrollConfig?
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  image     String?
+  emailVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members   Member[]
+  employees Employee[]
+}
+
+model Member {
+  id        String   @id @default(cuid())
+  role      RoleEnum @default(EMPLOYEE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, companyId])
+  @@index([companyId])
+}
+
+model Employee {
+  id          String   @id @default(cuid())
+  firstName   String
+  lastName    String
+  email       String   @unique
+  phone       String?
+  position    String?
+  department  String?
+  salary      Float?
+  currency    String   @default("EUR")
+  hireDate    DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  companyId String
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  userId  String?
+  user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  leaves      Leave[]
+  attendance  Attendance[]
+  payslips    Payslip[]
+  documents   Document[]
+
+  @@index([companyId])
+  @@index([userId])
+}
+
+model Leave {
+  id        String   @id @default(cuid())
+  type      String
+  startDate DateTime
+  endDate   DateTime
+  reason    String?
+  status    String   @default("pending")
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+}
+
+model Attendance {
+  id         String    @id @default(cuid())
+  clockIn    DateTime  @default(now())
+  clockOut   DateTime?
+  breakStart DateTime?
+  breakEnd   DateTime?
+  createdAt  DateTime  @default(now())
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+}
+
+model Payslip {
+  id          String   @id @default(cuid())
+  month       Int
+  year        Int
+  grossSalary Float
+  netSalary   Float
+  pdfUrl      String?
+  createdAt   DateTime @default(now())
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+  @@unique([employeeId, month, year])
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  name      String
+  type      String
+  url       String
+  createdAt DateTime @default(now())
+
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+}
+
+model Meeting {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  date        DateTime
+  duration    Int
+  link        String?
+  location    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  companyId    String
+  company      Company             @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  participants MeetingParticipant[]
+
+  @@index([companyId])
+}
+
+model MeetingParticipant {
+  id         String @id @default(cuid())
+  name       String?
+  email      String?
+  employeeId String?
+
+  meetingId String
+  meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  @@index([meetingId])
+}
+
+model PayrollConfig {
+  id               String @id @default(cuid())
+  currency         String @default("EUR")
+  taxRate          Float  @default(0.15)
+  socialChargesRate Float @default(0.10)
+  paymentDay       Int    @default(28)
+  overtimeRate     Float  @default(1.25)
+
+  companyId String  @unique
+  company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  data      Json?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Account {
+  id              String   @id
+  userId          String
+  providerId      String
+  providerAccountId String
+  accessToken     String?
+  refreshToken    String?
+  expiresAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([providerId, providerAccountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+}

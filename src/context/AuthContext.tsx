@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode, useCallback } from 'react';
 import type { Company, Employee } from '../types';
-import { isAuthenticated, clearTokens } from '../lib/axios';
-import * as authService from '../services/authService';
+import { authClient } from '../services/authService';
 
 interface AuthState {
   isLoggedIn: boolean;
@@ -9,9 +8,9 @@ interface AuthState {
   currentCompany: Company | null;
   defaultCompany: Company;
   useApi: boolean;
-  login: (email: string, _password: string, type: 'company' | 'employee') => Promise<boolean> | boolean;
-  logout: () => Promise<void> | void;
-  registerCompany: (data: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'>) => Promise<void> | void;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  registerCompany: (data: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'>) => Promise<void>;
   setCurrentUser: (user: Employee | null) => void;
   setCurrentCompany: (company: Company | null) => void;
   deposit: (amount: number) => void;
@@ -54,39 +53,41 @@ const mockAdmin: Employee = {
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const useApi = import.meta.env.VITE_API_BASE_URL ? true : false;
+  const useApi = !!import.meta.env.VITE_API_BASE_URL;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState<Employee | null>(null);
   const [currentCompany, setCurrentCompany] = useState<Company | null>(null);
 
   const hydrateFromToken = useCallback(async () => {
-    if (!useApi || !isAuthenticated()) return;
+    if (!useApi) return;
     try {
-      const profile = await authService.getProfile();
-      setCurrentUser(profile.user);
-      setCurrentCompany(profile.company);
-      setIsLoggedIn(true);
+      const { data: session } = await authClient.getSession();
+      if (session?.user) {
+        setCurrentUser(session.user as unknown as Employee);
+        setCurrentCompany(session.user as unknown as Company);
+        setIsLoggedIn(true);
+      }
     } catch {
-      clearTokens();
+      // not authenticated
     }
   }, [useApi]);
 
   useEffect(() => { hydrateFromToken(); }, [hydrateFromToken]);
 
-  const login = async (email: string, _password: string, type: 'company' | 'employee'):
-    Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     if (useApi) {
       try {
-        const res = await authService.login({ email, password: _password, type });
-        setCurrentUser(res.user);
-        setCurrentCompany(res.company);
+        const { data } = await authClient.signIn.email({ email, password });
+        if (!data) return false;
+        setCurrentUser(data.user as unknown as Employee);
+        setCurrentCompany(data.user as unknown as Company);
         setIsLoggedIn(true);
         return true;
       } catch {
         return false;
       }
     }
-    if (type === 'company' && email === 'admin@techafrique.com') {
+    if (email === 'admin@techafrique.com') {
       setCurrentCompany(defaultCompany);
       setCurrentUser(mockAdmin);
       setIsLoggedIn(true);
@@ -97,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     if (useApi) {
-      try { await authService.logout(); } catch { clearTokens(); }
+      try { await authClient.signOut(); } catch { /* ignore */ }
     }
     setIsLoggedIn(false);
     setCurrentUser(null);
@@ -121,19 +122,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const registerCompany = async (companyData: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'>) => {
     if (useApi) {
       try {
-        const res = await authService.registerCompany({
-          ownerFirstName: companyData.ownerFirstName,
-          ownerLastName: companyData.ownerLastName,
+        const { data } = await authClient.signUp.email({
           email: companyData.email,
-          phone: companyData.phone,
-          name: companyData.name,
-          address: companyData.address,
-          website: companyData.website,
+          password: 'temporary-password',
+          name: `${companyData.ownerFirstName} ${companyData.ownerLastName}`,
         });
-        setCurrentUser(res.user);
-        setCurrentCompany(res.company);
-        setIsLoggedIn(true);
-        return;
+        if (data) {
+          setCurrentUser(data.user as unknown as Employee);
+          setIsLoggedIn(true);
+        }
       } catch {
         return;
       }

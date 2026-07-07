@@ -20,7 +20,7 @@ const plans = [
   },
   {
     name: 'Pro',
-    price: '49',
+    price: '99',
     period: '€/mois',
     desc: 'Pour les PME en croissance. Pas de facturation par employé.',
     featured: true,

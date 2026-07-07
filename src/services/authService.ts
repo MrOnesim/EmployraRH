@@ -1,57 +1,38 @@
-import api, { setTokens, clearTokens } from '../lib/axios';
-import type { Company, Employee } from '../types';
+import { createAuthClient } from 'better-auth/client';
+import type { Employee, Company } from '../types';
 
-export interface LoginRequest {
-  email: string;
-  password: string;
-  type: 'company' | 'employee';
-}
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
-export interface LoginResponse {
+export const authClient = createAuthClient({
+  baseURL,
+});
+
+export interface AuthProfile {
   user: Employee;
   company: Company;
-  accessToken: string;
-  refreshToken: string;
 }
 
-export interface RegisterCompanyRequest {
-  ownerFirstName: string;
-  ownerLastName: string;
-  email: string;
-  phone: string;
-  name: string;
-  address?: string;
-  website?: string;
-  employeeCount?: number;
+export async function login(credentials: { email: string; password: string }): Promise<{ user: Employee; company: Company }> {
+  const { data } = await authClient.signIn.email(credentials);
+  if (!data) throw new Error('Login failed');
+  return data as unknown as { user: Employee; company: Company };
 }
 
-export async function login(credentials: LoginRequest): Promise<LoginResponse> {
-  const { data } = await api.post<LoginResponse>('/auth/login', credentials);
-  setTokens(data.accessToken, data.refreshToken);
-  return data;
+export async function signUp(data: { email: string; password: string; name: string }) {
+  return authClient.signUp.email(data);
 }
 
 export async function logout(): Promise<void> {
-  try {
-    await api.post('/auth/logout');
-  } finally {
-    clearTokens();
-  }
+  await authClient.signOut();
 }
 
-export async function refreshToken(): Promise<LoginResponse> {
-  const { data } = await api.post<LoginResponse>('/auth/refresh');
-  setTokens(data.accessToken, data.refreshToken);
+export async function getSession() {
+  const { data } = await authClient.getSession();
   return data;
 }
 
-export async function registerCompany(req: RegisterCompanyRequest): Promise<LoginResponse> {
-  const { data } = await api.post<LoginResponse>('/auth/register', req);
-  setTokens(data.accessToken, data.refreshToken);
-  return data;
-}
-
-export async function getProfile(): Promise<{ user: Employee; company: Company }> {
-  const { data } = await api.get('/auth/profile');
-  return data;
+export async function getProfile(): Promise<AuthProfile> {
+  const session = await getSession();
+  if (!session?.user) throw new Error('Not authenticated');
+  return session as unknown as AuthProfile;
 }

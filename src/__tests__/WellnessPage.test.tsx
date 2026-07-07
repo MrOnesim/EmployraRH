@@ -4,12 +4,17 @@ import WellnessPage from '../pages/WellnessPage';
 
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
+    currentUser: { id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' },
+  }),
+}));
+
+vi.mock('../context/DataContext', () => ({
+  useData: () => ({
     wellnessSurveys: [
-      { id: 's1', title: 'Sondage mensuel', description: 'Comment allez-vous ?', questions: [], period: 'monthly', active: true, createdAt: new Date() },
+      { id: 's1', title: 'Sondage mensuel', description: 'Comment allez-vous ?', questions: [], active: true, createdAt: new Date() },
     ],
     wellnessResponses: [],
     employees: [{ id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' }],
-    currentUser: { id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' },
     addWellnessSurvey: vi.fn(),
     submitWellnessResponse: vi.fn(),
   }),

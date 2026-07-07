@@ -5,6 +5,11 @@ import MissionsPage from '../pages/MissionsPage';
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
     currentUser: { id: '1', firstName: 'Kofi', lastName: 'Mensah', role: 'admin' },
+  }),
+}));
+
+vi.mock('../context/DataContext', () => ({
+  useData: () => ({
     employees: [
       { id: '1', firstName: 'Kofi', lastName: 'Mensah' },
       { id: '2', firstName: 'Ama', lastName: 'Gbeko' },

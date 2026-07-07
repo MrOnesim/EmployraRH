@@ -1,36 +1,32 @@
 import api from '../lib/axios';
 import type { Attendance } from '../types';
 
-interface GPSLocation {
-  latitude: number;
-  longitude: number;
-}
-
-export async function getAttendance(params?: {
-  employeeId?: string;
-  startDate?: string;
-  endDate?: string;
-}): Promise<Attendance[]> {
-  const { data } = await api.get('/attendance', { params });
+export async function getAttendance(companyId: string): Promise<Attendance[]> {
+  const { data } = await api.get('/attendance', { params: { companyId } });
   return data;
 }
 
-export async function clockIn(gpsLocation?: GPSLocation): Promise<Attendance> {
-  const { data } = await api.post('/attendance/clock-in', { gpsLocation });
+export async function getAttendanceByEmployee(employeeId: string): Promise<Attendance[]> {
+  const { data } = await api.get(`/attendance/employee/${employeeId}`);
   return data;
 }
 
-export async function startBreak(): Promise<Attendance> {
-  const { data } = await api.post('/attendance/break/start');
+export async function clockIn(employeeId: string): Promise<Attendance> {
+  const { data } = await api.post(`/attendance/clock-in/${employeeId}`);
   return data;
 }
 
-export async function endBreak(): Promise<Attendance> {
-  const { data } = await api.post('/attendance/break/end');
+export async function startBreak(id: string): Promise<Attendance> {
+  const { data } = await api.post(`/attendance/break/start/${id}`);
   return data;
 }
 
-export async function clockOut(gpsLocation?: GPSLocation): Promise<Attendance> {
-  const { data } = await api.post('/attendance/clock-out', { gpsLocation });
+export async function endBreak(id: string): Promise<Attendance> {
+  const { data } = await api.post(`/attendance/break/end/${id}`);
+  return data;
+}
+
+export async function clockOut(id: string): Promise<Attendance> {
+  const { data } = await api.post(`/attendance/clock-out/${id}`);
   return data;
 }

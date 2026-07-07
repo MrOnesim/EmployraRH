@@ -22,7 +22,7 @@ const plans: Plan[] = [
   {
     name: 'À l’employé',
     icon: Users,
-    price: '5',
+    price: '6',
     period: '/employé/mois',
     description: 'Vous ne payez que pour vos employés actifs',
     badge: 'Sans engagement',
@@ -47,10 +47,10 @@ const plans: Plan[] = [
   {
     name: 'PME 10',
     icon: Crown,
-    price: '49',
+    price: '79',
     period: '/mois',
     description: 'Forfait 10 employés, tout inclus',
-    badge: 'Économisez 10%',
+    badge: 'Économisez 15%',
     badgeColor: 'bg-green-500',
     features: [
       { text: "10 employés inclus", included: true },

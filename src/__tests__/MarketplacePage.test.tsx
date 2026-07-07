@@ -4,6 +4,12 @@ import MarketplacePage from '../pages/MarketplacePage';
 
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
+    currentCompany: { id: '1', name: 'TechAfrique Solutions' },
+  }),
+}));
+
+vi.mock('../context/DataContext', () => ({
+  useData: () => ({
     jobPosts: [
       {
         id: '1',
@@ -24,7 +30,6 @@ vi.mock('../context/AppContext', () => ({
         expiresAt: new Date('2025-02-01'),
       },
     ],
-    currentCompany: { id: '1', name: 'TechAfrique Solutions' },
     addJobPost: vi.fn(),
     updateJobPost: vi.fn(),
     deleteJobPost: vi.fn(),

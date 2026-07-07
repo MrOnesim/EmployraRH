@@ -4,6 +4,12 @@ import BankingPage from '../pages/BankingPage';
 
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
+    currentCompany: { id: '1', name: 'TechAfrique' },
+  }),
+}));
+
+vi.mock('../context/DataContext', () => ({
+  useData: () => ({
     bankAccounts: [
       {
         id: '1',
@@ -32,7 +38,6 @@ vi.mock('../context/AppContext', () => ({
         accountId: '1',
       },
     ],
-    currentCompany: { id: '1', name: 'TechAfrique' },
     addBankAccount: vi.fn(),
   }),
 }));

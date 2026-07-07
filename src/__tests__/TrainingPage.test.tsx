@@ -4,6 +4,12 @@ import TrainingPage from '../pages/TrainingPage';
 
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
+    currentUser: { id: '1', firstName: 'Kofi', lastName: 'Mensah' },
+  }),
+}));
+
+vi.mock('../context/DataContext', () => ({
+  useData: () => ({
     courses: [
       {
         id: '1',
@@ -22,7 +28,6 @@ vi.mock('../context/AppContext', () => ({
     enrollments: [],
     quizzes: [],
     certificates: [],
-    currentUser: { id: '1', firstName: 'Kofi', lastName: 'Mensah' },
     enrollCourse: vi.fn(),
     updateLessonProgress: vi.fn(),
     submitQuizAttempt: vi.fn(),

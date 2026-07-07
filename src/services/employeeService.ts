@@ -22,7 +22,7 @@ export async function createMultipleEmployees(employees: Omit<Employee, 'id'>[])
 }
 
 export async function updateEmployee(id: string, updates: Partial<Employee>): Promise<Employee> {
-  const { data } = await api.put(`/employees/${id}`, updates);
+  const { data } = await api.patch(`/employees/${id}`, updates);
   return data;
 }
 

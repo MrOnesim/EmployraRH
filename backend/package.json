@@ -1,0 +1,42 @@
+{
+  "name": "employepro-backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "nest start",
+    "start:prod": "node dist/main",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "prisma:seed": "npx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "npx ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "better-auth": "^1.2.0",
+    "better-auth-harmony": "^1.0.0",
+    "@prisma/client": "^6.0.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "class-validator": "^0.14.1",
+    "class-transformer": "^0.5.1",
+    "bcryptjs": "^2.4.3"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/schematics": "^11.0.0",
+    "prisma": "^6.0.0",
+    "typescript": "^5.7.0",
+    "ts-node": "^10.9.2",
+    "@types/node": "^22.0.0",
+    "@types/express": "^5.0.0",
+    "@types/bcryptjs": "^2.4.6"
+  }
+}

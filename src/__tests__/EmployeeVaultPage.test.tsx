@@ -4,10 +4,15 @@ import EmployeeVaultPage from '../pages/EmployeeVaultPage';
 
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
-    vaultItems: [
-      { id: '1', employeeId: 'emp1', title: 'Passeport', type: 'document', fileUrl: '', uploadedAt: new Date(), expiresAt: null, notes: '', category: 'identité', isArchived: false },
-    ],
     currentUser: { id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' },
+  }),
+}));
+
+vi.mock('../context/DataContext', () => ({
+  useData: () => ({
+    vaultItems: [
+      { id: '1', employeeId: 'emp1', type: 'contract', name: 'Passeport', uploadedAt: new Date(), status: 'active' as const },
+    ],
     addVaultItem: vi.fn(),
     deleteVaultItem: vi.fn(),
   }),
@@ -27,6 +32,6 @@ describe('EmployeeVaultPage', () => {
   it('shows filter categories', () => {
     render(<EmployeeVaultPage />);
     expect(screen.getByText('Tous')).toBeInTheDocument();
-    expect(screen.getByText('Contrat')).toBeInTheDocument();
+    expect(screen.getAllByText('Contrat').length).toBeGreaterThanOrEqual(1);
   });
 });

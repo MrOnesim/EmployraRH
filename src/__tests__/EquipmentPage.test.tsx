@@ -4,12 +4,17 @@ import EquipmentPage from '../pages/EquipmentPage';
 
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
+    currentUser: { id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' },
+  }),
+}));
+
+vi.mock('../context/DataContext', () => ({
+  useData: () => ({
     equipment: [
       { id: 'e1', name: 'MacBook Pro 16', type: 'computer', serialNumber: 'SN001', status: 'available', purchaseDate: new Date(), purchasePrice: 2500, assigneeId: undefined, condition: 'good', companyId: 'c1', notes: '' },
     ],
     equipmentAssignments: [],
     employees: [{ id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' }],
-    currentUser: { id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' },
     addEquipment: vi.fn(),
     assignEquipment: vi.fn(),
     returnEquipment: vi.fn(),

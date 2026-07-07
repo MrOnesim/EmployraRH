@@ -2,6 +2,51 @@
 
 @import "tailwindcss";
 
+@theme {
+  --color-sidebar: hsl(0 0% 98%);
+  --color-sidebar-foreground: hsl(240 5% 26%);
+  --color-sidebar-accent: hsl(240 5% 96%);
+  --color-sidebar-accent-foreground: hsl(240 6% 10%);
+  --color-sidebar-border: hsl(220 13% 91%);
+  --color-sidebar-ring: hsl(217 91% 60%);
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(240 10% 4%);
+  --color-primary: hsl(221 83% 53%);
+  --color-primary-foreground: hsl(210 40% 98%);
+  --color-muted: hsl(240 5% 96%);
+  --color-muted-foreground: hsl(240 4% 46%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(240 10% 4%);
+  --color-accent: hsl(240 5% 96%);
+  --color-accent-foreground: hsl(240 6% 10%);
+  --color-border: hsl(240 6% 90%);
+  --color-input: hsl(240 6% 90%);
+  --color-ring: hsl(221 83% 53%);
+  --radius: 0.5rem;
+}
+
+.dark {
+  --color-sidebar: hsl(240 6% 10%);
+  --color-sidebar-foreground: hsl(240 5% 96%);
+  --color-sidebar-accent: hsl(240 4% 16%);
+  --color-sidebar-accent-foreground: hsl(240 5% 96%);
+  --color-sidebar-border: hsl(240 4% 16%);
+  --color-sidebar-ring: hsl(217 91% 60%);
+  --color-background: hsl(240 10% 4%);
+  --color-foreground: hsl(0 0% 98%);
+  --color-primary: hsl(217 91% 60%);
+  --color-primary-foreground: hsl(210 40% 98%);
+  --color-muted: hsl(240 4% 16%);
+  --color-muted-foreground: hsl(240 5% 65%);
+  --color-popover: hsl(240 10% 4%);
+  --color-popover-foreground: hsl(0 0% 98%);
+  --color-accent: hsl(240 4% 16%);
+  --color-accent-foreground: hsl(0 0% 98%);
+  --color-border: hsl(240 4% 16%);
+  --color-input: hsl(240 4% 16%);
+  --color-ring: hsl(217 91% 60%);
+}
+
 body {
   font-family: 'Inter', sans-serif;
 }

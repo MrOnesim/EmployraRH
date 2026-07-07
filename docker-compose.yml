@@ -8,20 +8,17 @@ services:
     restart: unless-stopped
 
   backend:
-    image: node:22-alpine
-    working_dir: /app
-    command: sh -c "npm ci && npm run start"
-    volumes:
-      - ./server:/app
+    build: ./backend
+    ports:
+      - "3000:3000"
     environment:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL:-postgresql://employepro:changeme@db:5432/employepro}
-      REDIS_URL: redis://redis:6379
+      FRONTEND_URL: http://localhost:80
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
     depends_on:
       db:
         condition: service_healthy
-      redis:
-        condition: service_started
     restart: unless-stopped
 
   db:
@@ -37,14 +34,9 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
-
-  redis:
-    image: redis:7-alpine
-    volumes:
-      - redisdata:/data
+    ports:
+      - "5432:5432"
     restart: unless-stopped
 
 volumes:
   pgdata:
-  redisdata:
