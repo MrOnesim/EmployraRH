@@ -211,16 +211,6 @@ export default function HeroSection() {
             initial="hidden"
             animate="visible"
           >
-            <motion.div 
-              variants={textFadeUp}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-6 shadow-md hover:bg-white/15 transition-all"
-            >
-              <Sparkles size={14} className="text-yellow-300 animate-spin duration-3000" />
-              <span className="text-xs font-bold text-white tracking-wide uppercase">
-                Plateforme RH & Paie Nouvelle Génération
-              </span>
-            </motion.div>
-
             <motion.h1 
               variants={textFadeUp}
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.05] mb-6 tracking-tight"
@@ -631,14 +621,7 @@ export default function HeroSection() {
               </div>
             </motion.div>
 
-            <motion.div 
-              animate={{ y: [0, 8, 0] }}
-              transition={{ repeat: Infinity, duration: 5, ease: 'easeInOut', delay: 0.5 }}
-              className="absolute -top-3 -left-3 bg-gradient-to-r from-yellow-300 via-amber-400 to-orange-400 rounded-2xl px-4 py-2.5 shadow-2xl z-20 flex items-center gap-2 hidden sm:flex border border-white/20"
-            >
-              <Star size={15} className="text-white fill-white animate-spin duration-5000" />
-              <span className="text-white font-black text-sm tracking-tight">4.9/5 satisfaction</span>
-            </motion.div>
+
           </div>
 
         </div>
