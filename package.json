@@ -1,5 +1,5 @@
 {
-  "name": "react-vite-tailwind",
+  "name": "employra-rh",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -57,17 +57,17 @@
     "vite-bundle-visualizer": "^1.2.1",
     "vitest": "^4.1.9"
   },
-  "description": "Plateforme de gestion RH et paie multi-pays africains.",
+  "description": "Plateforme de gestion RH et paie tout-en-un internationale.",
   "main": "eslint.config.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MrOnesim/EmployePro.git"
+    "url": "git+https://github.com/MrOnesim/EmployraRH.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MrOnesim/EmployePro/issues"
+    "url": "https://github.com/MrOnesim/EmployraRH/issues"
   },
-  "homepage": "https://github.com/MrOnesim/EmployePro#readme"
+  "homepage": "https://github.com/MrOnesim/EmployraRH#readme"
 }

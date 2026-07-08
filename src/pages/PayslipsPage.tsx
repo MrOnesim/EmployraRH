@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { exportPayslipPDF } from '../utils/pdfExport';
@@ -15,8 +15,8 @@ export default function PayslipsPage() {
   const [showPreview, setShowPreview] = useState<string | null>(null);
 
   const months = [
-    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    'Janvier', 'FÃ©vrier', 'Mars', 'Avril', 'Mai', 'Juin',
+    'Juillet', 'AoÃ»t', 'Septembre', 'Octobre', 'Novembre', 'DÃ©cembre'
   ];
 
   const myPayslips = isAdmin 
@@ -30,12 +30,12 @@ export default function PayslipsPage() {
     const emp = employees.find(e => e.id === p?.employeeId);
     if (p && emp) {
       exportPayslipPDF(p, emp, currentUser?.companyId === '1' ? 'TechAfrique Solutions' : 'Entreprise');
-      addToast('Bulletin téléchargé', 'success');
+      addToast('Bulletin tÃ©lÃ©chargÃ©', 'success');
     }
   };
 
   const handlePrint = (_payslipId: string) => {
-    addToast('Impression lancée', 'info');
+    addToast('Impression lancÃ©e', 'info');
   };
 
   const getPayslipById = (id: string) => {
@@ -53,7 +53,7 @@ export default function PayslipsPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Bulletins de paie</h1>
           <p className="text-gray-500">
-            {isAdmin ? 'Gérez les bulletins de paie de vos employés' : 'Consultez vos bulletins de paie'}
+            {isAdmin ? 'GÃ©rez les bulletins de paie de vos employÃ©s' : 'Consultez vos bulletins de paie'}
           </p>
         </div>
         <div className="flex space-x-3">
@@ -88,7 +88,7 @@ export default function PayslipsPage() {
               <DollarSign size={24} className="text-green-600" />
             </div>
             <div>
-              <p className="text-gray-500 text-sm">Total net payé</p>
+              <p className="text-gray-500 text-sm">Total net payÃ©</p>
               <p className="text-2xl font-bold text-gray-800">
                 {(filteredPayslips.reduce((sum, p) => sum + p.netSalary, 0) / 1000000).toFixed(2)}M
               </p>
@@ -120,13 +120,13 @@ export default function PayslipsPage() {
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100">
                 {isAdmin && (
-                  <th className="text-left px-6 py-4 font-medium text-gray-600">Employé</th>
+                  <th className="text-left px-6 py-4 font-medium text-gray-600">EmployÃ©</th>
                 )}
-                <th className="text-left px-6 py-4 font-medium text-gray-600">Période</th>
+                <th className="text-left px-6 py-4 font-medium text-gray-600">PÃ©riode</th>
                 <th className="text-left px-6 py-4 font-medium text-gray-600">Salaire brut</th>
                 <th className="text-left px-6 py-4 font-medium text-gray-600">Primes</th>
-                <th className="text-left px-6 py-4 font-medium text-gray-600">Déductions</th>
-                <th className="text-left px-6 py-4 font-medium text-gray-600">Net à payer</th>
+                <th className="text-left px-6 py-4 font-medium text-gray-600">DÃ©ductions</th>
+                <th className="text-left px-6 py-4 font-medium text-gray-600">Net Ã  payer</th>
                 <th className="text-left px-6 py-4 font-medium text-gray-600">Actions</th>
               </tr>
             </thead>
@@ -174,14 +174,14 @@ export default function PayslipsPage() {
                         <button
                           onClick={() => setShowPreview(payslip.id)}
                           className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          title="Aperçu"
+                          title="AperÃ§u"
                         >
                           <Eye size={18} />
                         </button>
                         <button
                           onClick={() => handleDownload(payslip.id)}
                           className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                          title="Télécharger PDF"
+                          title="TÃ©lÃ©charger PDF"
                         >
                           <Download size={18} />
                         </button>
@@ -204,7 +204,7 @@ export default function PayslipsPage() {
         {filteredPayslips.length === 0 && (
           <div className="text-center py-12">
             <FileText className="mx-auto text-gray-300 mb-4" size={48} />
-            <p className="text-gray-500">Aucun bulletin disponible pour cette période</p>
+            <p className="text-gray-500">Aucun bulletin disponible pour cette pÃ©riode</p>
           </div>
         )}
       </div>
@@ -233,7 +233,7 @@ export default function PayslipsPage() {
               <div className="border border-gray-200 rounded-lg p-6">
                 {/* Header */}
                 <div className="text-center border-b border-gray-200 pb-4 mb-4">
-                  <h3 className="text-lg font-bold text-blue-600">EmployéPro Africa</h3>
+                  <h3 className="text-lg font-bold text-blue-600">EmployÃ©Pro Africa</h3>
                   <p className="text-sm text-gray-500">Bulletin de paie</p>
                 </div>
 
@@ -248,18 +248,18 @@ export default function PayslipsPage() {
                     <p className="font-medium">{employee.position}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Département</p>
+                    <p className="text-sm text-gray-500">DÃ©partement</p>
                     <p className="font-medium">{employee.department}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Période</p>
+                    <p className="text-sm text-gray-500">PÃ©riode</p>
                     <p className="font-medium">{months[payslip.month - 1]} {payslip.year}</p>
                   </div>
                 </div>
 
                 {/* Salary Details */}
                 <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                  <h4 className="font-semibold mb-3">Détails du salaire</h4>
+                  <h4 className="font-semibold mb-3">DÃ©tails du salaire</h4>
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Salaire de base</span>
@@ -270,12 +270,12 @@ export default function PayslipsPage() {
                       <span className="font-medium text-green-600">+{payslip.bonuses.toLocaleString()} FCFA</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Déductions (CNSS, IR, etc.)</span>
+                      <span className="text-gray-600">DÃ©ductions (CNSS, IR, etc.)</span>
                       <span className="font-medium text-red-600">-{payslip.deductions.toLocaleString()} FCFA</span>
                     </div>
                     <div className="border-t border-gray-300 pt-2 mt-2">
                       <div className="flex justify-between">
-                        <span className="font-semibold">Net à payer</span>
+                        <span className="font-semibold">Net Ã  payer</span>
                         <span className="font-bold text-lg text-blue-600">{payslip.netSalary.toLocaleString()} FCFA</span>
                       </div>
                     </div>
@@ -284,8 +284,8 @@ export default function PayslipsPage() {
 
                 {/* Footer */}
                 <div className="text-center text-sm text-gray-500">
-                  <p>Document généré le {new Date(payslip.generatedAt).toLocaleDateString('fr-FR')}</p>
-                  <p className="mt-1">EmployéPro Africa - Plateforme de gestion RH</p>
+                  <p>Document gÃ©nÃ©rÃ© le {new Date(payslip.generatedAt).toLocaleDateString('fr-FR')}</p>
+                  <p className="mt-1">EmployÃ©Pro Africa - Plateforme de gestion RH</p>
                 </div>
               </div>
 
@@ -296,7 +296,7 @@ export default function PayslipsPage() {
                   className="flex-1 flex items-center justify-center space-x-2 bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors"
                 >
                   <Download size={18} />
-                  <span>Télécharger PDF</span>
+                  <span>TÃ©lÃ©charger PDF</span>
                 </button>
                 <button
                   onClick={() => handlePrint(payslip.id)}

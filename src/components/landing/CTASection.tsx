@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
@@ -25,11 +25,11 @@ export default function CTASection() {
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8">
           <Sparkles size={14} className="text-blue-200" />
-          <span className="text-sm font-medium text-white">Prêt à passer à l'action ?</span>
+          <span className="text-sm font-medium text-white">PrÃªt Ã  passer Ã  l'action ?</span>
         </div>
 
         <h2 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight leading-[1.05]">
-          Prêt à transformer{' '}
+          PrÃªt Ã  transformer{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-400">
             votre gestion RH
           </span>{' '}
@@ -37,7 +37,7 @@ export default function CTASection() {
         </h2>
 
         <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-          Rejoignez des milliers d'entreprises qui font confiance à EmployéPro Africa. Commencez
+          Rejoignez des milliers d'entreprises qui font confiance Ã  EmployÃ©Pro Africa. Commencez
           gratuitement, sans carte bancaire.
         </p>
 
@@ -60,7 +60,7 @@ export default function CTASection() {
         <div className="mt-10 flex flex-wrap justify-center gap-8 text-sm text-blue-200">
           <span>&#10003; Sans carte bancaire</span>
           <span>&#10003; 14 jours d'essai</span>
-          <span>&#10003; Accès complet</span>
+          <span>&#10003; AccÃ¨s complet</span>
           <span>&#10003; Support 24/7</span>
         </div>
       </div>

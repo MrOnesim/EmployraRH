@@ -1,4 +1,4 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+﻿import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { toNodeHandler } from 'better-auth/node';
 import { auth } from './better-auth.setup';

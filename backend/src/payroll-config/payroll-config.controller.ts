@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Body, Query } from '@nestjs/common';
+﻿import { Controller, Get, Put, Body, Query } from '@nestjs/common';
 import { PayrollConfigService } from './payroll-config.service';
 
 @Controller('payroll/config')

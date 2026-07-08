@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Mail, Lock, Building2, User, Eye, EyeOff } from 'lucide-react';
@@ -36,7 +36,7 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200 mb-4">
             <span className="text-white font-bold text-2xl">EP</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">EmployéPro Africa</h1>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">EmployÃ©Pro Africa</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Plateforme de gestion RH</p>
         </div>
 
@@ -68,7 +68,7 @@ export default function LoginPage() {
               }`}
             >
               <User size={18} />
-              <span className="font-medium">Employé</span>
+              <span className="font-medium">EmployÃ©</span>
             </button>
           </div>
 
@@ -106,7 +106,7 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                   className="w-full pl-10 pr-12 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
                   required
                 />
@@ -126,7 +126,7 @@ export default function LoginPage() {
                 <span className="text-sm text-gray-600 dark:text-gray-400">Se souvenir de moi</span>
               </label>
               <button type="button" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                Mot de passe oublié ?
+                Mot de passe oubliÃ© ?
               </button>
             </div>
 
@@ -142,7 +142,7 @@ export default function LoginPage() {
             <p className="text-gray-500 dark:text-gray-400 text-sm">
               Pas encore de compte ?{' '}
               <Link to="/register-company" className="text-blue-600 font-medium hover:text-blue-700">
-                Créer une entreprise
+                CrÃ©er une entreprise
               </Link>
             </p>
           </div>
@@ -150,14 +150,14 @@ export default function LoginPage() {
 
         {/* Demo Credentials */}
         <div className="mt-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-xl p-4">
-          <p className="text-sm text-gray-600 dark:text-gray-300 font-medium mb-2">Comptes de démonstration :</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300 font-medium mb-2">Comptes de dÃ©monstration :</p>
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
               <span>Admin :</span>
               <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">admin@techafrique.com</code>
             </div>
             <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
-              <span>Employé :</span>
+              <span>EmployÃ© :</span>
               <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">ama@techafrique.com</code>
             </div>
             <p className="text-gray-400 dark:text-gray-500 text-xs">Mot de passe : n'importe lequel</p>

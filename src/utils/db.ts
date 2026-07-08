@@ -1,4 +1,4 @@
-const DB_NAME = 'EmployeProDB';
+﻿const DB_NAME = 'EmployraRHDB';
 const DB_VERSION = 1;
 
 function openDB(): Promise<IDBDatabase> {

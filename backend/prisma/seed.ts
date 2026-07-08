@@ -1,4 +1,4 @@
-import { PrismaClient, RoleEnum } from '@prisma/client';
+﻿import { PrismaClient, RoleEnum } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -41,9 +41,9 @@ async function main() {
   });
 
   const employees = [
-    { firstName: 'Kofi', lastName: 'Mensah', email: 'admin@techafrique.com', position: 'Directeur Général', department: 'Direction', salary: 1500000 },
+    { firstName: 'Kofi', lastName: 'Mensah', email: 'admin@techafrique.com', position: 'Directeur GÃ©nÃ©ral', department: 'Direction', salary: 1500000 },
     { firstName: 'Aminata', lastName: 'Diallo', email: 'aminata@techafrique.com', position: 'RH', department: 'Ressources Humaines', salary: 800000 },
-    { firstName: 'Modou', lastName: 'Diop', email: 'modou@techafrique.com', position: 'Développeur Fullstack', department: 'IT', salary: 600000 },
+    { firstName: 'Modou', lastName: 'Diop', email: 'modou@techafrique.com', position: 'DÃ©veloppeur Fullstack', department: 'IT', salary: 600000 },
     { firstName: 'Fatou', lastName: 'Sarr', email: 'fatou@techafrique.com', position: 'Comptable', department: 'Finance', salary: 550000 },
   ];
 

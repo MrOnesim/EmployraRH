@@ -1,26 +1,26 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { Star, MapPin, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const testimonials = [
   {
-    name: 'Amadou Diallo', role: 'CEO', company: 'AfriTech Solutions', country: 'Sénégal',
-    text: 'EmployéPro a révolutionné notre gestion RH. Nous sommes passés de 3 logiciels différents à une seule plateforme. Gain de temps de 40%.',
+    name: 'Amadou Diallo', role: 'CEO', company: 'AfriTech Solutions', country: 'SÃ©nÃ©gal',
+    text: 'EmployÃ©Pro a rÃ©volutionnÃ© notre gestion RH. Nous sommes passÃ©s de 3 logiciels diffÃ©rents Ã  une seule plateforme. Gain de temps de 40%.',
     rating: 5, initials: 'AD', gradient: 'from-blue-500 to-blue-600',
   },
   {
     name: 'Marie Dubois', role: 'DRH', company: 'Innovate Paris', country: 'France',
-    text: 'L\'assistant IA est bluffant. Il génère des rapports que je mettais 3 heures à produire. La paie multi-pays marche parfaitement.',
+    text: 'L\'assistant IA est bluffant. Il gÃ©nÃ¨re des rapports que je mettais 3 heures Ã  produire. La paie multi-pays marche parfaitement.',
     rating: 5, initials: 'MD', gradient: 'from-blue-600 to-blue-700',
   },
   {
     name: 'Jean Nkosi', role: 'Directeur RH', company: 'Groupe Kamer', country: 'Cameroun',
-    text: 'Enfin une solution qui comprend les réalités africaines. FCFA, impôts locaux, signatures électroniques... Tout est là.',
+    text: 'Enfin une solution qui comprend les rÃ©alitÃ©s africaines. FCFA, impÃ´ts locaux, signatures Ã©lectroniques... Tout est lÃ .',
     rating: 5, initials: 'JN', gradient: 'from-blue-500 to-blue-600',
   },
   {
     name: 'Amina Benali', role: 'CHRO', company: 'Maghreb Industries', country: 'Maroc',
-    text: 'Nous gérons 3 000 employés dans 5 pays. EmployéPro nous offre une vision consolidée de notre capital humain.',
+    text: 'Nous gÃ©rons 3 000 employÃ©s dans 5 pays. EmployÃ©Pro nous offre une vision consolidÃ©e de notre capital humain.',
     rating: 5, initials: 'AB', gradient: 'from-blue-600 to-blue-700',
   },
 ];
