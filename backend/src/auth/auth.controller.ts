@@ -1,42 +1,49 @@
-﻿import { Controller, Get, Req, Res, Post, Body, UnauthorizedException } from '@nestjs/common';
-import { Request, Response } from 'express';
-import { PrismaService } from '../prisma/prisma.service';
+import { Controller, Get, Req, Post, Body, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
+import * as bcrypt from 'bcryptjs';
 import { AuthService } from './auth.service';
+import { Public } from '../common/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private prisma: PrismaService,
-    private authService: AuthService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @Get('session')
   async getSession(@Req() req: Request) {
-    const userId = (req as any).userId;
-    if (!userId) throw new UnauthorizedException();
-    return this.authService.getUserById(userId);
+    const user = (req as any).user;
+    if (!user?.id) throw new UnauthorizedException();
+    const fullUser = await this.authService.getUserById(user.id);
+    if (!fullUser) throw new UnauthorizedException();
+    const { password, ...safe } = fullUser;
+    return safe;
   }
 
+  @Public()
   @Post('sign-in')
-  async signIn(@Body() body: { email: string; password: string }, @Res() res: Response) {
+  async signIn(@Body() body: { email: string; password: string }) {
     const user = await this.authService.findUserByEmail(body.email);
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user || !user.password) throw new UnauthorizedException('Invalid credentials');
 
-    const bcrypt = require('bcryptjs');
     const valid = await bcrypt.compare(body.password, user.password);
     if (!valid) throw new UnauthorizedException('Invalid credentials');
 
-    return res.json({ user });
+    const { password, ...safe } = user;
+    return { user: safe };
   }
 
+  @Public()
   @Post('sign-up')
   async signUp(@Body() body: { email: string; name: string; password: string }) {
-    const bcrypt = require('bcryptjs');
-    const hashed = await bcrypt.hash(body.password, 10);
-    return this.authService.createUser({
+    if (!body.password || body.password.length < 8) {
+      throw new UnauthorizedException('Password must be at least 8 characters');
+    }
+    const hashed = await bcrypt.hash(body.password, 12);
+    const user = await this.authService.createUser({
       email: body.email,
       name: body.name,
       password: hashed,
     });
+    const { password, ...safe } = user;
+    return safe;
   }
 }

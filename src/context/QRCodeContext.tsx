@@ -49,7 +49,7 @@ const QRCodeContext = createContext<QRCodeContextValue | undefined>(undefined);
 
 export function QRCodeProvider({ children }: { children: ReactNode }) {
   const companyId = '1';
-  const salt = 'EMPLOYRARH_SALT_2024';
+  const salt = 'EMPLOYEPRO_SALT_2024';
 
   const [config, setConfig] = useState<QRCodeConfig>(() => {
     const stored = localStorage.getItem('qr_config');

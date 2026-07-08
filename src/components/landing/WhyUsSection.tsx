@@ -1,16 +1,16 @@
-﻿import { useScrollReveal } from '../../hooks/useScrollReveal';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { Check, X } from 'lucide-react';
 
 const rows = [
-  { label: 'EmployÃ©s illimitÃ©s', us: true, them: false },
+  { label: 'Employés illimités', us: true, them: false },
   { label: 'Paie multi-pays (FCFA, EUR, USD)', us: true, them: false },
   { label: 'Assistant IA inclus', us: true, them: false },
-  { label: 'Signature Ã©lectronique', us: true, them: false },
+  { label: 'Signature électronique', us: true, them: false },
   { label: 'Pointage QR Code', us: true, them: false },
   { label: 'Application mobile', us: true, them: false },
-  { label: 'Pas de facturation par employÃ©', us: true, them: false },
+  { label: 'Pas de facturation par employé', us: true, them: false },
   { label: 'Support 24/7 prioritaire', us: true, them: 'partiel' },
-  { label: 'API & IntÃ©grations', us: true, them: false },
+  { label: 'API & Intégrations', us: true, them: false },
   { label: 'Data center Europe / Afrique', us: true, them: false },
 ];
 
@@ -25,10 +25,10 @@ export default function WhyUsSection() {
             <span className="text-sm font-medium text-blue-600">Pourquoi nous ?</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4 tracking-tight">
-            EmployÃ©Pro vs <span className="text-gray-400">la concurrence</span>
+            EmployéPro vs <span className="text-gray-400">la concurrence</span>
           </h2>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-            Pas de frais cachÃ©s, pas de licence par tÃªte. Une plateforme complÃ¨te, transparente et adaptÃ©e Ã  l'Afrique.
+            Pas de frais cachés, pas de licence par tête. Une plateforme complète, transparente et adaptée à l'Afrique.
           </p>
         </div>
 
@@ -36,9 +36,9 @@ export default function WhyUsSection() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50/80">
-                <th className="text-left py-4 px-6 text-sm font-medium text-gray-500">FonctionnalitÃ©</th>
+                <th className="text-left py-4 px-6 text-sm font-medium text-gray-500">Fonctionnalité</th>
                 <th className="text-center py-4 px-6">
-                  <span className="text-blue-600 font-bold text-lg">EmployÃ©Pro</span>
+                  <span className="text-blue-600 font-bold text-lg">EmployéPro</span>
                 </th>
                 <th className="text-center py-4 px-6">
                   <span className="text-gray-400 font-bold text-lg">Autres solutions</span>

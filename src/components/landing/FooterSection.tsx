@@ -1,17 +1,17 @@
-﻿import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ArrowUp, Mail, Globe, Code2, Users } from 'lucide-react';
 
 const productLinks = [
-  { label: 'FonctionnalitÃ©s', href: '#features' },
+  { label: 'Fonctionnalités', href: '#features' },
   { label: 'Tarifs', href: '/pricing' },
-  { label: 'Ã€ propos', href: '/about' },
+  { label: 'À propos', href: '/about' },
   { label: 'FAQ', href: '/faq' },
 ];
 
 const legalLinks = [
-  { label: 'Conditions gÃ©nÃ©rales', href: '#' },
-  { label: 'Politique de confidentialitÃ©', href: '#' },
-  { label: 'Mentions lÃ©gales', href: '#' },
+  { label: 'Conditions générales', href: '#' },
+  { label: 'Politique de confidentialité', href: '#' },
+  { label: 'Mentions légales', href: '#' },
   { label: 'Cookies', href: '#' },
 ];
 
@@ -19,7 +19,7 @@ const socialLinks = [
   { icon: Globe, href: '#', label: 'Twitter' },
   { icon: Users, href: '#', label: 'LinkedIn' },
   { icon: Code2, href: '#', label: 'GitHub' },
-  { icon: Mail, href: 'mailto:contact@EmployraRH.com', label: 'Email' },
+  { icon: Mail, href: 'mailto:contact@employepro.com', label: 'Email' },
 ];
 
 export default function FooterSection() {
@@ -40,15 +40,15 @@ export default function FooterSection() {
             <div className="flex items-center gap-3 mb-4">
               <img
                 src="/images/logo.png"
-                alt="EmployÃ©Pro"
+                alt="EmployéPro"
                 loading="lazy"
                 className="w-10 h-10 rounded-xl object-cover"
               />
-              <span className="text-xl font-bold text-white">EmployÃ©Pro</span>
+              <span className="text-xl font-bold text-white">EmployéPro</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-sm">
               La plateforme RH et paie tout-en-un pour les entreprises ambitieuses. Paie multi-pays,
-              IA embarquÃ©e, signatures Ã©lectroniques.
+              IA embarquée, signatures électroniques.
             </p>
             <div className="flex gap-3">
               {socialLinks.map((s) => (
@@ -91,9 +91,9 @@ export default function FooterSection() {
               Contact
             </h4>
             <ul className="space-y-3 text-sm text-gray-400">
-              <li>contact@EmployraRH.com</li>
+              <li>contact@employepro.com</li>
               <li>+221 33 800 00 00</li>
-              <li>Dakar, SÃ©nÃ©gal</li>
+              <li>Dakar, Sénégal</li>
               <li>Paris, France</li>
             </ul>
           </div>
@@ -101,7 +101,7 @@ export default function FooterSection() {
           {/* Legal */}
           <div>
             <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">
-              LÃ©gal
+              Légal
             </h4>
             <ul className="space-y-3">
               {legalLinks.map((link) => (
@@ -121,7 +121,7 @@ export default function FooterSection() {
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} EmployÃ©Pro. Tous droits rÃ©servÃ©s.
+            &copy; {new Date().getFullYear()} EmployéPro. Tous droits réservés.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-600">
             <span>RGPD conform</span>

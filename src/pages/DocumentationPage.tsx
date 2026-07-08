@@ -1,32 +1,32 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { BookOpen, Search, FileText, Video, HelpCircle, ArrowRight, Camera } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PublicNav from '../components/PublicNav';
 
 const sections = [
   {
-    title: 'Guides de dÃ©marrage',
+    title: 'Guides de démarrage',
     icon: BookOpen,
     color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30',
-    items: ['CrÃ©er votre compte entreprise', 'Inviter vos employÃ©s', 'Configurer la paie', 'Premier pointage QR'],
+    items: ['Créer votre compte entreprise', 'Inviter vos employés', 'Configurer la paie', 'Premier pointage QR'],
   },
   {
     title: 'Modules fonctionnels',
     icon: FileText,
     color: 'text-purple-600 bg-purple-100 dark:bg-purple-900/30',
-    items: ['Gestion des prÃ©sences', 'CongÃ©s et absences', 'Bulletins de paie', 'Performance & objectifs'],
+    items: ['Gestion des présences', 'Congés et absences', 'Bulletins de paie', 'Performance & objectifs'],
   },
   {
-    title: 'Tutoriels vidÃ©o',
+    title: 'Tutoriels vidéo',
     icon: Video,
     color: 'text-red-600 bg-red-100 dark:bg-red-900/30',
-    items: ['Vue d\'ensemble (5 min)', 'Configuration avancÃ©e', 'Export PDF', 'API & intÃ©grations'],
+    items: ['Vue d\'ensemble (5 min)', 'Configuration avancée', 'Export PDF', 'API & intégrations'],
   },
   {
     title: 'FAQ & Support',
     icon: HelpCircle,
     color: 'text-green-600 bg-green-100 dark:bg-green-900/30',
-    items: ['Questions frÃ©quentes', 'Nous contacter', 'Statut du service', 'CommunautÃ©'],
+    items: ['Questions fréquentes', 'Nous contacter', 'Statut du service', 'Communauté'],
   },
 ];
 
@@ -38,7 +38,7 @@ function ScreenshotViewer() {
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 p-8 md:p-16 flex items-center justify-center min-h-[300px] rounded-2xl">
         <div className="text-center text-gray-400 dark:text-gray-500">
           <Camera size={48} className="mx-auto mb-4" />
-          <p className="text-lg font-medium text-gray-500 dark:text-gray-400">Capture d'Ã©cran</p>
+          <p className="text-lg font-medium text-gray-500 dark:text-gray-400">Capture d'écran</p>
           <p className="text-sm mt-2">Placez votre image dans <code className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded">public/images/screenshots/hero-section.png</code></p>
         </div>
       </div>
@@ -51,7 +51,7 @@ function ScreenshotViewer() {
         <source srcSet="/images/screenshots/hero-section.webp" type="image/webp" />
         <img
           src="/images/screenshots/hero-section.png"
-          alt="AperÃ§u de la plateforme EmployÃ©Pro"
+          alt="Aperçu de la plateforme EmployéPro"
           loading="lazy"
           className="w-full rounded-xl shadow-lg"
           onError={() => setFailed(true)}
@@ -66,9 +66,9 @@ export default function DocumentationPage() {
     const meta = document.querySelector('meta[name="description"]');
     const og = document.querySelector('meta[property="og:description"]');
     const title = document.title;
-    document.title = 'Documentation - EmployÃ©Pro';
-    if (meta) meta.setAttribute('content', 'Documentation complÃ¨te EmployÃ©Pro : guides de dÃ©marrage, modules fonctionnels, tutoriels vidÃ©o, FAQ et support.');
-    if (og) og.setAttribute('content', 'Documentation complÃ¨te EmployÃ©Pro : guides de dÃ©marrage, modules fonctionnels, tutoriels vidÃ©o, FAQ et support.');
+    document.title = 'Documentation - EmployéPro';
+    if (meta) meta.setAttribute('content', 'Documentation complète EmployéPro : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.');
+    if (og) og.setAttribute('content', 'Documentation complète EmployéPro : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.');
     return () => { document.title = title; };
   }, []);
 
@@ -81,7 +81,7 @@ export default function DocumentationPage() {
           <BookOpen size={48} className="mx-auto mb-6 text-blue-200" />
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Documentation</h1>
           <p className="text-lg text-blue-100/90 max-w-2xl mx-auto">
-            Tout ce qu'il faut savoir pour maÃ®triser EmployÃ©Pro : guides, tutoriels, API et bonnes pratiques.
+            Tout ce qu'il faut savoir pour maîtriser EmployéPro : guides, tutoriels, API et bonnes pratiques.
           </p>
           <div className="relative max-w-lg mx-auto mt-8">
             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300" />
@@ -99,7 +99,7 @@ export default function DocumentationPage() {
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
           <ScreenshotViewer />
           <div className="p-6 text-center text-sm text-gray-500 dark:text-gray-400">
-            AperÃ§u de la section d'accueil â€” Plateforme EmployÃ©Pro
+            Aperçu de la section d'accueil — Plateforme EmployéPro
           </div>
         </div>
       </section>

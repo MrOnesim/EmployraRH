@@ -1,13 +1,15 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { Company, Employee, Attendance, Leave, Payslip, Notification, Invitation } from '../types';
+import { authClient } from '../services/authService';
+import * as EmployeeService from '../services/employeeService';
+import * as AttendanceService from '../services/attendanceService';
+import * as LeaveService from '../services/leaveService';
+import * as PayrollService from '../services/payrollService';
 
 interface AppState {
-  // Auth state
   isLoggedIn: boolean;
   currentUser: Employee | null;
   currentCompany: Company | null;
-  
-  // Data
   companies: Company[];
   employees: Employee[];
   attendance: Attendance[];
@@ -15,11 +17,9 @@ interface AppState {
   payslips: Payslip[];
   notifications: Notification[];
   invitations: Invitation[];
-  
-  // Actions
   login: (email: string, password: string, type: 'company' | 'employee') => boolean;
   logout: () => void;
-  registerCompany: (company: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'>) => void;
+  registerCompany: (company: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'> & { password?: string }) => void;
   addEmployee: (employee: Omit<Employee, 'id'>) => void;
   updateEmployee: (id: string, data: Partial<Employee>) => void;
   deleteEmployee: (id: string) => void;
@@ -41,261 +41,48 @@ interface AppState {
 
 const AppContext = createContext<AppState | undefined>(undefined);
 
-// Mock data for demo
+const useApi = !!import.meta.env.VITE_API_BASE_URL;
+
 const mockCompany: Company = {
-  id: '1',
-  name: 'TechAfrique Solutions',
-  logo: '',
-  ownerFirstName: 'Kofi',
-  ownerLastName: 'Mensah',
-  email: 'admin@techafrique.com',
-  phone: '+228 90 12 34 56',
-  employeeCount: 25,
-  address: 'Lomé, Togo',
-  website: 'www.techafrique.com',
-  uniqueId: 'TA-2024-001',
-  createdAt: new Date('2024-01-15'),
-  balance: 5000000
+  id: '1', name: 'TechAfrique Solutions', logo: '', ownerFirstName: 'Kofi', ownerLastName: 'Mensah',
+  email: 'admin@techafrique.com', phone: '+228 90 12 34 56', employeeCount: 25,
+  address: 'Lomé, Togo', website: 'www.techafrique.com', uniqueId: 'TA-2024-001',
+  createdAt: new Date('2024-01-15'), balance: 5000000,
 };
 
 const mockEmployees: Employee[] = [
-  {
-    id: '1',
-    companyId: '1',
-    firstName: 'Kofi',
-    lastName: 'Mensah',
-    email: 'admin@techafrique.com',
-    phone: '+228 90 12 34 56',
-    dateOfBirth: new Date('1985-06-15'),
-    position: 'Directeur Général',
-    department: 'Direction',
-    photo: '',
-    salary: 1500000,
-    status: 'active',
-    joinDate: new Date('2024-01-15'),
-    role: 'admin'
-  },
-  {
-    id: '2',
-    companyId: '1',
-    firstName: 'Ama',
-    lastName: 'Gbeko',
-    email: 'ama@techafrique.com',
-    phone: '+228 91 23 45 67',
-    dateOfBirth: new Date('1990-03-20'),
-    position: 'Responsable RH',
-    department: 'Ressources Humaines',
-    photo: '',
-    salary: 800000,
-    status: 'active',
-    joinDate: new Date('2024-02-01'),
-    role: 'rh'
-  },
-  {
-    id: '3',
-    companyId: '1',
-    firstName: 'Kwame',
-    lastName: 'Adjei',
-    email: 'kwame@techafrique.com',
-    phone: '+228 92 34 56 78',
-    dateOfBirth: new Date('1992-08-10'),
-    position: 'Développeur Senior',
-    department: 'Informatique',
-    photo: '',
-    salary: 750000,
-    status: 'active',
-    joinDate: new Date('2024-03-15'),
-    role: 'manager'
-  },
-  {
-    id: '4',
-    companyId: '1',
-    firstName: 'Efua',
-    lastName: 'Asante',
-    email: 'efua@techafrique.com',
-    phone: '+228 93 45 67 89',
-    dateOfBirth: new Date('1988-12-05'),
-    position: 'Comptable',
-    department: 'Finance',
-    photo: '',
-    salary: 700000,
-    status: 'active',
-    joinDate: new Date('2024-04-01'),
-    role: 'employee'
-  },
-  {
-    id: '5',
-    companyId: '1',
-    firstName: 'Yaw',
-    lastName: 'Boakye',
-    email: 'yaw@techafrique.com',
-    phone: '+228 94 56 78 90',
-    dateOfBirth: new Date('1995-05-22'),
-    position: 'Designer UI/UX',
-    department: 'Marketing',
-    photo: '',
-    salary: 600000,
-    status: 'active',
-    joinDate: new Date('2024-05-15'),
-    role: 'employee'
-  },
-  {
-    id: '6',
-    companyId: '1',
-    firstName: 'Abla',
-    lastName: 'Dosso',
-    email: 'abla@techafrique.com',
-    phone: '+228 95 67 89 01',
-    dateOfBirth: new Date('1993-09-18'),
-    position: 'Chargé de Marketing',
-    department: 'Marketing',
-    photo: '',
-    salary: 550000,
-    status: 'inactive',
-    joinDate: new Date('2024-06-01'),
-    role: 'employee'
-  },
-  {
-    id: '7',
-    companyId: '1',
-    firstName: 'Kossi',
-    lastName: 'Amoussou',
-    email: 'kossi@techafrique.com',
-    phone: '+228 96 78 90 12',
-    dateOfBirth: new Date('1991-02-28'),
-    position: 'Développeur Full Stack',
-    department: 'Informatique',
-    photo: '',
-    salary: 700000,
-    status: 'active',
-    joinDate: new Date('2024-07-01'),
-    role: 'employee'
-  }
+  { id: '1', companyId: '1', firstName: 'Kofi', lastName: 'Mensah', email: 'admin@techafrique.com', phone: '+228 90 12 34 56', dateOfBirth: new Date('1985-06-15'), position: 'Directeur Général', department: 'Direction', photo: '', salary: 1500000, status: 'active', joinDate: new Date('2024-01-15'), role: 'admin' },
+  { id: '2', companyId: '1', firstName: 'Ama', lastName: 'Gbeko', email: 'ama@techafrique.com', phone: '+228 91 23 45 67', dateOfBirth: new Date('1990-03-20'), position: 'Responsable RH', department: 'Ressources Humaines', photo: '', salary: 800000, status: 'active', joinDate: new Date('2024-02-01'), role: 'rh' },
+  { id: '3', companyId: '1', firstName: 'Kwame', lastName: 'Adjei', email: 'kwame@techafrique.com', phone: '+228 92 34 56 78', dateOfBirth: new Date('1992-08-10'), position: 'Développeur Senior', department: 'Informatique', photo: '', salary: 750000, status: 'active', joinDate: new Date('2024-03-15'), role: 'manager' },
+  { id: '4', companyId: '1', firstName: 'Efua', lastName: 'Asante', email: 'efua@techafrique.com', phone: '+228 93 45 67 89', dateOfBirth: new Date('1988-12-05'), position: 'Comptable', department: 'Finance', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-04-01'), role: 'employee' },
+  { id: '5', companyId: '1', firstName: 'Yaw', lastName: 'Boakye', email: 'yaw@techafrique.com', phone: '+228 94 56 78 90', dateOfBirth: new Date('1995-05-22'), position: 'Designer UI/UX', department: 'Marketing', photo: '', salary: 600000, status: 'active', joinDate: new Date('2024-05-15'), role: 'employee' },
+  { id: '6', companyId: '1', firstName: 'Abla', lastName: 'Dosso', email: 'abla@techafrique.com', phone: '+228 95 67 89 01', dateOfBirth: new Date('1993-09-18'), position: 'Chargé de Marketing', department: 'Marketing', photo: '', salary: 550000, status: 'inactive', joinDate: new Date('2024-06-01'), role: 'employee' },
+  { id: '7', companyId: '1', firstName: 'Kossi', lastName: 'Amoussou', email: 'kossi@techafrique.com', phone: '+228 96 78 90 12', dateOfBirth: new Date('1991-02-28'), position: 'Développeur Full Stack', department: 'Informatique', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-07-01'), role: 'employee' },
 ];
 
 const mockAttendance: Attendance[] = [
-  {
-    id: '1',
-    employeeId: '1',
-    date: new Date(),
-    checkIn: new Date(new Date().setHours(8, 0)),
-    breakStart: new Date(new Date().setHours(12, 0)),
-    breakEnd: new Date(new Date().setHours(13, 0)),
-    checkOut: null,
-    totalHours: 4,
-    overtime: 0,
-    status: 'present'
-  },
-  {
-    id: '2',
-    employeeId: '2',
-    date: new Date(),
-    checkIn: new Date(new Date().setHours(7, 45)),
-    breakStart: null,
-    breakEnd: null,
-    checkOut: null,
-    totalHours: 4.25,
-    overtime: 0,
-    status: 'present'
-  },
-  {
-    id: '3',
-    employeeId: '3',
-    date: new Date(),
-    checkIn: new Date(new Date().setHours(9, 15)),
-    breakStart: null,
-    breakEnd: null,
-    checkOut: null,
-    totalHours: 3,
-    overtime: 0,
-    status: 'late'
-  },
-  {
-    id: '4',
-    employeeId: '4',
-    date: new Date(),
-    checkIn: null,
-    breakStart: null,
-    breakEnd: null,
-    checkOut: null,
-    totalHours: 0,
-    overtime: 0,
-    status: 'absent'
-  },
-  {
-    id: '5',
-    employeeId: '5',
-    date: new Date(),
-    checkIn: new Date(new Date().setHours(8, 0)),
-    breakStart: new Date(new Date().setHours(12, 0)),
-    breakEnd: new Date(new Date().setHours(12, 45)),
-    checkOut: null,
-    totalHours: 4,
-    overtime: 0,
-    status: 'present'
-  }
+  { id: '1', employeeId: '1', date: new Date(), checkIn: new Date(new Date().setHours(8, 0)), breakStart: new Date(new Date().setHours(12, 0)), breakEnd: new Date(new Date().setHours(13, 0)), checkOut: null, totalHours: 4, overtime: 0, status: 'present' },
+  { id: '2', employeeId: '2', date: new Date(), checkIn: new Date(new Date().setHours(7, 45)), breakStart: null, breakEnd: null, checkOut: null, totalHours: 4.25, overtime: 0, status: 'present' },
+  { id: '3', employeeId: '3', date: new Date(), checkIn: new Date(new Date().setHours(9, 15)), breakStart: null, breakEnd: null, checkOut: null, totalHours: 3, overtime: 0, status: 'late' },
+  { id: '4', employeeId: '4', date: new Date(), checkIn: null, breakStart: null, breakEnd: null, checkOut: null, totalHours: 0, overtime: 0, status: 'absent' },
+  { id: '5', employeeId: '5', date: new Date(), checkIn: new Date(new Date().setHours(8, 0)), breakStart: new Date(new Date().setHours(12, 0)), breakEnd: new Date(new Date().setHours(12, 45)), checkOut: null, totalHours: 4, overtime: 0, status: 'present' },
 ];
 
 const mockLeaves: Leave[] = [
-  {
-    id: '1',
-    employeeId: '3',
-    type: 'annual',
-    startDate: new Date('2024-12-20'),
-    endDate: new Date('2024-12-31'),
-    reason: 'Vacances de fin d\'année',
-    status: 'pending'
-  },
-  {
-    id: '2',
-    employeeId: '5',
-    type: 'sick',
-    startDate: new Date('2024-12-18'),
-    endDate: new Date('2024-12-19'),
-    reason: 'Grippe',
-    status: 'approved',
-    approvedBy: '1'
-  },
-  {
-    id: '3',
-    employeeId: '7',
-    type: 'annual',
-    startDate: new Date('2024-12-25'),
-    endDate: new Date('2024-12-27'),
-    reason: 'Congé personnel',
-    status: 'rejected'
-  }
+  { id: '1', employeeId: '3', type: 'annual', startDate: new Date('2024-12-20'), endDate: new Date('2024-12-31'), reason: 'Vacances de fin d\'année', status: 'pending' },
+  { id: '2', employeeId: '5', type: 'sick', startDate: new Date('2024-12-18'), endDate: new Date('2024-12-19'), reason: 'Grippe', status: 'approved', approvedBy: '1' },
+  { id: '3', employeeId: '7', type: 'annual', startDate: new Date('2024-12-25'), endDate: new Date('2024-12-27'), reason: 'Congé personnel', status: 'rejected' },
 ];
 
 const mockNotifications: Notification[] = [
-  {
-    id: '1',
-    userId: '1',
-    title: 'Nouvelle demande de congé',
-    message: 'Kwame Adjei a demandé un congé du 20 au 31 décembre',
-    type: 'leave',
-    read: false,
-    createdAt: new Date()
-  },
-  {
-    id: '2',
-    userId: '1',
-    title: 'Retard détecté',
-    message: 'Kwame Adjei est arrivé en retard à 9h15',
-    type: 'attendance',
-    read: false,
-    createdAt: new Date()
-  },
-  {
-    id: '3',
-    userId: '1',
-    title: 'Bulletin de paie disponible',
-    message: 'Les bulletins de paie de novembre sont prêts',
-    type: 'payslip',
-    read: true,
-    createdAt: new Date(Date.now() - 86400000)
-  }
+  { id: '1', userId: '1', title: 'Nouvelle demande de congé', message: 'Kwame Adjei a demandé un congé du 20 au 31 décembre', type: 'leave', read: false, createdAt: new Date() },
+  { id: '2', userId: '1', title: 'Retard détecté', message: 'Kwame Adjei est arrivé en retard à 9h15', type: 'attendance', read: false, createdAt: new Date() },
+  { id: '3', userId: '1', title: 'Bulletin de paie disponible', message: 'Les bulletins de paie de novembre sont prêts', type: 'payslip', read: true, createdAt: new Date(Date.now() - 86400000) },
 ];
+
+function generateId() {
+  return `mock-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+}
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -308,14 +95,29 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
 
-  const login = (email: string, _password: string, type: 'company' | 'employee'): boolean => {
-    if (type === 'company' && email === 'admin@techafrique.com') {
+  const login = useCallback(async (email: string, password: string, _type: 'company' | 'employee'): Promise<boolean> => {
+    if (useApi) {
+      try {
+        const { data } = await authClient.signIn.email({ email, password });
+        if (data?.user) {
+          setCurrentUser(data.user as unknown as Employee);
+          setIsLoggedIn(true);
+          if ('company' in data) {
+            setCurrentCompany((data as any).company as Company);
+          }
+          return true;
+        }
+        return false;
+      } catch {
+        return false;
+      }
+    }
+    if (email === 'admin@techafrique.com') {
       setCurrentCompany(mockCompany);
       setCurrentUser(mockEmployees[0]);
       setIsLoggedIn(true);
       return true;
     }
-    
     const employee = employees.find(e => e.email === email);
     if (employee) {
       setCurrentUser(employee);
@@ -323,269 +125,271 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setIsLoggedIn(true);
       return true;
     }
-    
     return false;
-  };
+  }, [employees]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setIsLoggedIn(false);
     setCurrentUser(null);
     setCurrentCompany(null);
-  };
+  }, []);
 
-  const registerCompany = (companyData: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'>) => {
+  const registerCompany = useCallback(async (companyData: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'> & { password?: string }) => {
+    if (useApi && companyData.password) {
+      try {
+        const { data } = await authClient.signUp.email({
+          email: companyData.email,
+          password: companyData.password,
+          name: `${companyData.ownerFirstName} ${companyData.ownerLastName}`,
+        });
+        if (data?.user) {
+          setCurrentUser(data.user as unknown as Employee);
+          setIsLoggedIn(true);
+          return;
+        }
+      } catch { /* fallback to mock */ }
+    }
     const newCompany: Company = {
       ...companyData,
-      id: String(companies.length + 1),
+      id: generateId(),
       uniqueId: `EP-${Date.now().toString(36).toUpperCase()}`,
       createdAt: new Date(),
-      balance: 0
+      balance: 0,
     };
     setCurrentCompany(newCompany);
     const adminEmployee: Employee = {
-      id: '1',
-      companyId: newCompany.id,
-      firstName: companyData.ownerFirstName,
-      lastName: companyData.ownerLastName,
-      email: companyData.email,
-      phone: companyData.phone,
-      dateOfBirth: new Date(),
-      position: 'Directeur Général',
-      department: 'Direction',
-      photo: companyData.logo,
-      salary: 0,
-      status: 'active',
-      joinDate: new Date(),
-      role: 'admin'
+      id: '1', companyId: newCompany.id, firstName: companyData.ownerFirstName, lastName: companyData.ownerLastName,
+      email: companyData.email, phone: companyData.phone, dateOfBirth: new Date(),
+      position: 'Directeur Général', department: 'Direction', photo: companyData.logo,
+      salary: 0, status: 'active', joinDate: new Date(), role: 'admin',
     };
-    setCurrentUser(adminEmployee);
-    setIsLoggedIn(true);
-  };
+    if (!useApi || !companyData.password) {
+      setCurrentUser(adminEmployee);
+      setIsLoggedIn(true);
+    }
+  }, []);
 
-  const addEmployee = (employee: Omit<Employee, 'id'>) => {
-    const newEmployee: Employee = {
-      ...employee,
-      id: String(employees.length + 1)
-    };
-    setEmployees([...employees, newEmployee]);
-  };
+  const addEmployee = useCallback(async (employee: Omit<Employee, 'id'>) => {
+    if (useApi) {
+      try {
+        const created = await EmployeeService.createEmployee(employee);
+        setEmployees(prev => [...prev, created]);
+        return;
+      } catch { /* fallback to mock */ }
+    }
+    const newEmployee: Employee = { ...employee, id: generateId() };
+    setEmployees(prev => [...prev, newEmployee]);
+  }, []);
 
-  const updateEmployee = (id: string, data: Partial<Employee>) => {
-    setEmployees(employees.map(e => e.id === id ? { ...e, ...data } : e));
-  };
+  const updateEmployee = useCallback(async (id: string, data: Partial<Employee>) => {
+    if (useApi) {
+      try {
+        const updated = await EmployeeService.updateEmployee(id, data);
+        setEmployees(prev => prev.map(e => e.id === id ? updated : e));
+        return;
+      } catch { /* fallback */ }
+    }
+    setEmployees(prev => prev.map(e => e.id === id ? { ...e, ...data } : e));
+  }, []);
 
-  const deleteEmployee = (id: string) => {
-    setEmployees(employees.filter(e => e.id !== id));
-  };
+  const deleteEmployee = useCallback(async (id: string) => {
+    if (useApi) {
+      try {
+        await EmployeeService.deleteEmployee(id);
+      } catch { /* fallback */ }
+    }
+    setEmployees(prev => prev.filter(e => e.id !== id));
+  }, []);
 
-  const sendInvitation = (email: string) => {
+  const sendInvitation = useCallback(async (email: string) => {
+    if (useApi) {
+      try {
+        await EmployeeService.sendInvitation(email);
+        return;
+      } catch { /* fallback */ }
+    }
     const newInvitation: Invitation = {
-      id: String(invitations.length + 1),
-      companyId: currentCompany?.id || '',
-      email,
-      status: 'pending',
-      sentAt: new Date()
+      id: generateId(), companyId: currentCompany?.id || '', email, status: 'pending', sentAt: new Date(),
     };
-    setInvitations([...invitations, newInvitation]);
+    setInvitations(prev => [...prev, newInvitation]);
     addNotification({
-      userId: currentUser?.id || '',
-      title: 'Invitation envoyée',
-      message: `Une invitation a été envoyée à ${email}`,
-      type: 'invitation',
-      read: false
+      userId: currentUser?.id || '', title: 'Invitation envoyée',
+      message: `Une invitation a été envoyée à ${email}`, type: 'invitation', read: false,
     });
-  };
+  }, [currentCompany?.id, currentUser?.id]);
 
-  const acceptInvitation = (id: string) => {
-    setInvitations(invitations.map(i => 
-      i.id === id ? { ...i, status: 'accepted' } : i
-    ));
-  };
+  const acceptInvitation = useCallback(async (id: string) => {
+    if (useApi) {
+      try {
+        await EmployeeService.acceptInvitation(id);
+      } catch { /* fallback */ }
+    }
+    setInvitations(prev => prev.map(i => i.id === id ? { ...i, status: 'accepted' } : i));
+  }, []);
 
-  const clockIn = () => {
+  const clockIn = useCallback(async () => {
+    const employeeId = currentUser?.id;
+    if (!employeeId) return;
+    if (useApi) {
+      try {
+        const record = await AttendanceService.clockIn(employeeId);
+        setAttendance(prev => [...prev.filter(a => a.id !== record.id), record]);
+        return;
+      } catch { /* fallback */ }
+    }
     const today = new Date();
     const newAttendance: Attendance = {
-      id: String(attendance.length + 1),
-      employeeId: currentUser?.id || '',
-      date: today,
-      checkIn: today,
-      breakStart: null,
-      breakEnd: null,
-      checkOut: null,
-      totalHours: 0,
-      overtime: 0,
-      status: today.getHours() > 9 ? 'late' : 'present'
+      id: generateId(), employeeId, date: today, checkIn: today,
+      breakStart: null, breakEnd: null, checkOut: null, totalHours: 0, overtime: 0,
+      status: today.getHours() > 9 ? 'late' : 'present',
     };
-    setAttendance([...attendance, newAttendance]);
-  };
+    setAttendance(prev => [...prev, newAttendance]);
+  }, [currentUser?.id]);
 
-  const startBreak = () => {
-    const todayAttendance = attendance.find(
-      a => a.employeeId === currentUser?.id && 
-      new Date(a.date).toDateString() === new Date().toDateString()
+  const startBreak = useCallback(async () => {
+    const record = attendance.find(
+      a => a.employeeId === currentUser?.id && new Date(a.date).toDateString() === new Date().toDateString()
     );
-    if (todayAttendance) {
-      setAttendance(attendance.map(a => 
-        a.id === todayAttendance.id 
-          ? { ...a, breakStart: new Date() }
-          : a
-      ));
+    if (!record) return;
+    if (useApi) {
+      try {
+        const updated = await AttendanceService.startBreak(record.id);
+        setAttendance(prev => prev.map(a => a.id === record.id ? updated : a));
+        return;
+      } catch { /* fallback */ }
     }
-  };
+    setAttendance(prev => prev.map(a => a.id === record.id ? { ...a, breakStart: new Date() } : a));
+  }, [attendance, currentUser?.id]);
 
-  const endBreak = () => {
-    const todayAttendance = attendance.find(
-      a => a.employeeId === currentUser?.id && 
-      new Date(a.date).toDateString() === new Date().toDateString()
+  const endBreak = useCallback(async () => {
+    const record = attendance.find(
+      a => a.employeeId === currentUser?.id && new Date(a.date).toDateString() === new Date().toDateString()
     );
-    if (todayAttendance) {
-      setAttendance(attendance.map(a => 
-        a.id === todayAttendance.id 
-          ? { ...a, breakEnd: new Date() }
-          : a
-      ));
+    if (!record) return;
+    if (useApi) {
+      try {
+        const updated = await AttendanceService.endBreak(record.id);
+        setAttendance(prev => prev.map(a => a.id === record.id ? updated : a));
+        return;
+      } catch { /* fallback */ }
     }
-  };
+    setAttendance(prev => prev.map(a => a.id === record.id ? { ...a, breakEnd: new Date() } : a));
+  }, [attendance, currentUser?.id]);
 
-  const clockOut = () => {
-    const todayAttendance = attendance.find(
-      a => a.employeeId === currentUser?.id && 
-      new Date(a.date).toDateString() === new Date().toDateString()
+  const clockOut = useCallback(async () => {
+    const record = attendance.find(
+      a => a.employeeId === currentUser?.id && new Date(a.date).toDateString() === new Date().toDateString()
     );
-    if (todayAttendance && todayAttendance.checkIn) {
-      const now = new Date();
-      const totalHours = (now.getTime() - todayAttendance.checkIn.getTime()) / (1000 * 60 * 60);
-      const overtime = totalHours > 8 ? totalHours - 8 : 0;
-      
-      setAttendance(attendance.map(a => 
-        a.id === todayAttendance.id 
-          ? { ...a, checkOut: now, totalHours: Math.round(totalHours * 100) / 100, overtime }
-          : a
-      ));
+    if (!record) return;
+    if (useApi) {
+      try {
+        const updated = await AttendanceService.clockOut(record.id);
+        setAttendance(prev => prev.map(a => a.id === record.id ? updated : a));
+        return;
+      } catch { /* fallback */ }
     }
-  };
+    const now = new Date();
+    const totalHours = record.checkIn ? (now.getTime() - record.checkIn.getTime()) / (1000 * 60 * 60) : 0;
+    const overtime = totalHours > 8 ? totalHours - 8 : 0;
+    setAttendance(prev => prev.map(a => a.id === record.id
+      ? { ...a, checkOut: now, totalHours: Math.round(totalHours * 100) / 100, overtime } : a
+    ));
+  }, [attendance, currentUser?.id]);
 
-  const requestLeave = (leave: Omit<Leave, 'id'>) => {
-    const newLeave: Leave = {
-      ...leave,
-      id: String(leaves.length + 1)
-    };
-    setLeaves([...leaves, newLeave]);
+  const requestLeave = useCallback(async (leave: Omit<Leave, 'id'>) => {
+    if (useApi) {
+      try {
+        const created = await LeaveService.requestLeave({
+          employeeId: leave.employeeId, type: leave.type,
+          startDate: leave.startDate.toISOString(), endDate: leave.endDate.toISOString(), reason: leave.reason,
+        });
+        setLeaves(prev => [...prev, created]);
+        return;
+      } catch { /* fallback */ }
+    }
+    const newLeave: Leave = { ...leave, id: generateId() };
+    setLeaves(prev => [...prev, newLeave]);
     addNotification({
-      userId: currentUser?.id || '',
-      title: 'Demande de congé',
-      message: `Votre demande de congé a été soumise`,
-      type: 'leave',
-      read: false
+      userId: currentUser?.id || '', title: 'Demande de congé',
+      message: 'Votre demande de congé a été soumise', type: 'leave', read: false,
     });
-  };
+  }, [currentUser?.id]);
 
-  const approveLeave = (id: string, comment?: string) => {
-    setLeaves(leaves.map(l => 
-      l.id === id ? { ...l, status: 'approved', approvedBy: currentUser?.id, approvalComment: comment } : l
-    ));
-  };
+  const approveLeave = useCallback(async (id: string, comment?: string) => {
+    if (useApi) {
+      try {
+        const updated = await LeaveService.approveLeave(id);
+        setLeaves(prev => prev.map(l => l.id === id ? updated : l));
+        return;
+      } catch { /* fallback */ }
+    }
+    setLeaves(prev => prev.map(l => l.id === id ? { ...l, status: 'approved', approvedBy: currentUser?.id, approvalComment: comment } : l));
+  }, [currentUser?.id]);
 
-  const rejectLeave = (id: string, comment?: string) => {
-    setLeaves(leaves.map(l => 
-      l.id === id ? { ...l, status: 'rejected', approvedBy: currentUser?.id, approvalComment: comment } : l
-    ));
-  };
+  const rejectLeave = useCallback(async (id: string, comment?: string) => {
+    if (useApi) {
+      try {
+        const updated = await LeaveService.rejectLeave(id);
+        setLeaves(prev => prev.map(l => l.id === id ? updated : l));
+        return;
+      } catch { /* fallback */ }
+    }
+    setLeaves(prev => prev.map(l => l.id === id ? { ...l, status: 'rejected', approvedBy: currentUser?.id, approvalComment: comment } : l));
+  }, [currentUser?.id]);
 
-  const processPayment = (employeeId: string, amount: number) => {
+  const processPayment = useCallback((employeeId: string, amount: number) => {
     const newPayslip: Payslip = {
-      id: String(payslips.length + 1),
-      employeeId,
-      month: new Date().getMonth() + 1,
-      year: new Date().getFullYear(),
-      basicSalary: amount,
-      bonuses: 0,
-      deductions: amount * 0.15,
-      netSalary: amount * 0.85,
-      generatedAt: new Date()
+      id: generateId(), employeeId, month: new Date().getMonth() + 1, year: new Date().getFullYear(),
+      basicSalary: amount, bonuses: 0, deductions: amount * 0.15, netSalary: amount * 0.85, generatedAt: new Date(),
     };
-    setPayslips([...payslips, newPayslip]);
-    
+    setPayslips(prev => [...prev, newPayslip]);
     addNotification({
-      userId: employeeId,
-      title: 'Paiement effectué',
-      message: `Votre salaire de ${amount.toLocaleString()} FCFA a été versé`,
-      type: 'payment',
-      read: false
+      userId: employeeId, title: 'Paiement effectué',
+      message: `Votre salaire de ${amount.toLocaleString()} FCFA a été versé`, type: 'payment', read: false,
     });
-  };
+  }, []);
 
-  const generatePayslip = (employeeId: string) => {
+  const generatePayslip = useCallback(async (employeeId: string) => {
+    if (useApi) {
+      try {
+        const created = await PayrollService.generatePayslip(employeeId);
+        setPayslips(prev => [...prev, created]);
+        return;
+      } catch { /* fallback */ }
+    }
     const employee = employees.find(e => e.id === employeeId);
     if (employee) {
       const newPayslip: Payslip = {
-        id: String(payslips.length + 1),
-        employeeId,
-        month: new Date().getMonth() + 1,
-        year: new Date().getFullYear(),
-        basicSalary: employee.salary,
-        bonuses: employee.salary * 0.1,
-        deductions: employee.salary * 0.15,
-        netSalary: employee.salary * 0.95,
-        generatedAt: new Date()
+        id: generateId(), employeeId, month: new Date().getMonth() + 1, year: new Date().getFullYear(),
+        basicSalary: employee.salary, bonuses: employee.salary * 0.1,
+        deductions: employee.salary * 0.15, netSalary: employee.salary * 0.95, generatedAt: new Date(),
       };
-      setPayslips([...payslips, newPayslip]);
+      setPayslips(prev => [...prev, newPayslip]);
     }
-  };
+  }, [employees]);
 
-  const markNotificationRead = (id: string) => {
-    setNotifications(notifications.map(n => 
-      n.id === id ? { ...n, read: true } : n
-    ));
-  };
+  const markNotificationRead = useCallback((id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  }, []);
 
-  const markAllNotificationsRead = () => {
-    setNotifications(notifications.map(n => ({ ...n, read: true })));
-  };
+  const markAllNotificationsRead = useCallback(() => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  }, []);
 
-  const addNotification = (notification: Omit<Notification, 'id' | 'createdAt'>) => {
-    const newNotification: Notification = {
-      ...notification,
-      id: String(notifications.length + 1),
-      createdAt: new Date()
-    };
-    setNotifications([newNotification, ...notifications]);
-  };
+  const addNotification = useCallback((notification: Omit<Notification, 'id' | 'createdAt'>) => {
+    const newNotification: Notification = { ...notification, id: generateId(), createdAt: new Date() };
+    setNotifications(prev => [newNotification, ...prev]);
+  }, []);
 
   const companies = [mockCompany];
 
   return (
     <AppContext.Provider value={{
-      isLoggedIn,
-      currentUser,
-      currentCompany,
-      companies,
-      employees,
-      attendance,
-      leaves,
-      payslips,
-      notifications,
-      invitations,
-      login,
-      logout,
-      registerCompany,
-      addEmployee,
-      updateEmployee,
-      deleteEmployee,
-      sendInvitation,
-      acceptInvitation,
-      clockIn,
-      startBreak,
-      endBreak,
-      clockOut,
-      requestLeave,
-      approveLeave,
-      rejectLeave,
-      processPayment,
-      generatePayslip,
-      markAllNotificationsRead,
-      markNotificationRead,
-      addNotification
+      isLoggedIn, currentUser, currentCompany, companies, employees, attendance,
+      leaves, payslips, notifications, invitations, login, logout, registerCompany,
+      addEmployee, updateEmployee, deleteEmployee, sendInvitation, acceptInvitation,
+      clockIn, startBreak, endBreak, clockOut, requestLeave, approveLeave, rejectLeave,
+      processPayment, generatePayslip, markAllNotificationsRead, markNotificationRead, addNotification,
     }}>
       {children}
     </AppContext.Provider>
@@ -594,8 +398,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 export function useApp() {
   const context = useContext(AppContext);
-  if (!context) {
-    throw new Error('useApp must be used within an AppProvider');
-  }
+  if (!context) throw new Error('useApp must be used within an AppProvider');
   return context;
 }

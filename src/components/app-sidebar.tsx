@@ -1,4 +1,4 @@
-﻿import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   Home, Users, DollarSign, Clock, Calendar, FileText,
   Settings, Bell, MessageSquare, TrendingUp, File,
@@ -65,28 +65,28 @@ export function AppSidebar() {
     : { path: '/employee-dashboard', icon: Home, label: 'Tableau de bord' };
 
   const rh: MenuItem[] = [
-    { path: '/admin/employees', icon: Users, label: 'EmployÃ©s' },
+    { path: '/admin/employees', icon: Users, label: 'Employés' },
     { path: '/admin/onboarding', icon: CheckCircle2, label: 'Onboarding' },
     { path: '/admin/org-chart', icon: GitBranch, label: 'Organigramme' },
-    { path: '/admin/teams', icon: Users, label: 'Ã‰quipes' },
+    { path: '/admin/teams', icon: Users, label: 'Équipes' },
   ];
 
   const time: MenuItem[] = (isAdmin ? [
-    { path: '/admin/attendance', icon: Clock, label: 'PrÃ©sences' },
-    { path: '/admin/leaves', icon: Calendar, label: 'CongÃ©s' },
-    { path: '/admin/leave-policy', icon: Calendar, label: 'Politique congÃ©s' },
+    { path: '/admin/attendance', icon: Clock, label: 'Présences' },
+    { path: '/admin/leaves', icon: Calendar, label: 'Congés' },
+    { path: '/admin/leave-policy', icon: Calendar, label: 'Politique congés' },
   ] : [
     { path: '/employee-dashboard/attendance', icon: Clock, label: 'Pointage' },
-    { path: '/employee-dashboard/leaves', icon: Calendar, label: 'CongÃ©s' },
+    { path: '/employee-dashboard/leaves', icon: Calendar, label: 'Congés' },
   ]);
 
   const payroll: MenuItem[] = (isAdmin ? [
     { path: '/admin/payslips', icon: FileText, label: 'Bulletins' },
     { path: '/admin/salary', icon: DollarSign, label: 'Salaires' },
     { path: '/admin/banking', icon: Landmark, label: 'Banque' },
-    { path: '/admin/tax', icon: Receipt, label: 'DÃ©clarations' },
+    { path: '/admin/tax', icon: Receipt, label: 'Déclarations' },
     { path: '/admin/fintech', icon: PiggyBank, label: 'Banque salariale' },
-    { path: '/admin/rewards', icon: Award, label: 'RÃ©compenses' },
+    { path: '/admin/rewards', icon: Award, label: 'Récompenses' },
   ] : [
     { path: '/employee-dashboard/payslips', icon: FileText, label: 'Bulletins' },
   ]);
@@ -97,15 +97,15 @@ export function AppSidebar() {
   ] : []);
 
   const tools: MenuItem[] = (isAdmin ? [
-    { path: '/admin/meetings', icon: Video, label: 'RÃ©unions' },
+    { path: '/admin/meetings', icon: Video, label: 'Réunions' },
     { path: '/admin/documents', icon: File, label: 'Documents' },
     { path: '/admin/import', icon: Upload, label: 'Import' },
     { path: '/admin/calendar', icon: PartyPopper, label: 'Calendrier' },
     { path: '/admin/recruitment', icon: UserPlus, label: 'Recrutement' },
     { path: '/admin/training', icon: GraduationCap, label: 'Formations' },
     { path: '/admin/missions', icon: Briefcase, label: 'Missions' },
-    { path: '/admin/equipment', icon: Monitor, label: 'Ã‰quipements' },
-    { path: '/admin/wellness', icon: Heart, label: 'Bien-Ãªtre' },
+    { path: '/admin/equipment', icon: Monitor, label: 'Équipements' },
+    { path: '/admin/wellness', icon: Heart, label: 'Bien-être' },
     { path: '/admin/vault', icon: Shield, label: 'Coffre-fort' },
   ] : []);
 
@@ -113,11 +113,11 @@ export function AppSidebar() {
     { path: '/admin/reports', icon: BarChart3, label: 'Rapports' },
     { path: '/admin/ai-assistant', icon: Bot, label: 'Assistant IA' },
     { path: '/admin/qr-settings', icon: QrCode, label: 'Pointage QR' },
-    { path: '/admin/roles', icon: Shield, label: 'RÃ´les' },
+    { path: '/admin/roles', icon: Shield, label: 'Rôles' },
   ] : []);
 
   const communication: MenuItem[] = [
-    { path: '/feed', icon: Rss, label: "Fil d'actualitÃ©" },
+    { path: '/feed', icon: Rss, label: "Fil d'actualité" },
     ...(isAdmin
       ? [{ path: '/admin/messages', icon: MessageSquare, label: 'Messages' } as MenuItem]
       : [{ path: '/employee-dashboard/messages', icon: MessageSquare, label: 'Messages' } as MenuItem]),
@@ -127,8 +127,8 @@ export function AppSidebar() {
   ];
 
   const settings: MenuItem[] = (isAdmin
-    ? [{ path: '/admin/settings', icon: Settings, label: 'ParamÃ¨tres' }]
-    : [{ path: '/employee-dashboard/settings', icon: Settings, label: 'ParamÃ¨tres' }]
+    ? [{ path: '/admin/settings', icon: Settings, label: 'Paramètres' }]
+    : [{ path: '/employee-dashboard/settings', icon: Settings, label: 'Paramètres' }]
   );
 
   const filtered = (items: MenuItem[]) => items.filter(item => canAccessMenu(currentUser?.role, item.path));
@@ -141,7 +141,7 @@ export function AppSidebar() {
             EP
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">{currentCompany?.name || 'EmployÃ©Pro'}</span>
+            <span className="truncate font-semibold">{currentCompany?.name || 'EmployéPro'}</span>
             {currentCompany?.uniqueId && (
               <span className="truncate text-xs text-muted-foreground">{currentCompany.uniqueId}</span>
             )}
@@ -150,15 +150,15 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavGroup label="GÃ©nÃ©ral" items={filtered([dashboard])} />
+        <NavGroup label="Général" items={filtered([dashboard])} />
         {isAdmin && rh.length > 0 && <NavGroup label="Ressources humaines" items={filtered(rh)} />}
-        {time.length > 0 && <NavGroup label="Temps & PrÃ©sence" items={filtered(time)} />}
+        {time.length > 0 && <NavGroup label="Temps & Présence" items={filtered(time)} />}
         {payroll.length > 0 && <NavGroup label="Paie & Finances" items={filtered(payroll)} />}
         {isAdmin && performance.length > 0 && <NavGroup label="Performance" items={filtered(performance)} />}
         {isAdmin && tools.length > 0 && <NavGroup label="Outils" items={filtered(tools)} />}
         {isAdmin && insights.length > 0 && <NavGroup label="Insights" items={filtered(insights)} />}
         <NavGroup label="Communication" items={filtered(communication)} />
-        <NavGroup label="SystÃ¨me" items={filtered(settings)} />
+        <NavGroup label="Système" items={filtered(settings)} />
       </SidebarContent>
 
       <SidebarFooter>
@@ -172,7 +172,7 @@ export function AppSidebar() {
             <span className="truncate text-xs text-muted-foreground">{currentUser?.position}</span>
           </div>
           <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label="Toggle theme">
-            {theme === 'dark' ? <span className="text-xs">â˜€ï¸</span> : <span className="text-xs">ðŸŒ™</span>}
+            {theme === 'dark' ? <span className="text-xs">☀️</span> : <span className="text-xs">🌙</span>}
           </Button>
         </div>
       </SidebarFooter>

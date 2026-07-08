@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowRight, Play, Globe, Users, Shield, Star, QrCode, 
-  CheckCircle2, Clock, Activity, Sliders, TrendingUp
+  CheckCircle2, Clock, Activity, Sliders, Sparkles, TrendingUp
 } from 'lucide-react';
 import { useCountUp } from '../../hooks/useCountUp';
 

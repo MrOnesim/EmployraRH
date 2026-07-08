@@ -10,7 +10,7 @@ interface AuthState {
   useApi: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
-  registerCompany: (data: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'>) => Promise<void>;
+  registerCompany: (data: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'> & { password?: string }) => Promise<void>;
   setCurrentUser: (user: Employee | null) => void;
   setCurrentCompany: (company: Company | null) => void;
   deposit: (amount: number) => void;
@@ -119,12 +119,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return success;
   };
 
-  const registerCompany = async (companyData: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'>) => {
+  const registerCompany = async (companyData: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'> & { password?: string }) => {
     if (useApi) {
       try {
         const { data } = await authClient.signUp.email({
           email: companyData.email,
-          password: 'temporary-password',
+          password: companyData.password || 'temporary-password',
           name: `${companyData.ownerFirstName} ${companyData.ownerLastName}`,
         });
         if (data) {

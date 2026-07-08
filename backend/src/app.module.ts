@@ -1,4 +1,5 @@
-﻿import { Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
@@ -9,8 +10,12 @@ import { PayslipModule } from './payslip/payslip.module';
 import { DocumentModule } from './document/document.module';
 import { MeetingModule } from './meeting/meeting.module';
 import { PayrollConfigModule } from './payroll-config/payroll-config.module';
+import { AuthGuard } from './common/guards/auth.guard';
 
 @Module({
   imports: [PrismaModule, AuthModule, CompanyModule, EmployeeModule, LeaveModule, AttendanceModule, PayslipModule, DocumentModule, MeetingModule, PayrollConfigModule],
+  providers: [
+    { provide: APP_GUARD, useClass: AuthGuard },
+  ],
 })
 export class AppModule {}

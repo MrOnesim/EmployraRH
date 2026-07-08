@@ -96,7 +96,7 @@ const rules: Rule[] = [
       const anomalies = detectAnomalies(employees, attendance, leaves);
       return {
         content: [
-          '=== RAPPORT COMPLET - EMPLOYRARH ===',
+          '=== RAPPORT COMPLET - EMPLOYEPRO ===',
           '',
           `Entreprise : ${company?.name || 'Non définie'}`,
           `Adresse : ${company?.address || 'Non définie'}`,

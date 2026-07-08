@@ -1,4 +1,4 @@
-﻿import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import { eventBus, EVENTS } from '../utils/eventBus';
 import type { Employee, Attendance, Leave, Payslip, Notification, Invitation, Document as AppDocument, CalendarEvent, Conversation, ChatMessage, Team, Post, PayrollConfig, PostComment, JobOffer, Candidate, Objective, PerformanceReview, TimelineEvent, Contract, BankAccount, BankTransaction, TaxDeclaration, Course, Enrollment, Mission, ExpenseReport, JobPost, GPSLocation, Meeting, MeetingTask, MeetingNote, ParticipantStatus, EmployeeVaultItem, RewardTransaction, RewardCatalog, Equipment, EquipmentAssignment, WellnessSurvey, WellnessResponse, SalaryAdvance, SalaryTransfer, Quiz, QuizAttempt, Certificate, SignatureRequest, SignatureTemplate } from '../types';
 import { PAYROLL, PAYROLL_COUNTRIES } from '../constants';
@@ -101,20 +101,20 @@ interface DataState {
   vaultItems: EmployeeVaultItem[];
   addVaultItem: (item: Omit<EmployeeVaultItem, 'id'>) => void;
   deleteVaultItem: (id: string) => void;
-  // RÃ©compenses
+  // Récompenses
   rewardTransactions: RewardTransaction[];
   rewardCatalog: RewardCatalog[];
   addRewardTransaction: (tx: Omit<RewardTransaction, 'id' | 'createdAt'>) => void;
   addRewardCatalogItem: (item: Omit<RewardCatalog, 'id'>) => void;
   redeemReward: (employeeId: string, catalogItemId: string) => void;
-  // MatÃ©riel
+  // Matériel
   equipment: Equipment[];
   equipmentAssignments: EquipmentAssignment[];
   addEquipment: (eq: Omit<Equipment, 'id'>) => void;
   updateEquipment: (id: string, data: Partial<Equipment>) => void;
   assignEquipment: (equipmentId: string, employeeId: string) => void;
   returnEquipment: (equipmentId: string, condition?: 'good' | 'fair' | 'damaged') => void;
-  // Bien-Ãªtre
+  // Bien-être
   wellnessSurveys: WellnessSurvey[];
   wellnessResponses: WellnessResponse[];
   addWellnessSurvey: (survey: Omit<WellnessSurvey, 'id' | 'createdAt'>) => void;
@@ -134,7 +134,7 @@ interface DataState {
   addQuiz: (quiz: Omit<Quiz, 'id'>) => void;
   submitQuizAttempt: (attempt: Omit<QuizAttempt, 'id' | 'startedAt' | 'completedAt' | 'passed'>) => QuizAttempt;
   issueCertificate: (cert: Omit<Certificate, 'id' | 'issuedAt'>) => void;
-  // Signature Ã©lectronique
+  // Signature électronique
   signatureRequests: SignatureRequest[];
   signatureTemplates: SignatureTemplate[];
   sendSignatureRequest: (req: Omit<SignatureRequest, 'id' | 'initiatedAt' | 'status'>) => void;
@@ -147,13 +147,13 @@ interface DataState {
 const DataContext = createContext<DataState | undefined>(undefined);
 
 const mockEmployees: Employee[] = [
-  { id: '1', companyId: '1', firstName: 'Kofi', lastName: 'Mensah', email: 'admin@techafrique.com', phone: '+228 90 12 34 56', dateOfBirth: new Date('1985-06-15'), position: 'Directeur GÃ©nÃ©ral', department: 'Direction', photo: '', salary: 1500000, status: 'active', joinDate: new Date('2024-01-15'), role: 'admin' },
+  { id: '1', companyId: '1', firstName: 'Kofi', lastName: 'Mensah', email: 'admin@techafrique.com', phone: '+228 90 12 34 56', dateOfBirth: new Date('1985-06-15'), position: 'Directeur Général', department: 'Direction', photo: '', salary: 1500000, status: 'active', joinDate: new Date('2024-01-15'), role: 'admin' },
   { id: '2', companyId: '1', firstName: 'Ama', lastName: 'Gbeko', email: 'ama@techafrique.com', phone: '+228 91 23 45 67', dateOfBirth: new Date('1990-03-20'), position: 'Responsable RH', department: 'Ressources Humaines', photo: '', salary: 800000, status: 'active', joinDate: new Date('2024-02-01'), role: 'rh' },
-  { id: '3', companyId: '1', firstName: 'Kwame', lastName: 'Adjei', email: 'kwame@techafrique.com', phone: '+228 92 34 56 78', dateOfBirth: new Date('1992-08-10'), position: 'DÃ©veloppeur Senior', department: 'Informatique', photo: '', salary: 750000, status: 'active', joinDate: new Date('2024-03-15'), role: 'manager' },
+  { id: '3', companyId: '1', firstName: 'Kwame', lastName: 'Adjei', email: 'kwame@techafrique.com', phone: '+228 92 34 56 78', dateOfBirth: new Date('1992-08-10'), position: 'Développeur Senior', department: 'Informatique', photo: '', salary: 750000, status: 'active', joinDate: new Date('2024-03-15'), role: 'manager' },
   { id: '4', companyId: '1', firstName: 'Efua', lastName: 'Asante', email: 'efua@techafrique.com', phone: '+228 93 45 67 89', dateOfBirth: new Date('1988-12-05'), position: 'Comptable', department: 'Finance', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-04-01'), role: 'employee' },
   { id: '5', companyId: '1', firstName: 'Yaw', lastName: 'Boakye', email: 'yaw@techafrique.com', phone: '+228 94 56 78 90', dateOfBirth: new Date('1995-05-22'), position: 'Designer UI/UX', department: 'Marketing', photo: '', salary: 600000, status: 'active', joinDate: new Date('2024-05-15'), role: 'employee' },
-  { id: '6', companyId: '1', firstName: 'Abla', lastName: 'Dosso', email: 'abla@techafrique.com', phone: '+228 95 67 89 01', dateOfBirth: new Date('1993-09-18'), position: 'ChargÃ© de Marketing', department: 'Marketing', photo: '', salary: 550000, status: 'inactive', joinDate: new Date('2024-06-01'), role: 'employee' },
-  { id: '7', companyId: '1', firstName: 'Kossi', lastName: 'Amoussou', email: 'kossi@techafrique.com', phone: '+228 96 78 90 12', dateOfBirth: new Date('1991-02-28'), position: 'DÃ©veloppeur Full Stack', department: 'Informatique', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-07-01'), role: 'employee' },
+  { id: '6', companyId: '1', firstName: 'Abla', lastName: 'Dosso', email: 'abla@techafrique.com', phone: '+228 95 67 89 01', dateOfBirth: new Date('1993-09-18'), position: 'Chargé de Marketing', department: 'Marketing', photo: '', salary: 550000, status: 'inactive', joinDate: new Date('2024-06-01'), role: 'employee' },
+  { id: '7', companyId: '1', firstName: 'Kossi', lastName: 'Amoussou', email: 'kossi@techafrique.com', phone: '+228 96 78 90 12', dateOfBirth: new Date('1991-02-28'), position: 'Développeur Full Stack', department: 'Informatique', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-07-01'), role: 'employee' },
 ];
 
 const mockAttendance: Attendance[] = [
@@ -165,9 +165,9 @@ const mockAttendance: Attendance[] = [
 ];
 
 const mockLeaves: Leave[] = [
-  { id: '1', employeeId: '3', type: 'annual', startDate: new Date('2024-12-20'), endDate: new Date('2024-12-31'), reason: "Vacances de fin d'annÃ©e", status: 'pending' },
+  { id: '1', employeeId: '3', type: 'annual', startDate: new Date('2024-12-20'), endDate: new Date('2024-12-31'), reason: "Vacances de fin d'année", status: 'pending' },
   { id: '2', employeeId: '5', type: 'sick', startDate: new Date('2024-12-18'), endDate: new Date('2024-12-19'), reason: 'Grippe', status: 'approved', approvedBy: '1' },
-  { id: '3', employeeId: '7', type: 'annual', startDate: new Date('2024-12-25'), endDate: new Date('2024-12-27'), reason: 'CongÃ© personnel', status: 'rejected' },
+  { id: '3', employeeId: '7', type: 'annual', startDate: new Date('2024-12-25'), endDate: new Date('2024-12-27'), reason: 'Congé personnel', status: 'rejected' },
 ];
 
 const mockDocuments: AppDocument[] = [
@@ -175,102 +175,102 @@ const mockDocuments: AppDocument[] = [
   { id: '2', name: 'Contrat - Kwame Adjei.pdf', type: 'contract', department: 'Informatique', uploadedBy: 'Ama Gbeko', uploadedAt: new Date('2024-03-15'), size: '1.1 MB', category: 'Contrats' },
   { id: '3', name: 'Rapport financier Q3.pdf', type: 'report', department: 'Finance', uploadedBy: 'Efua Asante', uploadedAt: new Date('2024-10-01'), size: '3.8 MB', category: 'Rapports' },
   { id: '4', name: 'Certificat - Efua Asante.pdf', type: 'certificate', department: 'Finance', uploadedBy: 'Ama Gbeko', uploadedAt: new Date('2024-09-30'), size: '0.5 MB', category: 'Certificats' },
-  { id: '5', name: 'Manuel des procÃ©dures.pdf', type: 'policy', department: 'Ressources Humaines', uploadedBy: 'Kofi Mensah', uploadedAt: new Date('2024-02-01'), size: '5.2 MB', category: 'Politiques' },
+  { id: '5', name: 'Manuel des procédures.pdf', type: 'policy', department: 'Ressources Humaines', uploadedBy: 'Kofi Mensah', uploadedAt: new Date('2024-02-01'), size: '5.2 MB', category: 'Politiques' },
   { id: '6', name: 'Contrat - Yaw Boakye.pdf', type: 'contract', department: 'Marketing', uploadedBy: 'Ama Gbeko', uploadedAt: new Date('2024-05-15'), size: '1.0 MB', category: 'Contrats' },
-  { id: '7', name: 'Rapport de prÃ©sence mensuel.pdf', type: 'report', department: 'Ressources Humaines', uploadedBy: 'Ama Gbeko', uploadedAt: new Date('2024-12-01'), size: '1.5 MB', category: 'Rapports' },
+  { id: '7', name: 'Rapport de présence mensuel.pdf', type: 'report', department: 'Ressources Humaines', uploadedBy: 'Ama Gbeko', uploadedAt: new Date('2024-12-01'), size: '1.5 MB', category: 'Rapports' },
   { id: '8', name: 'Charte informatique.pdf', type: 'policy', department: 'Informatique', uploadedBy: 'Kwame Adjei', uploadedAt: new Date('2024-04-01'), size: '800 KB', category: 'Politiques' },
 ];
 
 const mockEvents: CalendarEvent[] = [
-  { id: '1', title: 'RÃ©union d\'Ã©quipe', description: 'Point hebdomadaire avec toute l\'Ã©quipe', date: new Date().toISOString().split('T')[0], time: '10:00', location: 'Salle de confÃ©rence', type: 'meeting', attendees: ['1', '2', '3', '5'], allDay: false },
+  { id: '1', title: 'Réunion d\'équipe', description: 'Point hebdomadaire avec toute l\'équipe', date: new Date().toISOString().split('T')[0], time: '10:00', location: 'Salle de conférence', type: 'meeting', attendees: ['1', '2', '3', '5'], allDay: false },
   { id: '2', title: 'Anniversaire Ama', description: 'Joyeux anniversaire Ama Gbeko !', date: '2024-03-20', time: '', location: '', type: 'birthday', attendees: [], allDay: true },
-  { id: '3', title: 'NoÃ«l - Fermeture', description: 'Fermeture annuelle de l\'entreprise', date: '2024-12-25', time: '', location: '', type: 'holiday', attendees: [], allDay: true },
-  { id: '4', title: 'Team Building', description: 'JournÃ©e de cohÃ©sion d\'Ã©quipe au bord de la mer', date: '2024-12-20', time: '09:00', location: 'LomÃ©, Plage du Togo', type: 'team', attendees: ['1', '2', '3', '4', '5', '7'], allDay: true },
-  { id: '5', title: 'Formation SÃ©curitÃ©', description: 'Formation obligatoire sur la sÃ©curitÃ© informatique', date: new Date(Date.now() + 86400000).toISOString().split('T')[0], time: '14:00', location: 'Salle de formation', type: 'meeting', attendees: ['3', '7'], allDay: false },
+  { id: '3', title: 'Noël - Fermeture', description: 'Fermeture annuelle de l\'entreprise', date: '2024-12-25', time: '', location: '', type: 'holiday', attendees: [], allDay: true },
+  { id: '4', title: 'Team Building', description: 'Journée de cohésion d\'équipe au bord de la mer', date: '2024-12-20', time: '09:00', location: 'Lomé, Plage du Togo', type: 'team', attendees: ['1', '2', '3', '4', '5', '7'], allDay: true },
+  { id: '5', title: 'Formation Sécurité', description: 'Formation obligatoire sur la sécurité informatique', date: new Date(Date.now() + 86400000).toISOString().split('T')[0], time: '14:00', location: 'Salle de formation', type: 'meeting', attendees: ['3', '7'], allDay: false },
   { id: '6', title: 'Anniversaire Kwame', description: 'Joyeux anniversaire Kwame Adjei !', date: '2024-08-10', time: '', location: '', type: 'birthday', attendees: [], allDay: true },
-  { id: '7', title: 'Nouvel an africain', description: 'JournÃ©e fÃ©riÃ©e', date: '2025-01-08', time: '', location: '', type: 'holiday', attendees: [], allDay: true },
-  { id: '8', title: 'SoirÃ©e de fin d\'annÃ©e', description: 'Gala annuel de l\'entreprise', date: '2024-12-31', time: '19:00', location: 'HÃ´tel du Lac', type: 'team', attendees: ['1', '2', '3', '4', '5', '7'], allDay: false },
+  { id: '7', title: 'Nouvel an africain', description: 'Journée fériée', date: '2025-01-08', time: '', location: '', type: 'holiday', attendees: [], allDay: true },
+  { id: '8', title: 'Soirée de fin d\'année', description: 'Gala annuel de l\'entreprise', date: '2024-12-31', time: '19:00', location: 'Hôtel du Lac', type: 'team', attendees: ['1', '2', '3', '4', '5', '7'], allDay: false },
 ];
 
 const mockConversations: Conversation[] = [
   {
     id: '1', participantId: '2', participantName: 'Ama Gbeko', participantPosition: 'Responsable RH',
-    lastMessage: 'Le rapport de ce mois est prÃªt !', lastMessageTime: new Date(Date.now() - 300000), unread: 2, online: true,
+    lastMessage: 'Le rapport de ce mois est prêt !', lastMessageTime: new Date(Date.now() - 300000), unread: 2, online: true,
     messages: [
       { id: '1', senderId: '2', senderName: 'Ama Gbeko', content: "Bonjour Kofi ! J'ai besoin de votre signature sur les contrats.", timestamp: new Date(Date.now() - 3600000), type: 'text' as const },
-      { id: '2', senderId: '1', senderName: 'Kofi Mensah', content: 'Bien sÃ»r, je les signe ce matin.', timestamp: new Date(Date.now() - 3500000), type: 'text' as const },
-      { id: '3', senderId: '2', senderName: 'Ama Gbeko', content: 'Merci ! Le rapport de ce mois est prÃªt !', timestamp: new Date(Date.now() - 300000), type: 'text' as const },
+      { id: '2', senderId: '1', senderName: 'Kofi Mensah', content: 'Bien sûr, je les signe ce matin.', timestamp: new Date(Date.now() - 3500000), type: 'text' as const },
+      { id: '3', senderId: '2', senderName: 'Ama Gbeko', content: 'Merci ! Le rapport de ce mois est prêt !', timestamp: new Date(Date.now() - 300000), type: 'text' as const },
     ],
   },
   {
-    id: '2', participantId: '3', participantName: 'Kwame Adjei', participantPosition: 'DÃ©veloppeur Senior',
-    lastMessage: "La fonctionnalitÃ© est dÃ©ployÃ©e !", lastMessageTime: new Date(Date.now() - 1800000), unread: 0, online: true,
+    id: '2', participantId: '3', participantName: 'Kwame Adjei', participantPosition: 'Développeur Senior',
+    lastMessage: "La fonctionnalité est déployée !", lastMessageTime: new Date(Date.now() - 1800000), unread: 0, online: true,
     messages: [
-      { id: '1', senderId: '3', senderName: 'Kwame Adjei', content: "J'ai terminÃ© la refacturation du module de paie.", timestamp: new Date(Date.now() - 7200000), type: 'text' as const },
+      { id: '1', senderId: '3', senderName: 'Kwame Adjei', content: "J'ai terminé la refacturation du module de paie.", timestamp: new Date(Date.now() - 7200000), type: 'text' as const },
       { id: '2', senderId: '1', senderName: 'Kofi Mensah', content: 'Excellent ! On peut faire un test ?', timestamp: new Date(Date.now() - 5400000), type: 'text' as const },
-      { id: '3', senderId: '3', senderName: 'Kwame Adjei', content: "La fonctionnalitÃ© est dÃ©ployÃ©e !", timestamp: new Date(Date.now() - 1800000), type: 'text' as const },
+      { id: '3', senderId: '3', senderName: 'Kwame Adjei', content: "La fonctionnalité est déployée !", timestamp: new Date(Date.now() - 1800000), type: 'text' as const },
     ],
   },
   {
     id: '3', participantId: '4', participantName: 'Efua Asante', participantPosition: 'Comptable',
-    lastMessage: 'Les factures de novembre sont traitÃ©es', lastMessageTime: new Date(Date.now() - 7200000), unread: 1, online: false,
+    lastMessage: 'Les factures de novembre sont traitées', lastMessageTime: new Date(Date.now() - 7200000), unread: 1, online: false,
     messages: [
-      { id: '1', senderId: '4', senderName: 'Efua Asante', content: 'Les factures de novembre sont traitÃ©es et envoyÃ©es par email.', timestamp: new Date(Date.now() - 7200000), type: 'text' as const },
+      { id: '1', senderId: '4', senderName: 'Efua Asante', content: 'Les factures de novembre sont traitées et envoyées par email.', timestamp: new Date(Date.now() - 7200000), type: 'text' as const },
     ],
   },
   {
     id: '4', participantId: '5', participantName: 'Yaw Boakye', participantPosition: 'Designer UI/UX',
     lastMessage: 'Tu as vu les nouvelles maquettes ?', lastMessageTime: new Date(Date.now() - 86400000), unread: 0, online: false,
     messages: [
-      { id: '1', senderId: '5', senderName: 'Yaw Boakye', content: 'Tu as vu les nouvelles maquettes ? Je les ai mises dans le dossier partagÃ©.', timestamp: new Date(Date.now() - 86400000), type: 'text' as const },
+      { id: '1', senderId: '5', senderName: 'Yaw Boakye', content: 'Tu as vu les nouvelles maquettes ? Je les ai mises dans le dossier partagé.', timestamp: new Date(Date.now() - 86400000), type: 'text' as const },
     ],
   },
   {
-    id: '5', participantId: '7', participantName: 'Kossi Amoussou', participantPosition: 'DÃ©veloppeur Full Stack',
+    id: '5', participantId: '7', participantName: 'Kossi Amoussou', participantPosition: 'Développeur Full Stack',
     lastMessage: 'Je vais corriger le bug ce soir', lastMessageTime: new Date(Date.now() - 172800000), unread: 0, online: true,
     messages: [
-      { id: '1', senderId: '1', senderName: 'Kofi Mensah', content: "Il y a un bug sur le pointage, les employÃ©s ne peuvent pas se connecter.", timestamp: new Date(Date.now() - 200000000), type: 'text' as const },
+      { id: '1', senderId: '1', senderName: 'Kofi Mensah', content: "Il y a un bug sur le pointage, les employés ne peuvent pas se connecter.", timestamp: new Date(Date.now() - 200000000), type: 'text' as const },
       { id: '2', senderId: '7', senderName: 'Kossi Amoussou', content: 'Je vais corriger le bug ce soir', timestamp: new Date(Date.now() - 172800000), type: 'text' as const },
     ],
   },
 ];
 
 const mockTeams: Team[] = [
-  { id: '1', name: 'DÃ©veloppement', description: 'Ã‰quipe technique chargÃ©e du dÃ©veloppement logiciel', leaderId: '3', memberIds: ['3', '7'], createdAt: new Date('2024-01-15') },
-  { id: '2', name: 'Design & Marketing', description: 'Ã‰quipe crÃ©ative pour le design et le marketing', leaderId: '5', memberIds: ['5', '6'], createdAt: new Date('2024-02-01') },
-  { id: '3', name: 'Finance & RH', description: 'Gestion financiÃ¨re et ressources humaines', leaderId: '2', memberIds: ['2', '4'], createdAt: new Date('2024-03-01') },
+  { id: '1', name: 'Développement', description: 'Équipe technique chargée du développement logiciel', leaderId: '3', memberIds: ['3', '7'], createdAt: new Date('2024-01-15') },
+  { id: '2', name: 'Design & Marketing', description: 'Équipe créative pour le design et le marketing', leaderId: '5', memberIds: ['5', '6'], createdAt: new Date('2024-02-01') },
+  { id: '3', name: 'Finance & RH', description: 'Gestion financière et ressources humaines', leaderId: '2', memberIds: ['2', '4'], createdAt: new Date('2024-03-01') },
 ];
 
 const mockPosts: Post[] = [
-  { id: '1', authorId: '1', authorName: 'Kofi Mensah', content: 'Bienvenue Ã  tous sur EmployÃ©Pro Africa ! Nouveau module de paie disponible.', createdAt: new Date(Date.now() - 86400000), likes: ['2', '3'], comments: [{ id: 'c1', authorId: '2', authorName: 'Ama Gbeko', content: 'Super nouvelle !', createdAt: new Date(Date.now() - 43200000) }] },
-  { id: '2', authorId: '2', authorName: 'Ama Gbeko', content: 'Rappel : les demandes de congÃ© pour les fÃªtes de fin d\'annÃ©e doivent Ãªtre soumises avant le 15 dÃ©cembre.', createdAt: new Date(Date.now() - 172800000), likes: ['1', '4', '5'], comments: [] },
+  { id: '1', authorId: '1', authorName: 'Kofi Mensah', content: 'Bienvenue à tous sur EmployéPro Africa ! Nouveau module de paie disponible.', createdAt: new Date(Date.now() - 86400000), likes: ['2', '3'], comments: [{ id: 'c1', authorId: '2', authorName: 'Ama Gbeko', content: 'Super nouvelle !', createdAt: new Date(Date.now() - 43200000) }] },
+  { id: '2', authorId: '2', authorName: 'Ama Gbeko', content: 'Rappel : les demandes de congé pour les fêtes de fin d\'année doivent être soumises avant le 15 décembre.', createdAt: new Date(Date.now() - 172800000), likes: ['1', '4', '5'], comments: [] },
 ];
 
 const mockNotifications: Notification[] = [
-  { id: '1', userId: '1', title: 'Nouvelle demande de congÃ©', message: 'Kwame Adjei a demandÃ© un congÃ© du 20 au 31 dÃ©cembre', type: 'leave', read: false, createdAt: new Date() },
-  { id: '2', userId: '1', title: 'Retard dÃ©tectÃ©', message: 'Kwame Adjei est arrivÃ© en retard Ã  9h15', type: 'attendance', read: false, createdAt: new Date() },
-  { id: '3', userId: '1', title: 'Bulletin de paie disponible', message: 'Les bulletins de paie de novembre sont prÃªts', type: 'payslip', read: true, createdAt: new Date(Date.now() - 86400000) },
+  { id: '1', userId: '1', title: 'Nouvelle demande de congé', message: 'Kwame Adjei a demandé un congé du 20 au 31 décembre', type: 'leave', read: false, createdAt: new Date() },
+  { id: '2', userId: '1', title: 'Retard détecté', message: 'Kwame Adjei est arrivé en retard à 9h15', type: 'attendance', read: false, createdAt: new Date() },
+  { id: '3', userId: '1', title: 'Bulletin de paie disponible', message: 'Les bulletins de paie de novembre sont prêts', type: 'payslip', read: true, createdAt: new Date(Date.now() - 86400000) },
 ];
 
 const mockJobOffers: JobOffer[] = [
-  { id: '1', title: 'DÃ©veloppeur Full Stack', department: 'Informatique', description: 'DÃ©veloppement d\'applications web et mobile', requirements: 'React, Node.js, 3 ans exp.', salary: 800000, location: 'LomÃ©', type: 'CDI', status: 'open', createdAt: new Date('2024-11-01'), createdBy: '1' },
-  { id: '2', title: 'Comptable Senior', department: 'Finance', description: 'Gestion comptable de l\'entreprise', requirements: 'DCG, 5 ans exp.', salary: 600000, location: 'LomÃ©', type: 'CDI', status: 'open', createdAt: new Date('2024-11-15'), createdBy: '1' },
-  { id: '3', title: 'Stagiaire Marketing Digital', department: 'Marketing', description: 'Support marketing et rÃ©seaux sociaux', requirements: 'Ã‰tudiant en marketing', salary: 150000, location: 'LomÃ©', type: 'stage', status: 'open', createdAt: new Date('2024-12-01'), createdBy: '1' },
+  { id: '1', title: 'Développeur Full Stack', department: 'Informatique', description: 'Développement d\'applications web et mobile', requirements: 'React, Node.js, 3 ans exp.', salary: 800000, location: 'Lomé', type: 'CDI', status: 'open', createdAt: new Date('2024-11-01'), createdBy: '1' },
+  { id: '2', title: 'Comptable Senior', department: 'Finance', description: 'Gestion comptable de l\'entreprise', requirements: 'DCG, 5 ans exp.', salary: 600000, location: 'Lomé', type: 'CDI', status: 'open', createdAt: new Date('2024-11-15'), createdBy: '1' },
+  { id: '3', title: 'Stagiaire Marketing Digital', department: 'Marketing', description: 'Support marketing et réseaux sociaux', requirements: 'Étudiant en marketing', salary: 150000, location: 'Lomé', type: 'stage', status: 'open', createdAt: new Date('2024-12-01'), createdBy: '1' },
 ];
 
 const mockCandidates: Candidate[] = [
-  { id: '1', jobOfferId: '1', firstName: 'Jean', lastName: 'Kouassi', email: 'jean@email.com', phone: '+228 97 65 43 21', status: 'interview', appliedAt: new Date('2024-11-20'), coverLetter: 'PassionnÃ© par le dÃ©veloppement web...', interviewDate: new Date('2024-12-10') },
+  { id: '1', jobOfferId: '1', firstName: 'Jean', lastName: 'Kouassi', email: 'jean@email.com', phone: '+228 97 65 43 21', status: 'interview', appliedAt: new Date('2024-11-20'), coverLetter: 'Passionné par le développement web...', interviewDate: new Date('2024-12-10') },
   { id: '2', jobOfferId: '1', firstName: 'Marie', lastName: 'Bamba', email: 'marie@email.com', phone: '+228 98 76 54 32', status: 'received', appliedAt: new Date('2024-11-25') },
-  { id: '3', jobOfferId: '2', firstName: 'Paul', lastName: 'Yao', email: 'paul@email.com', phone: '+228 99 87 65 43', status: 'accepted', appliedAt: new Date('2024-11-18'), interviewDate: new Date('2024-12-05'), notes: 'TrÃ¨s bon profil' },
+  { id: '3', jobOfferId: '2', firstName: 'Paul', lastName: 'Yao', email: 'paul@email.com', phone: '+228 99 87 65 43', status: 'accepted', appliedAt: new Date('2024-11-18'), interviewDate: new Date('2024-12-05'), notes: 'Très bon profil' },
 ];
 
 const mockObjectives: Objective[] = [
-  { id: '1', employeeId: '3', title: 'Refonte module paie', description: 'Moderniser l\'interface du module de paie', deadline: new Date('2025-03-01'), status: 'in_progress', category: 'DÃ©veloppement', createdAt: new Date('2024-12-01'), createdBy: '1' },
+  { id: '1', employeeId: '3', title: 'Refonte module paie', description: 'Moderniser l\'interface du module de paie', deadline: new Date('2025-03-01'), status: 'in_progress', category: 'Développement', createdAt: new Date('2024-12-01'), createdBy: '1' },
   { id: '2', employeeId: '5', title: 'Campagne marketing Q1', description: 'Lancer la campagne pour le nouveau produit', deadline: new Date('2025-02-15'), status: 'pending', category: 'Marketing', createdAt: new Date('2024-12-10'), createdBy: '1' },
 ];
 
 const mockPerformanceReviews: PerformanceReview[] = [
-  { id: '1', employeeId: '3', reviewerId: '1', reviewDate: new Date('2024-12-15'), rating: 4, feedback: 'Excellent travail sur les projets rÃ©cents', strengths: ['Technique', 'Autonomie'], improvements: ['Communication Ã©crite'], objectiveIds: ['1'], status: 'submitted', createdAt: new Date('2024-12-15') },
+  { id: '1', employeeId: '3', reviewerId: '1', reviewDate: new Date('2024-12-15'), rating: 4, feedback: 'Excellent travail sur les projets récents', strengths: ['Technique', 'Autonomie'], improvements: ['Communication écrite'], objectiveIds: ['1'], status: 'submitted', createdAt: new Date('2024-12-15') },
 ];
 
 const mockBankAccounts: BankAccount[] = [
@@ -279,7 +279,7 @@ const mockBankAccounts: BankAccount[] = [
 ];
 
 const mockTransactions: BankTransaction[] = [
-  { id: '1', companyId: '1', type: 'deposit', amount: 5000000, currency: 'FCFA', description: 'DÃ©pÃ´t initial', reference: 'DEP-001', status: 'completed', date: new Date('2024-01-15'), accountId: '1' },
+  { id: '1', companyId: '1', type: 'deposit', amount: 5000000, currency: 'FCFA', description: 'Dépôt initial', reference: 'DEP-001', status: 'completed', date: new Date('2024-01-15'), accountId: '1' },
   { id: '2', companyId: '1', type: 'payment', amount: 750000, currency: 'FCFA', description: 'Salaire Kofi Mensah', reference: 'PAY-001', status: 'completed', date: new Date('2024-12-01'), accountId: '1' },
 ];
 
@@ -289,14 +289,14 @@ const mockTaxDeclarations: TaxDeclaration[] = [
 ];
 
 const mockCourses: Course[] = [
-  { id: '1', title: 'Introduction Ã  React', description: 'Apprenez les bases de React et du dÃ©veloppement frontend moderne', category: 'DÃ©veloppement', duration: 20, instructor: 'Kwame Adjei', enrolledCount: 3, lessons: [
+  { id: '1', title: 'Introduction à React', description: 'Apprenez les bases de React et du développement frontend moderne', category: 'Développement', duration: 20, instructor: 'Kwame Adjei', enrolledCount: 3, lessons: [
     { id: 'l1', courseId: '1', title: 'Les fondamentaux de React', content: 'JSX, composants, props et state', duration: 4, order: 1 },
     { id: 'l2', courseId: '1', title: 'Hooks et useEffect', content: 'useState, useEffect, useContext en profondeur', duration: 6, order: 2 },
-    { id: 'l3', courseId: '1', title: 'Projet pratique', content: 'Construisez une application TODO complÃ¨te', duration: 10, order: 3 },
+    { id: 'l3', courseId: '1', title: 'Projet pratique', content: 'Construisez une application TODO complète', duration: 10, order: 3 },
   ], createdAt: new Date('2024-06-01') },
-  { id: '2', title: 'Gestion RH et Paie', description: 'MaÃ®trisez les processus RH et la gestion de la paie', category: 'RH', duration: 15, instructor: 'Ama Gbeko', enrolledCount: 5, lessons: [
-    { id: 'l4', courseId: '2', title: 'Droit du travail', content: 'Base lÃ©gale des contrats et conventions', duration: 5, order: 1 },
-    { id: 'l5', courseId: '2', title: 'Calcul de paie', content: 'MÃ©thodes de calcul des salaires et cotisations', duration: 10, order: 2 },
+  { id: '2', title: 'Gestion RH et Paie', description: 'Maîtrisez les processus RH et la gestion de la paie', category: 'RH', duration: 15, instructor: 'Ama Gbeko', enrolledCount: 5, lessons: [
+    { id: 'l4', courseId: '2', title: 'Droit du travail', content: 'Base légale des contrats et conventions', duration: 5, order: 1 },
+    { id: 'l5', courseId: '2', title: 'Calcul de paie', content: 'Méthodes de calcul des salaires et cotisations', duration: 10, order: 2 },
   ], createdAt: new Date('2024-07-01') },
 ];
 
@@ -306,49 +306,49 @@ const mockEnrollments: Enrollment[] = [
 ];
 
 const mockMissions: Mission[] = [
-  { id: '1', employeeId: '3', title: 'DÃ©ploiement client Abidjan', destination: 'Abidjan, CÃ´te d\'Ivoire', startDate: new Date('2025-01-10'), endDate: new Date('2025-01-15'), objectives: 'Installation et formation sur le module paie', transportType: 'Avion', budget: 1500000, status: 'approved', approvedBy: '1', createdAt: new Date('2024-12-20') },
-  { id: '2', employeeId: '5', title: 'Salon marketing Dakar', destination: 'Dakar, SÃ©nÃ©gal', startDate: new Date('2025-02-01'), endDate: new Date('2025-02-03'), objectives: 'PrÃ©sentation EmployÃ©Pro au salon RH Afrique', transportType: 'Avion', budget: 2000000, status: 'pending', createdAt: new Date('2024-12-25') },
+  { id: '1', employeeId: '3', title: 'Déploiement client Abidjan', destination: 'Abidjan, Côte d\'Ivoire', startDate: new Date('2025-01-10'), endDate: new Date('2025-01-15'), objectives: 'Installation et formation sur le module paie', transportType: 'Avion', budget: 1500000, status: 'approved', approvedBy: '1', createdAt: new Date('2024-12-20') },
+  { id: '2', employeeId: '5', title: 'Salon marketing Dakar', destination: 'Dakar, Sénégal', startDate: new Date('2025-02-01'), endDate: new Date('2025-02-03'), objectives: 'Présentation EmployéPro au salon RH Afrique', transportType: 'Avion', budget: 2000000, status: 'pending', createdAt: new Date('2024-12-25') },
 ];
 
 const mockExpenses: ExpenseReport[] = [
-  { id: '1', missionId: '1', employeeId: '3', category: 'Transport', amount: 350000, currency: 'FCFA', date: new Date('2025-01-10'), description: 'Billet avion LomÃ©-Abidjan', status: 'approved', approvedBy: '1' },
-  { id: '2', missionId: '1', employeeId: '3', category: 'HÃ©bergement', amount: 450000, currency: 'FCFA', date: new Date('2025-01-10'), description: 'HÃ´tel 5 nuits Abidjan', status: 'pending' },
-  { id: '3', employeeId: '5', category: 'Repas client', amount: 85000, currency: 'FCFA', date: new Date('2024-12-15'), description: 'DÃ©jeuner client SociÃ©tÃ© GÃ©nÃ©rale', status: 'approved', approvedBy: '1' },
+  { id: '1', missionId: '1', employeeId: '3', category: 'Transport', amount: 350000, currency: 'FCFA', date: new Date('2025-01-10'), description: 'Billet avion Lomé-Abidjan', status: 'approved', approvedBy: '1' },
+  { id: '2', missionId: '1', employeeId: '3', category: 'Hébergement', amount: 450000, currency: 'FCFA', date: new Date('2025-01-10'), description: 'Hôtel 5 nuits Abidjan', status: 'pending' },
+  { id: '3', employeeId: '5', category: 'Repas client', amount: 85000, currency: 'FCFA', date: new Date('2024-12-15'), description: 'Déjeuner client Société Générale', status: 'approved', approvedBy: '1' },
 ];
 
 const mockJobPosts: JobPost[] = [
-  { id: '1', title: 'DÃ©veloppeur Full Stack', company: 'TechAfrique Solutions', companyId: '1', description: 'DÃ©veloppement d\'applications web et mobile pour nos clients', requirements: 'React, Node.js, 3 ans exp.', location: 'LomÃ©, Togo', type: 'CDI', salary: '800K - 1.2M FCFA', category: 'Informatique', status: 'published', featured: true, views: 245, applications: 12, createdAt: new Date('2024-12-01'), expiresAt: new Date('2025-02-01') },
-  { id: '2', title: 'Comptable', company: 'TechAfrique Solutions', companyId: '1', description: 'Gestion comptable et reporting financier', requirements: 'DCG, 3 ans exp.', location: 'LomÃ©, Togo', type: 'CDI', salary: '500K - 700K FCFA', category: 'Finance', status: 'published', featured: false, views: 120, applications: 8, createdAt: new Date('2024-12-10'), expiresAt: new Date('2025-02-10') },
-  { id: '3', title: 'Stagiaire Marketing Digital', company: 'TechAfrique Solutions', companyId: '1', description: 'Support marketing et rÃ©seaux sociaux', requirements: 'Ã‰tudiant en marketing ou communication', location: 'LomÃ©, Togo', type: 'stage', salary: '150K FCFA', category: 'Marketing', status: 'published', featured: false, views: 78, applications: 5, createdAt: new Date('2024-12-15'), expiresAt: new Date('2025-01-15') },
+  { id: '1', title: 'Développeur Full Stack', company: 'TechAfrique Solutions', companyId: '1', description: 'Développement d\'applications web et mobile pour nos clients', requirements: 'React, Node.js, 3 ans exp.', location: 'Lomé, Togo', type: 'CDI', salary: '800K - 1.2M FCFA', category: 'Informatique', status: 'published', featured: true, views: 245, applications: 12, createdAt: new Date('2024-12-01'), expiresAt: new Date('2025-02-01') },
+  { id: '2', title: 'Comptable', company: 'TechAfrique Solutions', companyId: '1', description: 'Gestion comptable et reporting financier', requirements: 'DCG, 3 ans exp.', location: 'Lomé, Togo', type: 'CDI', salary: '500K - 700K FCFA', category: 'Finance', status: 'published', featured: false, views: 120, applications: 8, createdAt: new Date('2024-12-10'), expiresAt: new Date('2025-02-10') },
+  { id: '3', title: 'Stagiaire Marketing Digital', company: 'TechAfrique Solutions', companyId: '1', description: 'Support marketing et réseaux sociaux', requirements: 'Étudiant en marketing ou communication', location: 'Lomé, Togo', type: 'stage', salary: '150K FCFA', category: 'Marketing', status: 'published', featured: false, views: 78, applications: 5, createdAt: new Date('2024-12-15'), expiresAt: new Date('2025-01-15') },
 ];
 
 const mockTimelineEvents: TimelineEvent[] = [
-  { id: '1', employeeId: '3', type: 'hire', title: 'Embauche', description: 'A rejoint l\'entreprise comme DÃ©veloppeur Senior', date: new Date('2024-03-15') },
-  { id: '2', employeeId: '3', type: 'objective', title: 'Objectif crÃ©Ã©', description: 'Refonte module paie', date: new Date('2024-12-01') },
-  { id: '3', employeeId: '3', type: 'review', title: 'Ã‰valuation annuelle', description: 'Note: 4/5', date: new Date('2024-12-15') },
+  { id: '1', employeeId: '3', type: 'hire', title: 'Embauche', description: 'A rejoint l\'entreprise comme Développeur Senior', date: new Date('2024-03-15') },
+  { id: '2', employeeId: '3', type: 'objective', title: 'Objectif créé', description: 'Refonte module paie', date: new Date('2024-12-01') },
+  { id: '3', employeeId: '3', type: 'review', title: 'Évaluation annuelle', description: 'Note: 4/5', date: new Date('2024-12-15') },
 ];
 
 const mockVaultItems: EmployeeVaultItem[] = [
-  { id: 'v1', employeeId: '1', type: 'contract', name: 'Contrat Directeur GÃ©nÃ©ral.pdf', uploadedAt: new Date('2024-01-15'), status: 'active' },
+  { id: 'v1', employeeId: '1', type: 'contract', name: 'Contrat Directeur Général.pdf', uploadedAt: new Date('2024-01-15'), status: 'active' },
   { id: 'v2', employeeId: '1', type: 'diploma', name: 'Master Management - HEC Paris.pdf', uploadedAt: new Date('2024-01-15'), status: 'active' },
   { id: 'v3', employeeId: '2', type: 'contract', name: 'Contrat Responsable RH.pdf', uploadedAt: new Date('2024-02-01'), status: 'active' },
   { id: 'v4', employeeId: '3', type: 'id_card', name: 'CNI Kwame Adjei.pdf', uploadedAt: new Date('2024-03-15'), status: 'active' },
   { id: 'v5', employeeId: '3', type: 'certificate', name: 'Certification React.pdf', uploadedAt: new Date('2024-06-01'), expiresAt: new Date('2026-06-01'), status: 'active' },
-  { id: 'v6', employeeId: '5', type: 'evaluation', name: 'Ã‰valuation annuelle 2024.pdf', uploadedAt: new Date('2024-12-15'), status: 'active' },
+  { id: 'v6', employeeId: '5', type: 'evaluation', name: 'Évaluation annuelle 2024.pdf', uploadedAt: new Date('2024-12-15'), status: 'active' },
 ];
 
 const mockRewardTransactions: RewardTransaction[] = [
-  { id: 'r1', employeeId: '3', points: 500, type: 'earned', reason: 'PrÃ©sence parfaite - DÃ©cembre 2024', createdAt: new Date('2025-01-01') },
+  { id: 'r1', employeeId: '3', points: 500, type: 'earned', reason: 'Présence parfaite - Décembre 2024', createdAt: new Date('2025-01-01') },
   { id: 'r2', employeeId: '2', points: 750, type: 'earned', reason: 'Objectif Q4 atteint', createdAt: new Date('2024-12-31') },
-  { id: 'r3', employeeId: '5', points: 300, type: 'earned', reason: 'Formation complÃ©tÃ©e', createdAt: new Date('2024-12-20') },
+  { id: 'r3', employeeId: '5', points: 300, type: 'earned', reason: 'Formation complétée', createdAt: new Date('2024-12-20') },
   { id: 'r4', employeeId: '3', points: 200, type: 'redeemed', reason: 'Bon d\'achat Amazon', createdAt: new Date('2025-01-05') },
 ];
 
 const mockRewardCatalog: RewardCatalog[] = [
   { id: 'rc1', name: 'Prime de 50 000 FCFA', description: 'Prime exceptionnelle sur salaire', pointsCost: 1000, stock: 10, category: 'bonus', active: true },
   { id: 'rc2', name: 'Bon d\'achat 25 000 FCFA', description: 'Carte cadeau utilisable en ligne', pointsCost: 500, stock: 20, category: 'gift', active: true },
-  { id: 'rc3', name: 'Jour de congÃ© supplÃ©mentaire', description: 'Un jour de congÃ© payÃ© additionnel', pointsCost: 750, stock: 5, category: 'advantage', active: true },
-  { id: 'rc4', name: 'Formation certifiante', description: 'Formation au choix (jusqu\'Ã  200 000 FCFA)', pointsCost: 1500, stock: 3, category: 'training', active: true },
+  { id: 'rc3', name: 'Jour de congé supplémentaire', description: 'Un jour de congé payé additionnel', pointsCost: 750, stock: 5, category: 'advantage', active: true },
+  { id: 'rc4', name: 'Formation certifiante', description: 'Formation au choix (jusqu\'à 200 000 FCFA)', pointsCost: 1500, stock: 3, category: 'training', active: true },
   { id: 'rc5', name: 'Abonnement sport/fitness', description: 'Abonnement mensuel dans une salle de sport', pointsCost: 400, stock: 8, category: 'advantage', active: true },
 ];
 
@@ -357,7 +357,7 @@ const mockEquipment: Equipment[] = [
   { id: 'eq2', companyId: '1', name: 'MacBook Pro 16"', type: 'computer', serialNumber: 'MBP-2024-002', status: 'assigned', purchaseDate: new Date('2024-02-01'), purchasePrice: 2500000, assigneeId: '3', assignedAt: new Date('2024-03-01'), condition: 'good' },
   { id: 'eq3', companyId: '1', name: 'iPhone 15 Pro', type: 'phone', serialNumber: 'IP15-003', status: 'assigned', purchaseDate: new Date('2024-06-01'), purchasePrice: 900000, assigneeId: '1', assignedAt: new Date('2024-06-15'), condition: 'good' },
   { id: 'eq4', companyId: '1', name: 'Toyota Hilux', type: 'vehicle', serialNumber: 'TG-1234-AB', status: 'assigned', purchaseDate: new Date('2023-12-01'), purchasePrice: 25000000, assigneeId: '1', assignedAt: new Date('2024-01-01'), condition: 'fair' },
-  { id: 'eq5', companyId: '1', name: 'Badge AccÃ¨s SiÃ¨ge', type: 'access_card', serialNumber: 'ACC-005', status: 'assigned', assigneeId: '2', assignedAt: new Date('2024-02-01'), condition: 'good' },
+  { id: 'eq5', companyId: '1', name: 'Badge Accès Siège', type: 'access_card', serialNumber: 'ACC-005', status: 'assigned', assigneeId: '2', assignedAt: new Date('2024-02-01'), condition: 'good' },
   { id: 'eq6', companyId: '1', name: 'Dell Latitude 5550', type: 'computer', serialNumber: 'DL-5550-006', status: 'available', purchaseDate: new Date('2024-12-01'), purchasePrice: 1300000, condition: 'good' },
   { id: 'eq7', companyId: '1', name: 'Imprimante HP LaserJet', type: 'other', serialNumber: 'HP-LJ-007', status: 'maintenance', purchaseDate: new Date('2023-06-01'), purchasePrice: 350000, condition: 'damaged' },
 ];
@@ -370,16 +370,16 @@ const mockEquipmentAssignments: EquipmentAssignment[] = [
 ];
 
 const mockWellnessSurveys: WellnessSurvey[] = [
-  { id: 'ws1', title: 'EnquÃªte de satisfaction Q4 2024', description: 'Ã‰valuez votre niveau de satisfaction au travail', questions: [
-    { id: 'wq1', text: 'Dans l\'ensemble, Ãªtes-vous satisfait de votre travail ?', type: 'rating', category: 'satisfaction' },
-    { id: 'wq2', text: 'Comment Ã©valuez-vous votre niveau de stress ?', type: 'rating', category: 'stress' },
-    { id: 'wq3', text: 'Vous sentez-vous motivÃ© au travail ?', type: 'rating', category: 'motivation' },
-    { id: 'wq4', text: 'Avez-vous les ressources nÃ©cessaires pour faire votre travail ?', type: 'yesno', category: 'workload' },
-    { id: 'wq5', text: 'Comment Ã©valuez-vous l\'environnement de travail ?', type: 'rating', category: 'environment' },
+  { id: 'ws1', title: 'Enquête de satisfaction Q4 2024', description: 'Évaluez votre niveau de satisfaction au travail', questions: [
+    { id: 'wq1', text: 'Dans l\'ensemble, êtes-vous satisfait de votre travail ?', type: 'rating', category: 'satisfaction' },
+    { id: 'wq2', text: 'Comment évaluez-vous votre niveau de stress ?', type: 'rating', category: 'stress' },
+    { id: 'wq3', text: 'Vous sentez-vous motivé au travail ?', type: 'rating', category: 'motivation' },
+    { id: 'wq4', text: 'Avez-vous les ressources nécessaires pour faire votre travail ?', type: 'yesno', category: 'workload' },
+    { id: 'wq5', text: 'Comment évaluez-vous l\'environnement de travail ?', type: 'rating', category: 'environment' },
   ], active: true, createdAt: new Date('2024-12-01') },
-  { id: 'ws2', title: 'Sondage bien-Ãªtre mensuel', description: 'Suivi mensuel du bien-Ãªtre des employÃ©s', questions: [
+  { id: 'ws2', title: 'Sondage bien-être mensuel', description: 'Suivi mensuel du bien-être des employés', questions: [
     { id: 'wq6', text: 'Comment vous sentez-vous cette semaine ?', type: 'rating', category: 'satisfaction' },
-    { id: 'wq7', text: 'Avez-vous des difficultÃ©s particuliÃ¨res ?', type: 'text', category: 'stress' },
+    { id: 'wq7', text: 'Avez-vous des difficultés particulières ?', type: 'text', category: 'stress' },
     { id: 'wq8', text: 'Recommanderiez-vous notre entreprise ?', type: 'yesno', category: 'motivation' },
   ], active: true, createdAt: new Date('2025-01-01') },
 ];
@@ -388,26 +388,26 @@ const mockWellnessResponses: WellnessResponse[] = [];
 
 const mockSalaryAdvances: SalaryAdvance[] = [
   { id: 'sa1', employeeId: '5', amount: 200000, currency: 'FCFA', status: 'approved', requestedAt: new Date('2024-12-20'), approvedAt: new Date('2024-12-22'), repaymentDate: new Date('2025-01-25'), repaymentStatus: 'pending', reason: 'Urgence familiale', approvedBy: '1' },
-  { id: 'sa2', employeeId: '7', amount: 350000, currency: 'FCFA', status: 'requested', requestedAt: new Date('2025-01-05'), repaymentStatus: 'pending', reason: 'Achat matÃ©riel informatique' },
-  { id: 'sa3', employeeId: '3', amount: 150000, currency: 'FCFA', status: 'paid', requestedAt: new Date('2024-11-01'), approvedAt: new Date('2024-11-02'), paidAt: new Date('2024-11-03'), repaymentDate: new Date('2024-12-25'), repaymentStatus: 'repaid', repaymentAmount: 150000, reason: 'Frais de scolaritÃ©', approvedBy: '1' },
+  { id: 'sa2', employeeId: '7', amount: 350000, currency: 'FCFA', status: 'requested', requestedAt: new Date('2025-01-05'), repaymentStatus: 'pending', reason: 'Achat matériel informatique' },
+  { id: 'sa3', employeeId: '3', amount: 150000, currency: 'FCFA', status: 'paid', requestedAt: new Date('2024-11-01'), approvedAt: new Date('2024-11-02'), paidAt: new Date('2024-11-03'), repaymentDate: new Date('2024-12-25'), repaymentStatus: 'repaid', repaymentAmount: 150000, reason: 'Frais de scolarité', approvedBy: '1' },
 ];
 
 const mockSalaryTransfers: SalaryTransfer[] = [
-  { id: 'st1', employeeId: '1', amount: 1500000, currency: 'FCFA', type: 'salary', status: 'completed', createdAt: new Date('2024-12-01'), completedAt: new Date('2024-12-01'), description: 'Salaire dÃ©cembre 2024' },
-  { id: 'st2', employeeId: '2', amount: 800000, currency: 'FCFA', type: 'salary', status: 'completed', createdAt: new Date('2024-12-01'), completedAt: new Date('2024-12-01'), description: 'Salaire dÃ©cembre 2024' },
+  { id: 'st1', employeeId: '1', amount: 1500000, currency: 'FCFA', type: 'salary', status: 'completed', createdAt: new Date('2024-12-01'), completedAt: new Date('2024-12-01'), description: 'Salaire décembre 2024' },
+  { id: 'st2', employeeId: '2', amount: 800000, currency: 'FCFA', type: 'salary', status: 'completed', createdAt: new Date('2024-12-01'), completedAt: new Date('2024-12-01'), description: 'Salaire décembre 2024' },
   { id: 'st3', employeeId: '5', amount: 200000, currency: 'FCFA', type: 'advance', status: 'completed', createdAt: new Date('2024-12-22'), completedAt: new Date('2024-12-23'), description: 'Avance sur salaire - Urgence' },
-  { id: 'st4', employeeId: '3', amount: 150000, currency: 'FCFA', type: 'transfer', status: 'pending', createdAt: new Date('2025-01-10'), description: 'Virement compte Ã©pargne' },
+  { id: 'st4', employeeId: '3', amount: 150000, currency: 'FCFA', type: 'transfer', status: 'pending', createdAt: new Date('2025-01-10'), description: 'Virement compte épargne' },
 ];
 
 const mockQuizzes: Quiz[] = [
   { id: 'qz1', courseId: '1', title: 'Quiz React Fondamentaux', description: 'Testez vos connaissances sur les bases de React', questions: [
-    { id: 'qq1', quizId: 'qz1', text: 'Qu\'est-ce que JSX ?', options: ['Une extension JavaScript', 'Un framework CSS', 'Un serveur web', 'Une base de donnÃ©es'], correctAnswer: 0, points: 10 },
-    { id: 'qq2', quizId: 'qz1', text: 'Quel hook permet de gÃ©rer l\'Ã©tat local ?', options: ['useEffect', 'useState', 'useContext', 'useReducer'], correctAnswer: 1, points: 10 },
-    { id: 'qq3', quizId: 'qz1', text: 'Qu\'est-ce qu\'un composant React ?', options: ['Une fonction ou classe qui retourne du JSX', 'Un Ã©lÃ©ment HTML', 'Une API REST', 'Un type de donnÃ©e'], correctAnswer: 0, points: 10 },
+    { id: 'qq1', quizId: 'qz1', text: 'Qu\'est-ce que JSX ?', options: ['Une extension JavaScript', 'Un framework CSS', 'Un serveur web', 'Une base de données'], correctAnswer: 0, points: 10 },
+    { id: 'qq2', quizId: 'qz1', text: 'Quel hook permet de gérer l\'état local ?', options: ['useEffect', 'useState', 'useContext', 'useReducer'], correctAnswer: 1, points: 10 },
+    { id: 'qq3', quizId: 'qz1', text: 'Qu\'est-ce qu\'un composant React ?', options: ['Une fonction ou classe qui retourne du JSX', 'Un élément HTML', 'Une API REST', 'Un type de donnée'], correctAnswer: 0, points: 10 },
   ], passingScore: 15, timeLimit: 30 },
-  { id: 'qz2', courseId: '2', title: 'Quiz Gestion RH', description: 'Ã‰valuez vos compÃ©tences en gestion RH', questions: [
+  { id: 'qz2', courseId: '2', title: 'Quiz Gestion RH', description: 'Évaluez vos compétences en gestion RH', questions: [
     { id: 'qq4', quizId: 'qz2', text: 'Quel est le taux CNSS au Togo ?', options: ['14%', '7%', '21%', '10%'], correctAnswer: 0, points: 10 },
-    { id: 'qq5', quizId: 'qz2', text: 'Quelle est la durÃ©e lÃ©gale du prÃ©avis ?', options: ['1 mois', '3 mois', 'Variable selon anciennetÃ©', '15 jours'], correctAnswer: 2, points: 10 },
+    { id: 'qq5', quizId: 'qz2', text: 'Quelle est la durée légale du préavis ?', options: ['1 mois', '3 mois', 'Variable selon ancienneté', '15 jours'], correctAnswer: 2, points: 10 },
   ], passingScore: 10, timeLimit: 20 },
 ];
 
@@ -426,15 +426,15 @@ const mockSignatureRequests: SignatureRequest[] = [
     { employeeId: '3', name: 'Kwame Adjei', email: 'kwame@techafrique.com', status: 'signed', signedAt: new Date('2025-01-06'), signatureDataUrl: '' },
     { employeeId: '1', name: 'Kofi Mensah', email: 'admin@techafrique.com', status: 'signed', signedAt: new Date('2025-01-07'), signatureDataUrl: '' },
   ], completedAt: new Date('2025-01-07') },
-  { id: 'sig3', documentName: 'Politique de tÃ©lÃ©travail 2025', documentType: 'policy', initiatedBy: '1', initiatedByName: 'Kofi Mensah', initiatedAt: new Date('2025-01-01'), status: 'draft', recipients: [], message: 'Approbation par les chefs de service' },
+  { id: 'sig3', documentName: 'Politique de télétravail 2025', documentType: 'policy', initiatedBy: '1', initiatedByName: 'Kofi Mensah', initiatedAt: new Date('2025-01-01'), status: 'draft', recipients: [], message: 'Approbation par les chefs de service' },
   { id: 'sig4', documentName: 'NDA - Partenariat Client', documentType: 'nda', initiatedBy: '1', initiatedByName: 'Kofi Mensah', initiatedAt: new Date('2024-12-20'), status: 'signed', recipients: [
     { employeeId: '2', name: 'Ama Gbeko', email: 'ama@techafrique.com', status: 'signed', signedAt: new Date('2024-12-21'), signatureDataUrl: '' },
   ], completedAt: new Date('2024-12-21') },
 ];
 
 const mockSignatureTemplates: SignatureTemplate[] = [
-  { id: 'stpl1', name: 'Contrat CDI Standard', description: 'ModÃ¨le de contrat Ã  durÃ©e indÃ©terminÃ©e', documentType: 'contract', content: 'Entre la sociÃ©tÃ© {{company_name}} et {{employee_name}}...', placeholders: [{ key: 'employee_name', label: 'Nom employÃ©', fieldType: 'employee_name' }, { key: 'employee_position', label: 'Poste', fieldType: 'employee_position' }, { key: 'salary', label: 'Salaire', fieldType: 'salary' }, { key: 'date', label: 'Date', fieldType: 'date' }], createdAt: new Date('2024-06-01') },
-  { id: 'stpl2', name: 'Avenant changement poste', description: 'ModÃ¨le d\'avenant pour modification de poste', documentType: 'amendment', content: 'Avenant au contrat de travail de {{employee_name}}...', placeholders: [{ key: 'employee_name', label: 'Nom employÃ©', fieldType: 'employee_name' }, { key: 'employee_position', label: 'Nouveau poste', fieldType: 'employee_position' }, { key: 'date', label: 'Date d\'effet', fieldType: 'date' }], createdAt: new Date('2024-07-01') },
+  { id: 'stpl1', name: 'Contrat CDI Standard', description: 'Modèle de contrat à durée indéterminée', documentType: 'contract', content: 'Entre la société {{company_name}} et {{employee_name}}...', placeholders: [{ key: 'employee_name', label: 'Nom employé', fieldType: 'employee_name' }, { key: 'employee_position', label: 'Poste', fieldType: 'employee_position' }, { key: 'salary', label: 'Salaire', fieldType: 'salary' }, { key: 'date', label: 'Date', fieldType: 'date' }], createdAt: new Date('2024-06-01') },
+  { id: 'stpl2', name: 'Avenant changement poste', description: 'Modèle d\'avenant pour modification de poste', documentType: 'amendment', content: 'Avenant au contrat de travail de {{employee_name}}...', placeholders: [{ key: 'employee_name', label: 'Nom employé', fieldType: 'employee_name' }, { key: 'employee_position', label: 'Nouveau poste', fieldType: 'employee_position' }, { key: 'date', label: 'Date d\'effet', fieldType: 'date' }], createdAt: new Date('2024-07-01') },
 ];
 
 export function DataProvider({ children }: { children: ReactNode }) {
@@ -646,8 +646,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     ]);
     addNotification({
       userId: employeeId,
-      title: 'Paiement effectuÃ©',
-      message: `Votre salaire de ${amount.toLocaleString()} FCFA a Ã©tÃ© versÃ©`,
+      title: 'Paiement effectué',
+      message: `Votre salaire de ${amount.toLocaleString()} FCFA a été versé`,
       type: 'payment',
       read: false,
     });
@@ -733,7 +733,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const addJobOffer = (offer: Omit<JobOffer, 'id' | 'createdAt'>) => {
     setJobOffers((prev) => [{ ...offer, id: String(Date.now()), createdAt: new Date() }, ...prev]);
-    addNotification({ userId: '1', title: 'Nouvelle offre d\'emploi', message: `Offre "${offer.title}" crÃ©Ã©e`, type: 'recruitment', read: false });
+    addNotification({ userId: '1', title: 'Nouvelle offre d\'emploi', message: `Offre "${offer.title}" créée`, type: 'recruitment', read: false });
   };
 
   const updateJobOffer = (id: string, data: Partial<JobOffer>) => {
@@ -747,7 +747,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const addCandidate = (candidate: Omit<Candidate, 'id' | 'appliedAt'>) => {
     setCandidates((prev) => [{ ...candidate, id: String(Date.now()), appliedAt: new Date() }, ...prev]);
     const offer = jobOffers.find((o) => o.id === candidate.jobOfferId);
-    addNotification({ userId: '1', title: 'Nouveau candidat', message: `${candidate.firstName} ${candidate.lastName} a postulÃ© Ã  "${offer?.title}"`, type: 'recruitment', read: false });
+    addNotification({ userId: '1', title: 'Nouveau candidat', message: `${candidate.firstName} ${candidate.lastName} a postulé à "${offer?.title}"`, type: 'recruitment', read: false });
   };
 
   const updateCandidate = (id: string, data: Partial<Candidate>) => {
@@ -756,8 +756,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const addObjective = (objective: Omit<Objective, 'id' | 'createdAt'>) => {
     setObjectives((prev) => [{ ...objective, id: String(Date.now()), createdAt: new Date() }, ...prev]);
-    addTimelineEvent({ employeeId: objective.employeeId, type: 'objective', title: 'Objectif crÃ©Ã©', description: objective.title, date: new Date() });
-    addNotification({ userId: objective.employeeId, title: 'Nouvel objectif', message: `Objectif "${objective.title}" assignÃ©`, type: 'objective', read: false });
+    addTimelineEvent({ employeeId: objective.employeeId, type: 'objective', title: 'Objectif créé', description: objective.title, date: new Date() });
+    addNotification({ userId: objective.employeeId, title: 'Nouvel objectif', message: `Objectif "${objective.title}" assigné`, type: 'objective', read: false });
   };
 
   const updateObjective = (id: string, data: Partial<Objective>) => {
@@ -770,8 +770,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const addPerformanceReview = (review: Omit<PerformanceReview, 'id' | 'createdAt'>) => {
     setPerformanceReviews((prev) => [{ ...review, id: String(Date.now()), createdAt: new Date() }, ...prev]);
-    addTimelineEvent({ employeeId: review.employeeId, type: 'review', title: 'Ã‰valuation', description: `Note: ${review.rating}/5`, date: review.reviewDate });
-    addNotification({ userId: review.employeeId, title: 'Ã‰valuation reÃ§ue', message: `Votre Ã©valuation: ${review.rating}/5`, type: 'review', read: false });
+    addTimelineEvent({ employeeId: review.employeeId, type: 'review', title: 'Évaluation', description: `Note: ${review.rating}/5`, date: review.reviewDate });
+    addNotification({ userId: review.employeeId, title: 'Évaluation reçue', message: `Votre évaluation: ${review.rating}/5`, type: 'review', read: false });
   };
 
   const updatePerformanceReview = (id: string, data: Partial<PerformanceReview>) => {
@@ -786,8 +786,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setEmployees((prev) => prev.map((e) =>
       e.id === employeeId ? { ...e, contract, contractHistory: [...(e.contractHistory || []), contract] } : e,
     ));
-    addTimelineEvent({ employeeId, type: 'contract', title: 'Contrat mis Ã  jour', description: `${contract.type} - ${contract.position}`, date: contract.startDate });
-    addNotification({ userId: employeeId, title: 'Contrat mis Ã  jour', message: `Nouveau contrat: ${contract.type}`, type: 'contract', read: false });
+    addTimelineEvent({ employeeId, type: 'contract', title: 'Contrat mis à jour', description: `${contract.type} - ${contract.position}`, date: contract.startDate });
+    addNotification({ userId: employeeId, title: 'Contrat mis à jour', message: `Nouveau contrat: ${contract.type}`, type: 'contract', read: false });
   };
 
   const addBankAccount = (acc: Omit<BankAccount, 'id'>) => {
@@ -910,7 +910,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     } : m));
   };
 
-  // Coffre-fort numÃ©rique
+  // Coffre-fort numérique
   const addVaultItem = (item: Omit<EmployeeVaultItem, 'id'>) => {
     setVaultItems(prev => [{ ...item, id: String(Date.now()) }, ...prev]);
     eventBus.emit(EVENTS.VAULT_ITEM_ADDED);
@@ -919,12 +919,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setVaultItems(prev => prev.filter(v => v.id !== id));
   };
 
-  // RÃ©compenses
+  // Récompenses
   const addRewardTransaction = (tx: Omit<RewardTransaction, 'id' | 'createdAt'>) => {
     const newTx: RewardTransaction = { ...tx, id: String(Date.now()), createdAt: new Date() };
     setRewardTransactions(prev => [newTx, ...prev]);
     eventBus.emit(tx.type === 'earned' ? EVENTS.REWARD_EARNED : EVENTS.REWARD_REDEEMED);
-    addNotification({ userId: tx.employeeId, title: 'Points rÃ©compense', message: `${tx.points > 0 ? '+' : ''}${tx.points} points - ${tx.reason}`, type: 'payslip', read: false });
+    addNotification({ userId: tx.employeeId, title: 'Points récompense', message: `${tx.points > 0 ? '+' : ''}${tx.points} points - ${tx.reason}`, type: 'payslip', read: false });
   };
 
   const addRewardCatalogItem = (item: Omit<RewardCatalog, 'id'>) => {
@@ -942,7 +942,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setRewardCatalog(prev => prev.map(c => c.id === catalogItemId ? { ...c, stock: c.stock - 1 } : c));
   };
 
-  // MatÃ©riel
+  // Matériel
   const addEquipment = (eq: Omit<Equipment, 'id'>) => {
     setEquipment(prev => [{ ...eq, id: String(Date.now()) }, ...prev]);
   };
@@ -954,7 +954,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setEquipment(prev => prev.map(e => e.id === equipmentId ? { ...e, status: 'assigned', assigneeId: employeeId, assignedAt: now, returnedAt: undefined, condition: 'good' } : e));
     setEquipmentAssignments(prev => [...prev, { id: String(Date.now()), equipmentId, employeeId, assignedAt: now, conditionAtAssignment: 'good' }]);
     eventBus.emit(EVENTS.EQUIPMENT_ASSIGNED);
-    addNotification({ userId: employeeId, title: 'Ã‰quipement assignÃ©', message: `Un Ã©quipement vous a Ã©tÃ© assignÃ©`, type: 'payslip', read: false });
+    addNotification({ userId: employeeId, title: 'Équipement assigné', message: `Un équipement vous a été assigné`, type: 'payslip', read: false });
   };
   const returnEquipment = (equipmentId: string, condition?: 'good' | 'fair' | 'damaged') => {
     const now = new Date();
@@ -962,7 +962,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setEquipmentAssignments(prev => prev.map(a => a.equipmentId === equipmentId && !a.returnedAt ? { ...a, returnedAt: now, conditionAtReturn: condition } : a));
   };
 
-  // Bien-Ãªtre
+  // Bien-être
   const addWellnessSurvey = (survey: Omit<WellnessSurvey, 'id' | 'createdAt'>) => {
     setWellnessSurveys(prev => [{ ...survey, id: String(Date.now()), createdAt: new Date() }, ...prev]);
   };
@@ -975,7 +975,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const requestSalaryAdvance = (advance: Omit<SalaryAdvance, 'id' | 'requestedAt' | 'status' | 'repaymentStatus'>) => {
     setSalaryAdvances(prev => [{ ...advance, id: String(Date.now()), status: 'requested', requestedAt: new Date(), repaymentStatus: 'pending' }, ...prev]);
     eventBus.emit(EVENTS.ADVANCE_REQUESTED);
-    addNotification({ userId: advance.employeeId, title: 'Demande d\'avance', message: `Avance de ${advance.amount.toLocaleString()} FCFA demandÃ©e`, type: 'payslip', read: false });
+    addNotification({ userId: advance.employeeId, title: 'Demande d\'avance', message: `Avance de ${advance.amount.toLocaleString()} FCFA demandée`, type: 'payslip', read: false });
   };
   const approveSalaryAdvance = (id: string) => {
     setSalaryAdvances(prev => prev.map(a => a.id === id ? { ...a, status: 'approved', approvedAt: new Date() } : a));
@@ -1015,7 +1015,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     eventBus.emit(EVENTS.QUIZ_COMPLETED);
     if (passed && quiz) {
       issueCertificate({ courseId: quiz.courseId, employeeId: attempt.employeeId, expiresAt: new Date(Date.now() + 365 * 86400000) });
-      addRewardTransaction({ employeeId: attempt.employeeId, points: 300, type: 'earned', reason: `Quiz rÃ©ussi: ${quiz.title}` });
+      addRewardTransaction({ employeeId: attempt.employeeId, points: 300, type: 'earned', reason: `Quiz réussi: ${quiz.title}` });
     }
     return newAttempt;
   };
@@ -1024,7 +1024,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     eventBus.emit(EVENTS.CERTIFICATE_ISSUED);
   };
 
-  // Signature Ã©lectronique
+  // Signature électronique
   const sendSignatureRequest = (req: Omit<SignatureRequest, 'id' | 'initiatedAt' | 'status'>) => {
     const newReq: SignatureRequest = {
       ...req,
@@ -1035,7 +1035,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setSignatureRequests(prev => [newReq, ...prev]);
     eventBus.emit(EVENTS.SIGNATURE_SENT);
     req.recipients.forEach(r => {
-      addNotification({ userId: r.employeeId, title: 'Document Ã  signer', message: `${req.documentName} - Veuillez signer le document`, type: 'contract', read: false });
+      addNotification({ userId: r.employeeId, title: 'Document à signer', message: `${req.documentName} - Veuillez signer le document`, type: 'contract', read: false });
     });
   };
 
@@ -1054,7 +1054,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     } else {
       eventBus.emit(EVENTS.SIGNATURE_SIGNED);
     }
-    addNotification({ userId: recipientEmployeeId, title: 'Document signÃ©', message: 'Vous avez signÃ© avec succÃ¨s', type: 'contract', read: false });
+    addNotification({ userId: recipientEmployeeId, title: 'Document signé', message: 'Vous avez signé avec succès', type: 'contract', read: false });
   };
 
   const rejectSignature = (requestId: string, recipientEmployeeId: string, reason: string) => {

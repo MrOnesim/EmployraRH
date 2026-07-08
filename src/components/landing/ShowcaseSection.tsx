@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { 
@@ -9,43 +9,43 @@ import {
 const slides = [
   { 
     icon: Users, 
-    label: 'Gestion des employÃ©s', 
-    desc: 'Fiches complÃ¨tes, contrats, organigramme interactif.', 
+    label: 'Gestion des employés', 
+    desc: 'Fiches complètes, contrats, organigramme interactif.', 
     color: 'from-blue-500 to-blue-600',
     type: 'employees'
   },
   { 
     icon: DollarSign, 
     label: 'Paie multi-pays', 
-    desc: 'FCFA, EUR, USD â€” conformitÃ© locale automatique.', 
+    desc: 'FCFA, EUR, USD — conformité locale automatique.', 
     color: 'from-green-500 to-green-600',
     type: 'payroll'
   },
   { 
     icon: BarChart3, 
     label: 'Tableaux de bord', 
-    desc: 'KPIs en temps rÃ©el, exports PDF et Excel.', 
+    desc: 'KPIs en temps réel, exports PDF et Excel.', 
     color: 'from-purple-500 to-purple-600',
     type: 'dashboards'
   },
   { 
     icon: Smartphone, 
     label: 'Application mobile', 
-    desc: 'Pointage, congÃ©s, notifications depuis votre tÃ©lÃ©phone.', 
+    desc: 'Pointage, congés, notifications depuis votre téléphone.', 
     color: 'from-orange-500 to-orange-600',
     type: 'mobile'
   },
   { 
     icon: QrCode, 
     label: 'Pointage QR Code', 
-    desc: 'Scan sÃ©curisÃ© avec gÃ©olocalisation et anti-double-scan.', 
+    desc: 'Scan sécurisé avec géolocalisation et anti-double-scan.', 
     color: 'from-indigo-500 to-indigo-600',
     type: 'qr'
   },
   { 
     icon: FileText, 
-    label: 'Signature Ã©lectronique', 
-    desc: 'Documents RH signÃ©s en ligne, valeur lÃ©gale.', 
+    label: 'Signature électronique', 
+    desc: 'Documents RH signés en ligne, valeur légale.', 
     color: 'from-pink-500 to-pink-600',
     type: 'signature'
   },
@@ -77,7 +77,7 @@ export default function ShowcaseSection() {
             <div className="space-y-2">
               {[
                 { name: 'Amina Diallo', role: 'Directrice Marketing', dept: 'Marketing', status: 'Actif', img: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&auto=format&fit=crop&q=60' },
-                { name: 'Jean-Luc Koffi', role: 'DÃ©veloppeur Principal', dept: 'Tech', status: 'En congÃ©', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=60' },
+                { name: 'Jean-Luc Koffi', role: 'Développeur Principal', dept: 'Tech', status: 'En congé', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=60' },
                 { name: 'Marie Dubois', role: 'RH Manager', dept: 'Ressources Humaines', status: 'Actif', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=60' },
               ].map((emp, i) => (
                 <motion.div 
@@ -107,15 +107,15 @@ export default function ShowcaseSection() {
           <div className="w-full space-y-4 text-left">
             <div className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/5">
               <span className="text-xs font-bold text-white">Calcul Paie - Juillet 2026</span>
-              <span className="text-[10px] font-black text-emerald-400 flex items-center gap-1"><Flag size={10} /> SÃ©nÃ©gal (Conforme)</span>
+              <span className="text-[10px] font-black text-emerald-400 flex items-center gap-1"><Flag size={10} /> Sénégal (Conforme)</span>
             </div>
             
             <div className="space-y-2">
               {[
                 { label: 'Salaire de Base', value: '1 200 000 FCFA', highlight: false },
-                { label: 'IndemnitÃ© de Logement', value: '+ 150 000 FCFA', highlight: false },
-                { label: 'ImpÃ´t sur le Revenu', value: '- 180 500 FCFA', highlight: true, color: 'text-rose-350' },
-                { label: 'Net Ã  Payer (Virement)', value: '1 169 500 FCFA', highlight: true, color: 'text-emerald-400' },
+                { label: 'Indemnité de Logement', value: '+ 150 000 FCFA', highlight: false },
+                { label: 'Impôt sur le Revenu', value: '- 180 500 FCFA', highlight: true, color: 'text-rose-350' },
+                { label: 'Net à Payer (Virement)', value: '1 169 500 FCFA', highlight: true, color: 'text-emerald-400' },
               ].map((line) => (
                 <div key={line.label} className="flex justify-between items-center text-xs py-1">
                   <span className="text-white/60 font-medium">{line.label}</span>
@@ -129,7 +129,7 @@ export default function ShowcaseSection() {
                 <Check size={11} className="text-white font-black" />
               </div>
               <span className="text-[10px] text-emerald-400 font-semibold leading-snug">
-                DÃ©claration IPRES & CSS validÃ©e automatiquement pour ce mois.
+                Déclaration IPRES & CSS validée automatiquement pour ce mois.
               </span>
             </div>
           </div>
@@ -139,21 +139,21 @@ export default function ShowcaseSection() {
           <div className="w-full space-y-4 text-left">
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-white/5 p-3 rounded-xl border border-white/5">
-                <span className="text-[10px] text-white/50 font-bold block mb-1">Taux de RÃ©tention</span>
+                <span className="text-[10px] text-white/50 font-bold block mb-1">Taux de Rétention</span>
                 <span className="text-xl font-black text-white">94.2%</span>
-                <span className="text-[9px] text-emerald-400 font-semibold block mt-0.5">ðŸš€ +3.5% vs 2025</span>
+                <span className="text-[9px] text-emerald-400 font-semibold block mt-0.5">🚀 +3.5% vs 2025</span>
               </div>
               <div className="bg-white/5 p-3 rounded-xl border border-white/5">
                 <span className="text-[10px] text-white/50 font-bold block mb-1">Masse Salariale</span>
                 <span className="text-xl font-black text-white">48.2M CFA</span>
-                <span className="text-[9px] text-blue-300 font-semibold block mt-0.5">ðŸ“Š AjustÃ© Ã  l'inflation</span>
+                <span className="text-[9px] text-blue-300 font-semibold block mt-0.5">📊 Ajusté à l'inflation</span>
               </div>
             </div>
 
             {/* Simulated mini line chart */}
             <div className="bg-white/5 p-3 rounded-xl border border-white/5">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold text-white flex items-center gap-1.5"><TrendingUp size={11} className="text-purple-400" /> Ã‰volution effectifs</span>
+                <span className="text-[10px] font-bold text-white flex items-center gap-1.5"><TrendingUp size={11} className="text-purple-400" /> Évolution effectifs</span>
                 <span className="text-[9px] text-white/40">Jan - Juil</span>
               </div>
               <svg className="w-full h-16 stroke-purple-400 fill-none" viewBox="0 0 100 30" preserveAspectRatio="none">
@@ -171,20 +171,20 @@ export default function ShowcaseSection() {
               <div className="bg-white/5 rounded-lg p-2 text-center border border-white/5">
                 <div className="text-[9px] font-bold text-white/40 uppercase">Aujourd'hui</div>
                 <div className="text-xs font-black text-white mt-0.5">Heure : 08:32</div>
-                <div className="text-[9px] text-emerald-400 font-bold mt-1">âœ” Dans la zone</div>
+                <div className="text-[9px] text-emerald-400 font-bold mt-1">✔ Dans la zone</div>
               </div>
               
               <button className="w-full bg-blue-600 text-white font-black text-[10px] py-1.5 rounded-lg mt-3 shadow-md hover:bg-blue-700 transition-colors">
-                Pointer ArrivÃ©e
+                Pointer Arrivée
               </button>
               
               <div className="flex justify-around items-center text-[8px] text-white/50 border-t border-white/10 pt-2 mt-4">
                 <span>Accueil</span>
-                <span className="text-white font-bold">CongÃ©s</span>
+                <span className="text-white font-bold">Congés</span>
                 <span>Mon Profil</span>
               </div>
             </div>
-            <span className="text-[10px] text-white/50 text-center font-medium">Interface application mobile employÃ©</span>
+            <span className="text-[10px] text-white/50 text-center font-medium">Interface application mobile employé</span>
           </div>
         );
       case 'qr':
@@ -201,12 +201,12 @@ export default function ShowcaseSection() {
             
             <div className="space-y-1">
               <div className="text-xs font-bold text-white">Pointage Sans Contact</div>
-              <p className="text-[10px] text-white/60">GÃ©nÃ©rez un QR code dynamique toutes les 15 secondes pour lutter contre la fraude.</p>
+              <p className="text-[10px] text-white/60">Générez un QR code dynamique toutes les 15 secondes pour lutter contre la fraude.</p>
             </div>
 
             <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full">
               <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-ping" />
-              <span className="text-[9px] text-blue-300 font-black">QR actualisÃ© automatiquement</span>
+              <span className="text-[9px] text-blue-300 font-black">QR actualisé automatiquement</span>
             </div>
           </div>
         );
@@ -216,7 +216,7 @@ export default function ShowcaseSection() {
             <div className="border border-white/10 rounded-xl p-3 bg-white/5 space-y-2">
               <div className="flex justify-between items-center border-b border-white/10 pb-1.5">
                 <span className="text-[10px] font-bold text-white uppercase">Contrat_CDI_Diallo.pdf</span>
-                <span className="text-[9px] font-bold text-pink-400 flex items-center gap-1"><Award size={10} /> CertifiÃ©</span>
+                <span className="text-[9px] font-bold text-pink-400 flex items-center gap-1"><Award size={10} /> Certifié</span>
               </div>
               <div className="space-y-1">
                 <div className="h-2 w-3/4 bg-white/10 rounded" />
@@ -227,11 +227,11 @@ export default function ShowcaseSection() {
 
             <div className="flex items-end justify-between bg-white/5 border border-white/5 p-3 rounded-xl">
               <div>
-                <span className="text-[9px] text-white/50 block">Signature de l'employÃ©</span>
+                <span className="text-[9px] text-white/50 block">Signature de l'employé</span>
                 <span className="text-[10px] font-bold text-white mt-0.5 block italic font-serif">Amina Diallo</span>
               </div>
               <div className="text-right">
-                <span className="text-[9px] text-emerald-400 font-bold block">âœ” SignÃ© par SMS OTP</span>
+                <span className="text-[9px] text-emerald-400 font-bold block">✔ Signé par SMS OTP</span>
                 <span className="text-[8px] text-white/30 block">ID: d6f882a...</span>
               </div>
             </div>
@@ -253,16 +253,16 @@ export default function ShowcaseSection() {
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 ring-1 ring-blue-200 shadow-sm mb-6">
-            <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">DÃ©couvrez l'application</span>
+            <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Découvrez l'application</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4 tracking-tight">
             Une plateforme unique, des{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 drop-shadow-sm">
-              possibilitÃ©s infinies
+              possibilités infinies
             </span>
           </h2>
           <p className="text-gray-500 text-lg max-w-xl mx-auto">
-            DÃ©couvrez comment EmployraRH centralise et simplifie vos opÃ©rations au quotidien.
+            Découvrez comment EmployePro centralise et simplifie vos opérations au quotidien.
           </p>
         </div>
 
@@ -279,7 +279,7 @@ export default function ShowcaseSection() {
                   <div className="w-3 h-3 rounded-full bg-amber-500" />
                   <div className="w-3 h-3 rounded-full bg-emerald-500" />
                 </div>
-                <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider">AperÃ§u RÃ©el : {s.label}</span>
+                <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider">Aperçu Réel : {s.label}</span>
               </div>
 
               {/* Dynamic Mock Screen Wrapper with AnimatePresence */}
@@ -308,7 +308,7 @@ export default function ShowcaseSection() {
               <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
                 <QrCode size={16} className="text-blue-600" />
               </div>
-              <span className="text-xs font-extrabold text-slate-700">Pointage instantanÃ©</span>
+              <span className="text-xs font-extrabold text-slate-700">Pointage instantané</span>
             </motion.div>
           </div>
 

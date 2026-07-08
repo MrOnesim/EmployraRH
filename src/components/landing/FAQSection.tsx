@@ -1,52 +1,52 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { ChevronDown } from 'lucide-react';
 
 const faqs = [
   {
-    q: 'EmployÃ©Pro est-il adaptÃ© Ã  mon entreprise ?',
-    a: "EmployÃ©Pro convient aux PME, grandes entreprises, ONG et administrations publiques. Notre plateforme s'adapte Ã  toutes les tailles d'organisation avec des fonctionnalitÃ©s modulaires.",
+    q: 'EmployéPro est-il adapté à mon entreprise ?',
+    a: "EmployéPro convient aux PME, grandes entreprises, ONG et administrations publiques. Notre plateforme s'adapte à toutes les tailles d'organisation avec des fonctionnalités modulaires.",
   },
   {
     q: 'Comment fonctionne la facturation ?',
-    a: "Nous ne facturons pas par employÃ©. Vous payez un abonnement fixe mensuel ou annuel, quel que soit le nombre d'employÃ©s gÃ©rÃ©s sur la plateforme.",
+    a: "Nous ne facturons pas par employé. Vous payez un abonnement fixe mensuel ou annuel, quel que soit le nombre d'employés gérés sur la plateforme.",
   },
   {
-    q: 'Quels sont les pays supportÃ©s ?',
-    a: "Nous supportons actuellement 16+ pays en Afrique de l'Ouest, Centrale, Australe, du Nord et en Europe. Nous ajoutons rÃ©guliÃ¨rement de nouveaux pays.",
+    q: 'Quels sont les pays supportés ?',
+    a: "Nous supportons actuellement 16+ pays en Afrique de l'Ouest, Centrale, Australe, du Nord et en Europe. Nous ajoutons régulièrement de nouveaux pays.",
   },
   {
-    q: 'Les donnÃ©es sont-elles stockÃ©es en Afrique ?',
-    a: 'Nous proposons des data centers en Europe et en Afrique. Vous pouvez choisir la localisation de vos donnÃ©es. Tout est conforme RGPD et aux rÃ©glementations locales.',
+    q: 'Les données sont-elles stockées en Afrique ?',
+    a: 'Nous proposons des data centers en Europe et en Afrique. Vous pouvez choisir la localisation de vos données. Tout est conforme RGPD et aux réglementations locales.',
   },
   {
     q: 'Puis-je payer les salaires depuis la plateforme ?',
-    a: 'Oui, notre module Paie intÃ¨gre les systÃ¨mes de paiement locaux (Mobile Money, virements bancaires) et internationaux (Flutterwave, Paystack, SWIFT).',
+    a: 'Oui, notre module Paie intègre les systèmes de paiement locaux (Mobile Money, virements bancaires) et internationaux (Flutterwave, Paystack, SWIFT).',
   },
   {
-    q: 'Comment fonctionne la signature Ã©lectronique ?',
-    a: 'Vous importez un document, dÃ©finissez les signataires, et chacun signe en ligne depuis son navigateur ou mobile. La signature a valeur juridique.',
+    q: 'Comment fonctionne la signature électronique ?',
+    a: 'Vous importez un document, définissez les signataires, et chacun signe en ligne depuis son navigateur ou mobile. La signature a valeur juridique.',
   },
   {
     q: "Est-ce que l'assistant IA est vraiment utile ?",
-    a: 'Notre IA analyse vos donnÃ©es RH, gÃ©nÃ¨re des rapports, rÃ©pond Ã  vos questions et fait des recommandations. Les utilisateurs rapportent un gain de temps de 40%.',
+    a: 'Notre IA analyse vos données RH, génère des rapports, répond à vos questions et fait des recommandations. Les utilisateurs rapportent un gain de temps de 40%.',
   },
   {
-    q: 'Puis-je exporter mes donnÃ©es ?',
-    a: 'Oui, vous pouvez exporter toutes vos donnÃ©es en PDF, Excel, CSV Ã  tout moment. Nous proposons aussi une API pour vos intÃ©grations personnalisÃ©es.',
+    q: 'Puis-je exporter mes données ?',
+    a: 'Oui, vous pouvez exporter toutes vos données en PDF, Excel, CSV à tout moment. Nous proposons aussi une API pour vos intégrations personnalisées.',
   },
   {
-    q: "Quel est le dÃ©lai d'implÃ©mentation ?",
-    a: "Comptez quelques minutes pour crÃ©er votre compte et importer vos premiers employÃ©s. L'implÃ©mentation complÃ¨te prend gÃ©nÃ©ralement 1 Ã  2 jours.",
+    q: "Quel est le délai d'implémentation ?",
+    a: "Comptez quelques minutes pour créer votre compte et importer vos premiers employés. L'implémentation complète prend généralement 1 à 2 jours.",
   },
   {
     q: "Proposez-vous une version d'essai ?",
-    a: 'Oui, un essai gratuit de 14 jours sans engagement et sans carte bancaire. Toutes les fonctionnalitÃ©s sont accessibles.',
+    a: 'Oui, un essai gratuit de 14 jours sans engagement et sans carte bancaire. Toutes les fonctionnalités sont accessibles.',
   },
   {
-    q: 'Le support est-il disponible en franÃ§ais ?',
-    a: 'Oui, notre support est disponible en franÃ§ais, anglais, arabe et portugais. Assistance par chat, email et tÃ©lÃ©phone 24/7.',
+    q: 'Le support est-il disponible en français ?',
+    a: 'Oui, notre support est disponible en français, anglais, arabe et portugais. Assistance par chat, email et téléphone 24/7.',
   },
 ];
 
@@ -98,10 +98,10 @@ export default function FAQSection() {
             <span className="text-sm font-medium text-gray-600">FAQ</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4 tracking-tight">
-            Questions frÃ©quentes
+            Questions fréquentes
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Tout ce que vous devez savoir sur EmployÃ©Pro Africa.
+            Tout ce que vous devez savoir sur EmployéPro Africa.
           </p>
         </div>
 

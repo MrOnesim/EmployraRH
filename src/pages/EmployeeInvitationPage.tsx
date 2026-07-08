@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { CheckCircle, XCircle, User, Mail, Phone, Calendar, Briefcase, Lock } from 'lucide-react';
@@ -24,7 +24,7 @@ export default function EmployeeInvitationPage() {
   const company = {
     name: 'TechAfrique Solutions',
     logo: '',
-    message: 'Nous sommes ravis de vous accueillir dans notre Ã©quipe !'
+    message: 'Nous sommes ravis de vous accueillir dans notre équipe !'
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -50,8 +50,8 @@ export default function EmployeeInvitationPage() {
       <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 flex items-center justify-center p-4">
         <div className="text-center">
           <XCircle size={64} className="mx-auto text-red-500 mb-4" />
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Invitation dÃ©clinÃ©e</h1>
-          <p className="text-gray-500 dark:text-gray-400">Vous avez refusÃ© l'invitation de {company.name}</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Invitation déclinée</h1>
+          <p className="text-gray-500 dark:text-gray-400">Vous avez refusé l'invitation de {company.name}</p>
         </div>
       </div>
     );
@@ -65,7 +65,7 @@ export default function EmployeeInvitationPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200 dark:shadow-blue-900/50 mb-4">
             <span className="text-white font-bold text-2xl">EP</span>
           </div>
-          <p className="text-gray-500 dark:text-gray-400">EmployÃ©Pro Africa</p>
+          <p className="text-gray-500 dark:text-gray-400">EmployéPro Africa</p>
         </div>
 
         {step === 'welcome' && (
@@ -80,7 +80,7 @@ export default function EmployeeInvitationPage() {
             
             <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4 mb-6">
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                Vous avez Ã©tÃ© invitÃ©(e) Ã  rejoindre cette entreprise en tant qu'employÃ©(e).
+                Vous avez été invité(e) à rejoindre cette entreprise en tant qu'employé(e).
               </p>
             </div>
 
@@ -89,7 +89,7 @@ export default function EmployeeInvitationPage() {
                 onClick={handleDecline}
                 className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               >
-                DÃ©cliner
+                Décliner
               </button>
               <button
                 onClick={handleAccept}
@@ -105,14 +105,14 @@ export default function EmployeeInvitationPage() {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
             <div className="text-center mb-6">
               <CheckCircle size={48} className="mx-auto text-green-500 mb-4" />
-              <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">CrÃ©ez votre profil</h1>
-              <p className="text-gray-500 dark:text-gray-400">ComplÃ©tez vos informations pour finaliser votre inscription</p>
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">Créez votre profil</h1>
+              <p className="text-gray-500 dark:text-gray-400">Complétez vos informations pour finaliser votre inscription</p>
             </div>
 
             <form onSubmit={handleSubmitProfile} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PrÃ©nom *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prénom *</label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -120,7 +120,7 @@ export default function EmployeeInvitationPage() {
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      placeholder="PrÃ©nom"
+                      placeholder="Prénom"
                       className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                       required
                     />
@@ -156,7 +156,7 @@ export default function EmployeeInvitationPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">TÃ©lÃ©phone *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Téléphone *</label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                   <input
@@ -204,7 +204,7 @@ export default function EmployeeInvitationPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">DÃ©partement *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Département *</label>
                   <select
                     name="department"
                     value={formData.department}
@@ -212,14 +212,14 @@ export default function EmployeeInvitationPage() {
                     className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     required
                   >
-                    <option value="">SÃ©lectionner</option>
+                    <option value="">Sélectionner</option>
                     <option value="Direction">Direction</option>
                     <option value="Ressources Humaines">Ressources Humaines</option>
                     <option value="Finance">Finance</option>
                     <option value="Informatique">Informatique</option>
                     <option value="Marketing">Marketing</option>
                     <option value="Ventes">Ventes</option>
-                    <option value="Operations">OpÃ©rations</option>
+                    <option value="Operations">Opérations</option>
                     <option value="Juridique">Juridique</option>
                     <option value="Autre">Autre</option>
                   </select>
@@ -235,7 +235,7 @@ export default function EmployeeInvitationPage() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                    placeholder="••••••••"
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     required
                   />
@@ -251,7 +251,7 @@ export default function EmployeeInvitationPage() {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                    placeholder="••••••••"
                     className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                     required
                   />

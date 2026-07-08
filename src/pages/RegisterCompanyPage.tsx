@@ -1,10 +1,12 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
 import { Building2, User, Mail, Phone, MapPin, Globe, Lock, Upload } from 'lucide-react';
 
 export default function RegisterCompanyPage() {
   const { registerCompany } = useApp();
+  const { addToast } = useToast();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -30,6 +32,14 @@ export default function RegisterCompanyPage() {
     if (step === 1) {
       setStep(2);
     } else {
+      if (formData.password !== formData.confirmPassword) {
+        addToast('Les mots de passe ne correspondent pas', 'error');
+        return;
+      }
+      if (formData.password.length < 8) {
+        addToast('Le mot de passe doit contenir au moins 8 caractères', 'error');
+        return;
+      }
       registerCompany({
         name: formData.name,
         logo: formData.logo || '',
@@ -39,7 +49,8 @@ export default function RegisterCompanyPage() {
         phone: formData.phone,
         employeeCount: parseInt(formData.employeeCount) || 0,
         address: formData.address,
-        website: formData.website
+        website: formData.website,
+        password: formData.password
       });
       navigate('/admin');
     }
@@ -53,8 +64,8 @@ export default function RegisterCompanyPage() {
           <Link to="/" className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200 dark:shadow-blue-900/50 mb-4">
             <span className="text-white font-bold text-2xl">EP</span>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">CrÃ©er votre entreprise</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Rejoignez EmployÃ©Pro Africa</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Créer votre entreprise</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Rejoignez EmployéPro Africa</p>
         </div>
 
         {/* Progress Steps */}
@@ -113,7 +124,7 @@ export default function RegisterCompanyPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PrÃ©nom du dirigeant *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prénom du dirigeant *</label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                       <input
@@ -121,7 +132,7 @@ export default function RegisterCompanyPage() {
                         name="ownerFirstName"
                         value={formData.ownerFirstName}
                         onChange={handleChange}
-                        placeholder="PrÃ©nom"
+                        placeholder="Prénom"
                         className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                         required
                       />
@@ -159,7 +170,7 @@ export default function RegisterCompanyPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">TÃ©lÃ©phone *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Téléphone *</label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                       <input
@@ -174,7 +185,7 @@ export default function RegisterCompanyPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre d'employÃ©s</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre d'employés</label>
                     <input
                       type="number"
                       name="employeeCount"
@@ -218,7 +229,7 @@ export default function RegisterCompanyPage() {
               </>
             ) : (
               <>
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">SÃ©curitÃ© du compte</h2>
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Sécurité du compte</h2>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mot de passe *</label>
@@ -229,12 +240,12 @@ export default function RegisterCompanyPage() {
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
-                      placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                      placeholder="••••••••"
                       className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                       required
                     />
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum 8 caractÃ¨res</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum 8 caractères</p>
                 </div>
 
                 <div>
@@ -246,7 +257,7 @@ export default function RegisterCompanyPage() {
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                      placeholder="••••••••"
                       className="w-full pl-10 pr-4 py-3 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                       required
                     />
@@ -254,11 +265,11 @@ export default function RegisterCompanyPage() {
                 </div>
 
                 <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4">
-                  <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">Votre entreprise sera crÃ©Ã©e avec :</h3>
+                  <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">Votre entreprise sera créée avec :</h3>
                   <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
-                    <li>â€¢ Identifiant unique : <span className="font-mono">EP-XXXXX</span></li>
-                    <li>â€¢ Dashboard administrateur</li>
-                    <li>â€¢ CapacitÃ© d'invitation des employÃ©s</li>
+                    <li>• Identifiant unique : <span className="font-mono">EP-XXXXX</span></li>
+                    <li>• Dashboard administrateur</li>
+                    <li>• Capacité d'invitation des employés</li>
                   </ul>
                 </div>
               </>
@@ -278,7 +289,7 @@ export default function RegisterCompanyPage() {
                 type="submit"
                 className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 active:scale-[0.98] transition-all shadow-lg shadow-blue-200 dark:shadow-blue-900/50"
               >
-                {step === 1 ? 'Continuer' : 'CrÃ©er mon entreprise'}
+                {step === 1 ? 'Continuer' : 'Créer mon entreprise'}
               </button>
             </div>
           </form>
@@ -286,7 +297,7 @@ export default function RegisterCompanyPage() {
 
         <div className="mt-6 text-center">
           <p className="text-gray-500 dark:text-gray-400 text-sm">
-            DÃ©jÃ  un compte ?{' '}
+            Déjà un compte ?{' '}
             <Link to="/login" className="text-blue-600 font-medium hover:text-blue-700">
               Se connecter
             </Link>

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -80,9 +80,9 @@ export default function PublicNav() {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-3 group perspective-[600px]">
             <div className="w-9 h-9 rounded-lg overflow-hidden ring-2 ring-transparent group-hover:ring-blue-400/50 transition-all group-hover:scale-105 duration-300">
-              <img src="/images/logo.png" alt="EmployÃ©Pro" loading="lazy" className="w-full h-full object-cover" />
+              <img src="/images/logo.png" alt="EmployéPro" loading="lazy" className="w-full h-full object-cover" />
             </div>
-            <span className="font-bold text-gray-800 dark:text-gray-100 text-lg group-hover:text-blue-600 transition-colors">EmployraRH</span>
+            <span className="font-bold text-gray-800 dark:text-gray-100 text-lg group-hover:text-blue-600 transition-colors">EmployePro</span>
           </Link>
 
           {/* Desktop links */}

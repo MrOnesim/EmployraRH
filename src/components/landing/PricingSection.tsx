@@ -1,4 +1,4 @@
-﻿import { useRef, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { Check, ArrowRight, X } from 'lucide-react';
@@ -8,10 +8,10 @@ const plans = [
     name: 'Gratuit',
     price: '0',
     period: 'Toujours',
-    desc: 'Pour dÃ©couvrir EmployÃ©Pro en toute libertÃ©.',
+    desc: 'Pour découvrir EmployéPro en toute liberté.',
     featured: false,
     features: [
-      "Jusqu'Ã  10 employÃ©s",
+      "Jusqu'à 10 employés",
       'Gestion RH de base',
       'Paie simple',
       '1 pays',
@@ -21,17 +21,17 @@ const plans = [
   {
     name: 'Pro',
     price: '99',
-    period: 'â‚¬/mois',
-    desc: 'Pour les PME en croissance. Pas de facturation par employÃ©.',
+    period: '€/mois',
+    desc: 'Pour les PME en croissance. Pas de facturation par employé.',
     featured: true,
     features: [
-      'EmployÃ©s illimitÃ©s',
+      'Employés illimités',
       'Tous les modules RH',
       'Paie multi-pays',
       'Assistant IA',
-      'Signature Ã©lectronique',
+      'Signature électronique',
       'Support prioritaire 24/7',
-      'API & IntÃ©grations',
+      'API & Intégrations',
     ],
   },
   {
@@ -43,11 +43,11 @@ const plans = [
     features: [
       'Tout le plan Pro',
       'Multi-entreprises',
-      'Data center dÃ©diÃ©',
+      'Data center dédié',
       'SLA 99.99%',
-      'Audit & ConformitÃ©',
+      'Audit & Conformité',
       'Formation on-site',
-      'Account manager dÃ©diÃ©',
+      'Account manager dédié',
     ],
   },
 ];
@@ -84,7 +84,7 @@ function PlanCard({ plan }: { plan: typeof plans[0] }) {
     >
       {plan.featured && (
         <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
-          RecommandÃ©
+          Recommandé
         </div>
       )}
       <div className="mb-6">
@@ -139,10 +139,10 @@ export default function PricingSection() {
             <span className="text-sm font-medium text-blue-600">Tarifs transparents</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4 tracking-tight">
-            Pas de facturation par employÃ©
+            Pas de facturation par employé
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Un prix fixe, quel que soit le nombre d'employÃ©s. Pas de surprises.
+            Un prix fixe, quel que soit le nombre d'employés. Pas de surprises.
           </p>
         </div>
 
@@ -157,25 +157,25 @@ export default function PricingSection() {
         <div className="mt-24">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 ring-1 ring-blue-200 shadow-sm mb-6">
-              <span className="text-sm font-medium text-blue-600">Pourquoi EmployÃ©Pro ?</span>
+              <span className="text-sm font-medium text-blue-600">Pourquoi EmployéPro ?</span>
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-gray-800 mb-4 tracking-tight">Le choix intelligent</h2>
-            <p className="text-gray-500 text-lg max-w-2xl mx-auto">ConÃ§u spÃ©cifiquement pour les besoins africains, sans les lourdeurs des logiciels occidentaux.</p>
+            <p className="text-gray-500 text-lg max-w-2xl mx-auto">Conçu spécifiquement pour les besoins africains, sans les lourdeurs des logiciels occidentaux.</p>
           </div>
 
           {(() => {
             const competitors = [
-              { name: 'SAP SuccessFactors', price: 'â‚¬100K+/an', features: [true, false, false, false, true, false, false, true], bad: 'Configuration longue, surcoÃ»t Afrique' },
-              { name: 'Sage', price: 'â‚¬50K+/an', features: [true, true, true, false, false, false, false, false], bad: "LimitÃ© Ã  l'Europe, absence IA" },
-              { name: 'EmployÃ©Pro Africa', price: 'Ã€ partir de 0â‚¬', features: [true, true, true, true, true, true, true, true], bad: null, isOurs: true },
+              { name: 'SAP SuccessFactors', price: '€100K+/an', features: [true, false, false, false, true, false, false, true], bad: 'Configuration longue, surcoût Afrique' },
+              { name: 'Sage', price: '€50K+/an', features: [true, true, true, false, false, false, false, false], bad: "Limité à l'Europe, absence IA" },
+              { name: 'EmployéPro Africa', price: 'À partir de 0€', features: [true, true, true, true, true, true, true, true], bad: null, isOurs: true },
             ];
-            const featureLabels = ['Paie multi-pays', 'Assistant IA', 'Signature Ã©lectronique', 'Multi-devises', 'Formation & Quiz', 'Support 24/7', 'Mode hors-ligne PWA', 'Facturation fixe'];
+            const featureLabels = ['Paie multi-pays', 'Assistant IA', 'Signature électronique', 'Multi-devises', 'Formation & Quiz', 'Support 24/7', 'Mode hors-ligne PWA', 'Facturation fixe'];
             return (
               <div className="overflow-x-auto bg-white rounded-3xl border border-gray-100 shadow-sm">
                 <table className="w-full min-w-[600px]">
                   <thead>
                     <tr className="border-b border-gray-100">
-                      <th className="text-left py-5 px-6 text-sm font-medium text-gray-500">FonctionnalitÃ©s</th>
+                      <th className="text-left py-5 px-6 text-sm font-medium text-gray-500">Fonctionnalités</th>
                       {competitors.map((c) => (
                         <th key={c.name} className={`py-5 px-6 text-left text-sm font-semibold ${c.isOurs ? 'text-blue-600' : 'text-gray-700'}`}>
                           <div className="flex items-center gap-2 mb-0.5">
@@ -222,10 +222,10 @@ export default function PricingSection() {
 
           <div className="mt-6 space-y-1">
             {[
-              { name: 'SAP SuccessFactors', bad: 'Configuration longue, surcoÃ»t Afrique' },
-              { name: 'Sage', bad: "LimitÃ© Ã  l'Europe, absence IA" },
+              { name: 'SAP SuccessFactors', bad: 'Configuration longue, surcoût Afrique' },
+              { name: 'Sage', bad: "Limité à l'Europe, absence IA" },
             ].map(c => (
-              <p key={c.name} className="text-sm text-gray-400 text-right">â€” {c.name} : {c.bad}</p>
+              <p key={c.name} className="text-sm text-gray-400 text-right">— {c.name} : {c.bad}</p>
             ))}
           </div>
         </div>

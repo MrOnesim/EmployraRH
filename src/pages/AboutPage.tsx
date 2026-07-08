@@ -1,4 +1,4 @@
-﻿import { useRef } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Users, Shield, Clock, Heart, Target, ArrowRight, MapPin,
@@ -11,30 +11,30 @@ import PublicNav from '../components/PublicNav';
 import FooterSection from '../components/landing/FooterSection';
 import CountUp from '../components/ui/CountUp';
 
-// â”€â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Data ────────────────────────────────────────────────────────────────────
 
 const team = [
-  { name: 'Amadou Diallo',    initials: 'AD', avatar: 'https://i.pravatar.cc/150?u=amadou@EmployraRH.com', role: 'CEO & Co-fondateur',     bio: 'Ex-directeur RH chez Orange, expert en transformation RH', location: 'SÃ©nÃ©gal',  from: 'from-blue-500',   to: 'to-indigo-600' },
-  { name: 'Marie Dubois',     initials: 'MD', avatar: 'https://i.pravatar.cc/150?u=marie@EmployraRH.com', role: 'CTO & Co-fondatrice',    bio: '15 ans d\'expÃ©rience en SaaS, ex-Tech Lead Microsoft',     location: 'France',    from: 'from-purple-500', to: 'to-pink-600' },
-  { name: 'Carlos Rodriguez', initials: 'CR', avatar: 'https://i.pravatar.cc/150?u=carlos@EmployraRH.com', role: 'VP Produit',             bio: 'Expert UX & Data Science, ex-Meta',                       location: 'PÃ©rou',     from: 'from-rose-500',   to: 'to-orange-500' },
-  { name: 'Aisha Mohammed',   initials: 'AM', avatar: 'https://i.pravatar.cc/150?u=aisha@EmployraRH.com', role: "VP d'IngÃ©nierie",        bio: 'Ex-Google, leader tech spÃ©cialiste infrastructure',        location: 'Nigeria',   from: 'from-emerald-500',to: 'to-teal-600' },
-  { name: 'Jean-Pierre Kamga',initials: 'JK', avatar: 'https://i.pravatar.cc/150?u=jp@EmployraRH.com',    role: 'Directeur Financier',    bio: 'Expert en fintech et paiements africains',                 location: 'Cameroun', from: 'from-amber-500',  to: 'to-yellow-500' },
-  { name: 'Fatima El Amrani', initials: 'FE', avatar: 'https://i.pravatar.cc/150?u=fatima@EmployraRH.com', role: 'VP Marketing',           bio: 'Growth & expansion Afrique, ex-Jumia',                    location: 'Maroc',     from: 'from-sky-500',    to: 'to-blue-600' },
+  { name: 'Amadou Diallo',    initials: 'AD', avatar: 'https://i.pravatar.cc/150?u=amadou@employepro.com', role: 'CEO & Co-fondateur',     bio: 'Ex-directeur RH chez Orange, expert en transformation RH', location: 'Sénégal',  from: 'from-blue-500',   to: 'to-indigo-600' },
+  { name: 'Marie Dubois',     initials: 'MD', avatar: 'https://i.pravatar.cc/150?u=marie@employepro.com', role: 'CTO & Co-fondatrice',    bio: '15 ans d\'expérience en SaaS, ex-Tech Lead Microsoft',     location: 'France',    from: 'from-purple-500', to: 'to-pink-600' },
+  { name: 'Carlos Rodriguez', initials: 'CR', avatar: 'https://i.pravatar.cc/150?u=carlos@employepro.com', role: 'VP Produit',             bio: 'Expert UX & Data Science, ex-Meta',                       location: 'Pérou',     from: 'from-rose-500',   to: 'to-orange-500' },
+  { name: 'Aisha Mohammed',   initials: 'AM', avatar: 'https://i.pravatar.cc/150?u=aisha@employepro.com', role: "VP d'Ingénierie",        bio: 'Ex-Google, leader tech spécialiste infrastructure',        location: 'Nigeria',   from: 'from-emerald-500',to: 'to-teal-600' },
+  { name: 'Jean-Pierre Kamga',initials: 'JK', avatar: 'https://i.pravatar.cc/150?u=jp@employepro.com',    role: 'Directeur Financier',    bio: 'Expert en fintech et paiements africains',                 location: 'Cameroun', from: 'from-amber-500',  to: 'to-yellow-500' },
+  { name: 'Fatima El Amrani', initials: 'FE', avatar: 'https://i.pravatar.cc/150?u=fatima@employepro.com', role: 'VP Marketing',           bio: 'Growth & expansion Afrique, ex-Jumia',                    location: 'Maroc',     from: 'from-sky-500',    to: 'to-blue-600' },
 ];
 
 const modules = [
-  { icon: Users,         title: 'Gestion RH',       desc: 'EmployÃ©s, Ã©quipes, organigramme, import CSV',          color: 'from-blue-500 to-blue-600' },
-  { icon: DollarSign,   title: 'Paie multi-pays',   desc: 'Salaire, fiches de paie, banque, fiscalitÃ©',           color: 'from-emerald-500 to-green-600' },
-  { icon: Clock,        title: 'Temps & PrÃ©sences', desc: 'Pointage, congÃ©s, calendrier, planning',               color: 'from-orange-500 to-amber-600' },
+  { icon: Users,         title: 'Gestion RH',       desc: 'Employés, équipes, organigramme, import CSV',          color: 'from-blue-500 to-blue-600' },
+  { icon: DollarSign,   title: 'Paie multi-pays',   desc: 'Salaire, fiches de paie, banque, fiscalité',           color: 'from-emerald-500 to-green-600' },
+  { icon: Clock,        title: 'Temps & Présences', desc: 'Pointage, congés, calendrier, planning',               color: 'from-orange-500 to-amber-600' },
   { icon: Briefcase,    title: 'Recrutement',       desc: 'Offres, candidatures, pipeline de recrutement',        color: 'from-purple-500 to-violet-600' },
-  { icon: BarChart3,    title: 'Performance',       desc: 'Objectifs, Ã©valuations, suivi des compÃ©tences',        color: 'from-rose-500 to-pink-600' },
+  { icon: BarChart3,    title: 'Performance',       desc: 'Objectifs, évaluations, suivi des compétences',        color: 'from-rose-500 to-pink-600' },
   { icon: FileText,     title: 'Documents',         desc: 'Gestion documentaire, signatures, coffre-fort',        color: 'from-sky-500 to-cyan-600' },
-  { icon: MessageSquare,title: 'Communication',     desc: "Messagerie, rÃ©unions, fil d'actualitÃ© social",         color: 'from-indigo-500 to-blue-600' },
+  { icon: MessageSquare,title: 'Communication',     desc: "Messagerie, réunions, fil d'actualité social",         color: 'from-indigo-500 to-blue-600' },
   { icon: BookOpen,     title: 'Formation',         desc: 'Catalogue, quiz, certificats, parcours',               color: 'from-teal-500 to-emerald-600' },
-  { icon: Gift,         title: 'RÃ©compenses',       desc: "Points, badges, catalogue d'avantages",               color: 'from-pink-500 to-rose-600' },
-  { icon: Monitor,      title: 'MatÃ©riel',          desc: 'Inventaire, affectations, maintenance',                color: 'from-gray-600 to-slate-700' },
-  { icon: Heart,        title: 'Bien-Ãªtre',         desc: 'Sondages anonymes, analyse de climat social',          color: 'from-red-500 to-rose-600' },
-  { icon: Zap,          title: 'Assistant IA',      desc: 'NLP, analyses prÃ©dictives, recommandations',           color: 'from-violet-500 to-purple-600' },
+  { icon: Gift,         title: 'Récompenses',       desc: "Points, badges, catalogue d'avantages",               color: 'from-pink-500 to-rose-600' },
+  { icon: Monitor,      title: 'Matériel',          desc: 'Inventaire, affectations, maintenance',                color: 'from-gray-600 to-slate-700' },
+  { icon: Heart,        title: 'Bien-être',         desc: 'Sondages anonymes, analyse de climat social',          color: 'from-red-500 to-rose-600' },
+  { icon: Zap,          title: 'Assistant IA',      desc: 'NLP, analyses prédictives, recommandations',           color: 'from-violet-500 to-purple-600' },
 ];
 
 const paymentMethods = [
@@ -43,39 +43,39 @@ const paymentMethods = [
   { name: 'Virement bancaire', desc: 'SEPA, SWIFT, virement local',                                regions: 'Monde',   icon: Building2,  color: 'from-emerald-500 to-teal-600' },
   { name: 'Flutterwave',       desc: 'Paiement via Flutterwave (50+ pays africains)',               regions: 'Afrique', icon: TrendingUp, color: 'from-rose-500 to-pink-600' },
   { name: 'PayPal',            desc: 'Standard et Business',                                       regions: 'Monde',   icon: Shield,     color: 'from-blue-500 to-sky-600' },
-  { name: 'Bitcoin / USDT',    desc: 'Crypto et stablecoins via partenaires certifiÃ©s',             regions: 'Monde',   icon: Lock,       color: 'from-yellow-500 to-amber-600' },
+  { name: 'Bitcoin / USDT',    desc: 'Crypto et stablecoins via partenaires certifiés',             regions: 'Monde',   icon: Lock,       color: 'from-yellow-500 to-amber-600' },
 ];
 
 const steps = [
-  { step: 1, title: 'CrÃ©ez votre compte',      desc: 'Inscrivez-vous en 2 minutes. Aucune carte bancaire requise pour l\'essai.', detail: 'Informations entreprise, politiques RH, cycle de paie.' },
-  { step: 2, title: 'Importez vos donnÃ©es',    desc: 'Importez vos employÃ©s via CSV ou manuellement.', detail: 'Colonnes auto-dÃ©tectÃ©es, validation temps rÃ©el, mapping intelligent.' },
-  { step: 3, title: 'Configurez la paie',      desc: 'Grilles salariales, taux de cotisation, rÃ¨gles de calcul par pays.', detail: 'BarÃ¨me progressif, heures sup, primes, congÃ©s payÃ©s, avantages en nature.' },
-  { step: 4, title: 'DÃ©marrez la gestion RH',  desc: 'PrÃ©sences, congÃ©s, documents, performances, recrutement.', detail: 'Dashboard centralisÃ©, notifications auto, workflow de validation intÃ©grÃ©.' },
-  { step: 5, title: 'GÃ©nÃ©rez les bulletins',   desc: 'Fiches de paie conformes Ã  la lÃ©gislation de chaque pays.', detail: 'Export PDF, archivage automatique, intÃ©gration bancaire.' },
-  { step: 6, title: 'Pilotez avec l\'IA',      desc: 'Analysez les tendances, anticipez les dÃ©parts.', detail: 'Assistant IA 24/7, alertes intelligentes, rapports personnalisÃ©s.' },
+  { step: 1, title: 'Créez votre compte',      desc: 'Inscrivez-vous en 2 minutes. Aucune carte bancaire requise pour l\'essai.', detail: 'Informations entreprise, politiques RH, cycle de paie.' },
+  { step: 2, title: 'Importez vos données',    desc: 'Importez vos employés via CSV ou manuellement.', detail: 'Colonnes auto-détectées, validation temps réel, mapping intelligent.' },
+  { step: 3, title: 'Configurez la paie',      desc: 'Grilles salariales, taux de cotisation, règles de calcul par pays.', detail: 'Barème progressif, heures sup, primes, congés payés, avantages en nature.' },
+  { step: 4, title: 'Démarrez la gestion RH',  desc: 'Présences, congés, documents, performances, recrutement.', detail: 'Dashboard centralisé, notifications auto, workflow de validation intégré.' },
+  { step: 5, title: 'Générez les bulletins',   desc: 'Fiches de paie conformes à la législation de chaque pays.', detail: 'Export PDF, archivage automatique, intégration bancaire.' },
+  { step: 6, title: 'Pilotez avec l\'IA',      desc: 'Analysez les tendances, anticipez les départs.', detail: 'Assistant IA 24/7, alertes intelligentes, rapports personnalisés.' },
 ];
 
 const securityItems = [
   'Chiffrement AES-256 au repos et TLS 1.3 en transit',
   'Authentification multi-facteurs (2FA)',
   'Conforme RGPD, OHADA, CEMAC, UEMOA',
-  'HÃ©bergement OVHcloud (Europe) & AWS (Afrique)',
+  'Hébergement OVHcloud (Europe) & AWS (Afrique)',
   'Backup quotidien avec PRA garanti',
-  'Audit de sÃ©curitÃ© trimestriel indÃ©pendant',
+  'Audit de sécurité trimestriel indépendant',
   'Certification ISO 27001 en cours',
-  'DonnÃ©es bancaires tokenisÃ©es (PCI-DSS)',
+  'Données bancaires tokenisées (PCI-DSS)',
 ];
 
 const partners = [
   { name: 'Flutterwave',      desc: 'Paiements africains',  color: 'from-red-500 to-orange-500' },
   { name: 'Orange Finances',  desc: 'Mobile Money',         color: 'from-orange-500 to-amber-500' },
-  { name: 'Sage',             desc: 'ComptabilitÃ©',         color: 'from-green-500 to-emerald-500' },
+  { name: 'Sage',             desc: 'Comptabilité',         color: 'from-green-500 to-emerald-500' },
   { name: 'QuickBooks',       desc: 'Synchro comptable',    color: 'from-blue-500 to-cyan-500' },
-  { name: 'Microsoft 365',    desc: 'ProductivitÃ©',         color: 'from-indigo-500 to-blue-500' },
+  { name: 'Microsoft 365',    desc: 'Productivité',         color: 'from-indigo-500 to-blue-500' },
   { name: 'Slack',            desc: 'Notifications RH',     color: 'from-purple-500 to-pink-500' },
 ];
 
-// â”€â”€â”€ Animation helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Animation helpers ────────────────────────────────────────────────────────
 
 function FadeUp({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
   const ref = useRef(null);
@@ -101,14 +101,14 @@ function SectionLabel({ icon: Icon, text }: { icon: React.ElementType; text: str
   );
 }
 
-// â”€â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-white">
       <PublicNav />
 
-      {/* â”€â”€ HERO â”€â”€ */}
+      {/* ── HERO ── */}
       <section className="relative pt-28 pb-36 overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-900">
         {/* Animated glow blobs */}
         <div className="absolute inset-0 pointer-events-none">
@@ -147,8 +147,8 @@ export default function AboutPage() {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="text-xl text-blue-200 max-w-3xl mx-auto leading-relaxed"
           >
-            EmployÃ©Pro est nÃ©e d'un constat : les entreprises mÃ©ritent des outils RH performants,
-            qu'elles soient Ã  Dakar, Paris, Douala, Abidjan, Lima ou DubaÃ¯.
+            EmployéPro est née d'un constat : les entreprises méritent des outils RH performants,
+            qu'elles soient à Dakar, Paris, Douala, Abidjan, Lima ou Dubaï.
           </motion.p>
 
           <motion.div
@@ -181,8 +181,8 @@ export default function AboutPage() {
         >
           <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 grid grid-cols-2 md:grid-cols-4 gap-6 shadow-2xl">
             {[
-              { value: 2020, suffix: '',  label: 'AnnÃ©e de crÃ©ation' },
-              { value: 60,   suffix: '+', label: 'Pays supportÃ©s' },
+              { value: 2020, suffix: '',  label: 'Année de création' },
+              { value: 60,   suffix: '+', label: 'Pays supportés' },
               { value: 10000,suffix: '+', label: 'Entreprises clientes' },
               { value: 50,   suffix: 'M+',label: 'Salaires / mois' },
             ].map((s, i) => (
@@ -197,13 +197,13 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* â”€â”€ STORY â”€â”€ */}
+      {/* ── STORY ── */}
       <section className="max-w-4xl mx-auto px-6 py-28">
         <FadeUp className="text-center mb-14">
           <SectionLabel icon={BookOpen} text="Notre histoire" />
-          <h2 className="text-4xl font-black text-gray-900 mb-4">De l'idÃ©e Ã  la rÃ©alitÃ©</h2>
+          <h2 className="text-4xl font-black text-gray-900 mb-4">De l'idée à la réalité</h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Une frustration partagÃ©e, une vision commune, et une Ã©quipe dÃ©terminÃ©e Ã  changer la donne.
+            Une frustration partagée, une vision commune, et une équipe déterminée à changer la donne.
           </p>
         </FadeUp>
 
@@ -215,21 +215,21 @@ export default function AboutPage() {
               color: 'bg-blue-500',
               year: '2019',
               title: 'Le constat',
-              text: 'Les solutions RH disponibles sont soit trop chÃ¨res pour les PME, soit conÃ§ues uniquement pour les pays dÃ©veloppÃ©s â€” ignorant le mobile money, les rÃ©gimes sociaux variÃ©s et les rÃ©alitÃ©s africaines.',
+              text: 'Les solutions RH disponibles sont soit trop chères pour les PME, soit conçues uniquement pour les pays développés — ignorant le mobile money, les régimes sociaux variés et les réalités africaines.',
             },
             {
               icon: Zap,
               color: 'bg-indigo-500',
               year: '2020',
               title: 'La fondation',
-              text: 'Amadou Diallo (ex-Orange) et Marie Dubois (ex-Microsoft) s\'associent pour bÃ¢tir une plateforme SaaS accessible partout, fonctionnant hors ligne, compatible avec les moyens de paiement locaux.',
+              text: 'Amadou Diallo (ex-Orange) et Marie Dubois (ex-Microsoft) s\'associent pour bâtir une plateforme SaaS accessible partout, fonctionnant hors ligne, compatible avec les moyens de paiement locaux.',
             },
             {
               icon: Globe,
               color: 'bg-emerald-500',
               year: 'Aujourd\'hui',
               title: 'L\'impact',
-              text: 'Plus de 10 000 entreprises font confiance Ã  EmployÃ©Pro. Nous traitons 50M+ de salaires par mois. Notre Ã©quipe de 120+ collaborateurs rÃ©partis sur 4 continents continue d\'innover.',
+              text: 'Plus de 10 000 entreprises font confiance à EmployéPro. Nous traitons 50M+ de salaires par mois. Notre équipe de 120+ collaborateurs répartis sur 4 continents continue d\'innover.',
             },
           ].map((item, i) => (
             <FadeUp key={i} delay={i * 0.12}>
@@ -251,13 +251,13 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* â”€â”€ HOW IT WORKS â”€â”€ */}
+      {/* ── HOW IT WORKS ── */}
       <section className="bg-gradient-to-br from-gray-50 to-blue-50/30 py-28">
         <div className="max-w-6xl mx-auto px-6">
           <FadeUp className="text-center mb-16">
-            <SectionLabel icon={TrendingUp} text="Comment Ã§a marche" />
-            <h2 className="text-4xl font-black text-gray-900 mb-4">DÃ©marrez en moins de 10 minutes</h2>
-            <p className="text-gray-500 text-lg max-w-2xl mx-auto">Notre onboarding guidÃ© vous accompagne Ã  chaque Ã©tape du lancement.</p>
+            <SectionLabel icon={TrendingUp} text="Comment ça marche" />
+            <h2 className="text-4xl font-black text-gray-900 mb-4">Démarrez en moins de 10 minutes</h2>
+            <p className="text-gray-500 text-lg max-w-2xl mx-auto">Notre onboarding guidé vous accompagne à chaque étape du lancement.</p>
           </FadeUp>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -280,13 +280,13 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* â”€â”€ MODULES â”€â”€ */}
+      {/* ── MODULES ── */}
       <section className="max-w-6xl mx-auto px-6 py-28">
         <FadeUp className="text-center mb-16">
           <SectionLabel icon={Award} text="Modules" />
           <h2 className="text-4xl font-black text-gray-900 mb-4">12 modules, une plateforme</h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            De l'embauche Ã  la paie, tout ce dont vos Ã©quipes RH ont besoin, au mÃªme endroit.
+            De l'embauche à la paie, tout ce dont vos équipes RH ont besoin, au même endroit.
           </p>
         </FadeUp>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
@@ -307,7 +307,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* â”€â”€ PAYMENTS â”€â”€ */}
+      {/* ── PAYMENTS ── */}
       <section className="bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 py-28">
         <div className="max-w-6xl mx-auto px-6">
           <FadeUp className="text-center mb-16">
@@ -316,7 +316,7 @@ export default function AboutPage() {
             </div>
             <h2 className="text-4xl font-black text-white mb-4">Payez comme vous voulez</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Paiements internationaux et africains pour que vous puissiez rÃ©gler depuis n'importe oÃ¹.
+              Paiements internationaux et africains pour que vous puissiez régler depuis n'importe où.
             </p>
           </FadeUp>
 
@@ -347,18 +347,18 @@ export default function AboutPage() {
           <FadeUp className="mt-12 text-center">
             <div className="inline-flex items-center gap-2 text-gray-400 text-sm bg-white/5 px-5 py-2.5 rounded-full border border-white/10">
               <Shield size={15} className="text-emerald-400" />
-              Paiement sÃ©curisÃ© via TLS 1.3 Â· Nous ne stockons pas vos donnÃ©es bancaires.
+              Paiement sécurisé via TLS 1.3 · Nous ne stockons pas vos données bancaires.
             </div>
           </FadeUp>
         </div>
       </section>
 
-      {/* â”€â”€ SECURITY â”€â”€ */}
+      {/* ── SECURITY ── */}
       <section className="max-w-6xl mx-auto px-6 py-28">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <FadeUp>
-            <SectionLabel icon={Lock} text="SÃ©curitÃ© & ConformitÃ©" />
-            <h2 className="text-4xl font-black text-gray-900 mb-8">Vos donnÃ©es en sÃ©curitÃ© absolue</h2>
+            <SectionLabel icon={Lock} text="Sécurité & Conformité" />
+            <h2 className="text-4xl font-black text-gray-900 mb-8">Vos données en sécurité absolue</h2>
             <div className="space-y-3">
               {securityItems.map((item, i) => (
                 <motion.div
@@ -378,7 +378,7 @@ export default function AboutPage() {
 
           <FadeUp delay={0.15}>
             <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-3xl p-8 border border-gray-100">
-              <h3 className="font-black text-gray-800 text-xl mb-6">DisponibilitÃ© garantie</h3>
+              <h3 className="font-black text-gray-800 text-xl mb-6">Disponibilité garantie</h3>
               <div className="grid grid-cols-2 gap-4 mb-6">
                 {[
                   { label: 'Uptime',   value: '99.9%', color: 'text-emerald-600' },
@@ -397,28 +397,28 @@ export default function AboutPage() {
                 ))}
               </div>
               <p className="text-gray-500 text-sm leading-relaxed">
-                Infrastructure cloud rÃ©partie sur plusieurs datacenters garantissant une disponibilitÃ©
-                continue, mÃªme en cas de panne rÃ©gionale.
+                Infrastructure cloud répartie sur plusieurs datacenters garantissant une disponibilité
+                continue, même en cas de panne régionale.
               </p>
             </div>
           </FadeUp>
         </div>
       </section>
 
-      {/* â”€â”€ SUPPORT â”€â”€ */}
+      {/* ── SUPPORT ── */}
       <section className="bg-gradient-to-br from-blue-50 to-indigo-50/30 py-28">
         <div className="max-w-6xl mx-auto px-6">
           <FadeUp className="text-center mb-14">
             <SectionLabel icon={HeadphonesIcon} text="Support" />
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Nous sommes lÃ  pour vous</h2>
-            <p className="text-gray-500 text-lg max-w-2xl mx-auto">Un accompagnement humain Ã  chaque Ã©tape, de l'onboarding Ã  la croissance.</p>
+            <h2 className="text-4xl font-black text-gray-900 mb-4">Nous sommes là pour vous</h2>
+            <p className="text-gray-500 text-lg max-w-2xl mx-auto">Un accompagnement humain à chaque étape, de l'onboarding à la croissance.</p>
           </FadeUp>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: HeadphonesIcon, color: 'from-blue-500 to-indigo-600',   bg: 'bg-blue-50',   title: 'Support prioritaire',      desc: 'RÃ©ponse sous 24h (gratuit) ou sous 1h (Premium). Chat en direct, email et tÃ©lÃ©phone.' },
-              { icon: BookOpen,       color: 'from-emerald-500 to-teal-600',  bg: 'bg-emerald-50', title: 'Base de connaissances',   desc: 'Tutoriels vidÃ©o, documentation, FAQ, webinaires hebdomadaires et forum communautaire.' },
-              { icon: Building2,      color: 'from-purple-500 to-violet-600', bg: 'bg-purple-50',  title: 'Onboarding dÃ©diÃ©',        desc: 'Un Account Manager dÃ©diÃ© pour vous accompagner dans la migration et prise en main.' },
+              { icon: HeadphonesIcon, color: 'from-blue-500 to-indigo-600',   bg: 'bg-blue-50',   title: 'Support prioritaire',      desc: 'Réponse sous 24h (gratuit) ou sous 1h (Premium). Chat en direct, email et téléphone.' },
+              { icon: BookOpen,       color: 'from-emerald-500 to-teal-600',  bg: 'bg-emerald-50', title: 'Base de connaissances',   desc: 'Tutoriels vidéo, documentation, FAQ, webinaires hebdomadaires et forum communautaire.' },
+              { icon: Building2,      color: 'from-purple-500 to-violet-600', bg: 'bg-purple-50',  title: 'Onboarding dédié',        desc: 'Un Account Manager dédié pour vous accompagner dans la migration et prise en main.' },
             ].map((card, i) => (
               <FadeUp key={i} delay={i * 0.1}>
                 <motion.div
@@ -437,7 +437,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* â”€â”€ PARTNERS â”€â”€ */}
+      {/* ── PARTNERS ── */}
       <section className="max-w-6xl mx-auto px-6 py-28">
         <FadeUp className="text-center mb-14">
           <SectionLabel icon={Globe} text="Partenaires" />
@@ -465,13 +465,13 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* â”€â”€ TEAM â”€â”€ */}
+      {/* ── TEAM ── */}
       <section className="bg-gradient-to-br from-slate-50 to-blue-50/20 py-28">
         <div className="max-w-6xl mx-auto px-6">
           <FadeUp className="text-center mb-14">
-            <SectionLabel icon={Users} text="L'Ã©quipe" />
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Des passionnÃ©s du monde entier</h2>
-            <p className="text-gray-500 text-lg max-w-2xl mx-auto">Une Ã©quipe multiculturelle unie par une mission commune : dÃ©mocratiser les RH.</p>
+            <SectionLabel icon={Users} text="L'équipe" />
+            <h2 className="text-4xl font-black text-gray-900 mb-4">Des passionnés du monde entier</h2>
+            <p className="text-gray-500 text-lg max-w-2xl mx-auto">Une équipe multiculturelle unie par une mission commune : démocratiser les RH.</p>
           </FadeUp>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -497,7 +497,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* â”€â”€ CTA â”€â”€ */}
+      {/* ── CTA ── */}
       <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 py-28">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 left-1/4 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
@@ -505,11 +505,11 @@ export default function AboutPage() {
         </div>
         <FadeUp className="relative max-w-3xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 rounded-full px-5 py-2 text-sm font-semibold text-white mb-8">
-            <Sparkles size={14} /> Sans engagement Â· Annulation Ã  tout moment
+            <Sparkles size={14} /> Sans engagement · Annulation à tout moment
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-5">PrÃªt Ã  transformer vos RH ?</h2>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-5">Prêt à transformer vos RH ?</h2>
           <p className="text-xl text-blue-200 mb-10 leading-relaxed">
-            Rejoignez plus de 10 000 entreprises qui font confiance Ã  EmployÃ©Pro.<br />
+            Rejoignez plus de 10 000 entreprises qui font confiance à EmployéPro.<br />
             Essayez gratuitement pendant 14 jours, sans carte bancaire.
           </p>
           <div className="flex flex-wrap justify-center gap-4">

@@ -1,4 +1,4 @@
-﻿import { Check, X, Shield, Zap, Crown, Users, DollarSign, BarChart3, MessageSquare, HelpCircle, ArrowRight, Sparkles } from 'lucide-react';
+import { Check, X, Shield, Zap, Crown, Users, DollarSign, BarChart3, MessageSquare, HelpCircle, ArrowRight, Sparkles } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import PublicNav from '../components/PublicNav';
 import FooterSection from '../components/landing/FooterSection';
@@ -20,26 +20,26 @@ interface Plan {
 
 const plans: Plan[] = [
   {
-    name: 'Ã€ lâ€™employÃ©',
+    name: 'À l’employé',
     icon: Users,
     price: '6',
-    period: '/employÃ©/mois',
-    description: 'Vous ne payez que pour vos employÃ©s actifs',
+    period: '/employé/mois',
+    description: 'Vous ne payez que pour vos employés actifs',
     badge: 'Sans engagement',
     badgeColor: 'bg-blue-500',
     features: [
-      { text: "EmployÃ©s sans limite", included: true },
-      { text: 'Gestion des prÃ©sences', included: true },
+      { text: "Employés sans limite", included: true },
+      { text: 'Gestion des présences', included: true },
       { text: 'Bulletins de paie (PDF)', included: true },
-      { text: 'Gestion des congÃ©s', included: true },
+      { text: 'Gestion des congés', included: true },
       { text: 'Messages internes', included: true },
       { text: 'Documents RH', included: true },
       { text: 'Assistant IA', included: true },
-      { text: 'Rapports avancÃ©s', included: true },
-      { text: 'Performance & Ã‰valuations', included: true },
+      { text: 'Rapports avancés', included: true },
+      { text: 'Performance & Évaluations', included: true },
       { text: 'Support email prioritaire', included: true },
-      { text: 'API & IntÃ©grations', included: false },
-      { text: 'Support dÃ©diÃ© 24/7', included: false },
+      { text: 'API & Intégrations', included: false },
+      { text: 'Support dédié 24/7', included: false },
     ],
     cta: 'Commencer',
     highlighted: true,
@@ -49,22 +49,22 @@ const plans: Plan[] = [
     icon: Crown,
     price: '79',
     period: '/mois',
-    description: 'Forfait 10 employÃ©s, tout inclus',
-    badge: 'Ã‰conomisez 15%',
+    description: 'Forfait 10 employés, tout inclus',
+    badge: 'Économisez 15%',
     badgeColor: 'bg-green-500',
     features: [
-      { text: "10 employÃ©s inclus", included: true },
-      { text: 'Gestion des prÃ©sences', included: true },
+      { text: "10 employés inclus", included: true },
+      { text: 'Gestion des présences', included: true },
       { text: 'Bulletins de paie (PDF)', included: true },
-      { text: 'Gestion des congÃ©s', included: true },
+      { text: 'Gestion des congés', included: true },
       { text: 'Messages internes', included: true },
       { text: 'Documents RH', included: true },
       { text: 'Assistant IA', included: true },
-      { text: 'Rapports avancÃ©s', included: true },
-      { text: 'Performance & Ã‰valuations', included: true },
-      { text: 'API & IntÃ©grations', included: true },
+      { text: 'Rapports avancés', included: true },
+      { text: 'Performance & Évaluations', included: true },
+      { text: 'API & Intégrations', included: true },
       { text: 'Support prioritaire', included: true },
-      { text: 'Account Manager dÃ©diÃ©', included: false },
+      { text: 'Account Manager dédié', included: false },
     ],
     cta: 'Choisir PME 10',
     gradient: 'from-gray-900 to-gray-800',
@@ -73,13 +73,13 @@ const plans: Plan[] = [
 
 const features = [
   { icon: DollarSign, title: 'Multi-devises', desc: 'FCFA, EUR, USD, MAD...', color: 'bg-green-100 text-green-600' },
-  { icon: Shield, title: 'SÃ©curitÃ© maximale', desc: 'SSL, 2FA, chiffrement', color: 'bg-blue-100 text-blue-600' },
+  { icon: Shield, title: 'Sécurité maximale', desc: 'SSL, 2FA, chiffrement', color: 'bg-blue-100 text-blue-600' },
   { icon: Zap, title: 'Assistant IA', desc: 'Analyses intelligentes', color: 'bg-purple-100 text-purple-600' },
-  { icon: MessageSquare, title: 'Support 24/7', desc: 'FranÃ§ais, Anglais, Arabe', color: 'bg-orange-100 text-orange-600' },
-  { icon: BarChart3, title: 'Rapports avancÃ©s', desc: 'Visualisations interactives', color: 'bg-indigo-100 text-indigo-600' },
-  { icon: Users, title: '60+ pays', desc: 'ConformitÃ© locale', color: 'bg-teal-100 text-teal-600' },
+  { icon: MessageSquare, title: 'Support 24/7', desc: 'Français, Anglais, Arabe', color: 'bg-orange-100 text-orange-600' },
+  { icon: BarChart3, title: 'Rapports avancés', desc: 'Visualisations interactives', color: 'bg-indigo-100 text-indigo-600' },
+  { icon: Users, title: '60+ pays', desc: 'Conformité locale', color: 'bg-teal-100 text-teal-600' },
   { icon: HelpCircle, title: 'Formation', desc: 'Guides et tutoriels', color: 'bg-pink-100 text-pink-600' },
-  { icon: Crown, title: 'SLA garanti', desc: '99.9% disponibilitÃ©', color: 'bg-yellow-100 text-yellow-600' },
+  { icon: Crown, title: 'SLA garanti', desc: '99.9% disponibilité', color: 'bg-yellow-100 text-yellow-600' },
 ];
 
 function FeatureCard({ feature, index }: { feature: (typeof features)[0]; index: number }) {
@@ -117,7 +117,7 @@ export default function PricingPage() {
             Un plan pour chaque entreprise
           </h1>
           <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-            De la startup de 2 employÃ©s Ã  l'entreprise de 500+, EmployraRH s'adapte Ã  vos besoins.
+            De la startup de 2 employés à l'entreprise de 500+, EmployePro s'adapte à vos besoins.
           </p>
         </div>
       </section>
@@ -159,7 +159,7 @@ export default function PricingPage() {
 
               <div className="text-center mb-6">
                 <span className={`text-5xl font-black ${plan.gradient ? 'text-white' : 'text-gray-800'}`}>
-                  {plan.price}â‚¬
+                  {plan.price}€
                 </span>
                 <span className={plan.gradient ? 'text-gray-400' : 'text-gray-400'}>{plan.period}</span>
               </div>
@@ -206,8 +206,8 @@ export default function PricingPage() {
       {/* Features Comparison */}
       <section className="max-w-6xl mx-auto px-4 pb-24">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-black text-gray-800 mb-4">Pourquoi choisir EmployraRH ?</h2>
-          <p className="text-gray-500 text-lg">Des fonctionnalitÃ©s puissantes pour gÃ©rer votre entreprise</p>
+          <h2 className="text-3xl font-black text-gray-800 mb-4">Pourquoi choisir EmployePro ?</h2>
+          <p className="text-gray-500 text-lg">Des fonctionnalités puissantes pour gérer votre entreprise</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {features.map((feature, i) => (
@@ -224,8 +224,8 @@ export default function PricingPage() {
             <div className="absolute bottom-5 left-10 w-32 h-32 bg-white/5 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
           </div>
           <div className="relative">
-            <h3 className="text-3xl font-black mb-4">PrÃªt Ã  transformer votre gestion RH ?</h3>
-            <p className="text-blue-100 text-lg mb-8">Essayez EmployraRH gratuitement pendant 14 jours. Aucune carte de crÃ©dit requise.</p>
+            <h3 className="text-3xl font-black mb-4">Prêt à transformer votre gestion RH ?</h3>
+            <p className="text-blue-100 text-lg mb-8">Essayez EmployePro gratuitement pendant 14 jours. Aucune carte de crédit requise.</p>
             <a href="/register-company" className="inline-flex items-center bg-white text-blue-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-lg group">
               Commencer maintenant
               <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
