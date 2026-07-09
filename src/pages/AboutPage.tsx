@@ -14,12 +14,12 @@ import CountUp from '../components/ui/CountUp';
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const team = [
-  { name: 'Amadou Diallo',    initials: 'AD', avatar: 'https://i.pravatar.cc/150?u=amadou@employepro.com', role: 'CEO & Co-fondateur',     bio: 'Ex-directeur RH chez Orange, expert en transformation RH', location: 'Sénégal',  from: 'from-blue-500',   to: 'to-indigo-600' },
-  { name: 'Marie Dubois',     initials: 'MD', avatar: 'https://i.pravatar.cc/150?u=marie@employepro.com', role: 'CTO & Co-fondatrice',    bio: '15 ans d\'expérience en SaaS, ex-Tech Lead Microsoft',     location: 'France',    from: 'from-purple-500', to: 'to-pink-600' },
-  { name: 'Carlos Rodriguez', initials: 'CR', avatar: 'https://i.pravatar.cc/150?u=carlos@employepro.com', role: 'VP Produit',             bio: 'Expert UX & Data Science, ex-Meta',                       location: 'Pérou',     from: 'from-rose-500',   to: 'to-orange-500' },
-  { name: 'Aisha Mohammed',   initials: 'AM', avatar: 'https://i.pravatar.cc/150?u=aisha@employepro.com', role: "VP d'Ingénierie",        bio: 'Ex-Google, leader tech spécialiste infrastructure',        location: 'Nigeria',   from: 'from-emerald-500',to: 'to-teal-600' },
-  { name: 'Jean-Pierre Kamga',initials: 'JK', avatar: 'https://i.pravatar.cc/150?u=jp@employepro.com',    role: 'Directeur Financier',    bio: 'Expert en fintech et paiements africains',                 location: 'Cameroun', from: 'from-amber-500',  to: 'to-yellow-500' },
-  { name: 'Fatima El Amrani', initials: 'FE', avatar: 'https://i.pravatar.cc/150?u=fatima@employepro.com', role: 'VP Marketing',           bio: 'Growth & expansion Afrique, ex-Jumia',                    location: 'Maroc',     from: 'from-sky-500',    to: 'to-blue-600' },
+  { name: 'Amadou Diallo',    initials: 'AD', avatar: 'https://i.pravatar.cc/150?u=amadou@employrarh.com', role: 'CEO & Co-fondateur',     bio: 'Ex-directeur RH chez Orange, expert en transformation RH', location: 'Sénégal',  from: 'from-blue-500',   to: 'to-indigo-600' },
+  { name: 'Marie Dubois',     initials: 'MD', avatar: 'https://i.pravatar.cc/150?u=marie@employrarh.com', role: 'CTO & Co-fondatrice',    bio: '15 ans d\'expérience en SaaS, ex-Tech Lead Microsoft',     location: 'France',    from: 'from-purple-500', to: 'to-pink-600' },
+  { name: 'Carlos Rodriguez', initials: 'CR', avatar: 'https://i.pravatar.cc/150?u=carlos@employrarh.com', role: 'VP Produit',             bio: 'Expert UX & Data Science, ex-Meta',                       location: 'Pérou',     from: 'from-rose-500',   to: 'to-orange-500' },
+  { name: 'Aisha Mohammed',   initials: 'AM', avatar: 'https://i.pravatar.cc/150?u=aisha@employrarh.com', role: "VP d'Ingénierie",        bio: 'Ex-Google, leader tech spécialiste infrastructure',        location: 'Nigeria',   from: 'from-emerald-500',to: 'to-teal-600' },
+  { name: 'Jean-Pierre Kamga',initials: 'JK', avatar: 'https://i.pravatar.cc/150?u=jp@employrarh.com',    role: 'Directeur Financier',    bio: 'Expert en fintech et paiements africains',                 location: 'Cameroun', from: 'from-amber-500',  to: 'to-yellow-500' },
+  { name: 'Fatima El Amrani', initials: 'FE', avatar: 'https://i.pravatar.cc/150?u=fatima@employrarh.com', role: 'VP Marketing',           bio: 'Growth & expansion Afrique, ex-Jumia',                    location: 'Maroc',     from: 'from-sky-500',    to: 'to-blue-600' },
 ];
 
 const modules = [
@@ -147,7 +147,7 @@ export default function AboutPage() {
             transition={{ duration: 0.6, delay: 0.25 }}
             className="text-xl text-blue-200 max-w-3xl mx-auto leading-relaxed"
           >
-            EmployéPro est née d'un constat : les entreprises méritent des outils RH performants,
+            EmployraRH est née d'un constat : les entreprises méritent des outils RH performants,
             qu'elles soient à Dakar, Paris, Douala, Abidjan, Lima ou Dubaï.
           </motion.p>
 
@@ -229,7 +229,7 @@ export default function AboutPage() {
               color: 'bg-emerald-500',
               year: 'Aujourd\'hui',
               title: 'L\'impact',
-              text: 'Plus de 10 000 entreprises font confiance à EmployéPro. Nous traitons 50M+ de salaires par mois. Notre équipe de 120+ collaborateurs répartis sur 4 continents continue d\'innover.',
+              text: 'Plus de 10 000 entreprises font confiance à EmployraRH. Nous traitons 50M+ de salaires par mois. Notre équipe de 120+ collaborateurs répartis sur 4 continents continue d\'innover.',
             },
           ].map((item, i) => (
             <FadeUp key={i} delay={i * 0.12}>
@@ -509,7 +509,7 @@ export default function AboutPage() {
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-white mb-5">Prêt à transformer vos RH ?</h2>
           <p className="text-xl text-blue-200 mb-10 leading-relaxed">
-            Rejoignez plus de 10 000 entreprises qui font confiance à EmployéPro.<br />
+            Rejoignez plus de 10 000 entreprises qui font confiance à EmployraRH.<br />
             Essayez gratuitement pendant 14 jours, sans carte bancaire.
           </p>
           <div className="flex flex-wrap justify-center gap-4">

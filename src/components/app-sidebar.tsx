@@ -113,6 +113,7 @@ export function AppSidebar() {
     { path: '/admin/reports', icon: BarChart3, label: 'Rapports' },
     { path: '/admin/ai-assistant', icon: Bot, label: 'Assistant IA' },
     { path: '/admin/qr-settings', icon: QrCode, label: 'Pointage QR' },
+    { path: '/admin/security-guards', icon: Shield, label: 'Agents sécurité' },
     { path: '/admin/roles', icon: Shield, label: 'Rôles' },
   ] : []);
 
@@ -141,7 +142,7 @@ export function AppSidebar() {
             EP
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">{currentCompany?.name || 'EmployéPro'}</span>
+            <span className="truncate font-semibold">{currentCompany?.name || 'EmployraRH'}</span>
             {currentCompany?.uniqueId && (
               <span className="truncate text-xs text-muted-foreground">{currentCompany.uniqueId}</span>
             )}

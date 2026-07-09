@@ -9,19 +9,25 @@
   --color-sidebar-accent-foreground: hsl(240 6% 10%);
   --color-sidebar-border: hsl(220 13% 91%);
   --color-sidebar-ring: hsl(217 91% 60%);
-  --color-background: hsl(0 0% 100%);
+  --color-background: #FFFFFF;
   --color-foreground: hsl(240 10% 4%);
-  --color-primary: hsl(221 83% 53%);
-  --color-primary-foreground: hsl(210 40% 98%);
+  --color-primary: #2563EB;
+  --color-primary-hover: #1D4ED8;
+  --color-primary-foreground: #FFFFFF;
   --color-muted: hsl(240 5% 96%);
   --color-muted-foreground: hsl(240 4% 46%);
-  --color-popover: hsl(0 0% 100%);
+  --color-popover: #FFFFFF;
   --color-popover-foreground: hsl(240 10% 4%);
   --color-accent: hsl(240 5% 96%);
   --color-accent-foreground: hsl(240 6% 10%);
   --color-border: hsl(240 6% 90%);
   --color-input: hsl(240 6% 90%);
-  --color-ring: hsl(221 83% 53%);
+  --color-ring: #2563EB;
+  --color-info: #0369A1;
+  --color-info-light: #0891B2;
+  --color-success: #10B981;
+  --color-success-light: #14B8A6;
+  --color-surface: #F3F4F6;
   --radius: 0.5rem;
 }
 
@@ -34,8 +40,9 @@
   --color-sidebar-ring: hsl(217 91% 60%);
   --color-background: hsl(240 10% 4%);
   --color-foreground: hsl(0 0% 98%);
-  --color-primary: hsl(217 91% 60%);
-  --color-primary-foreground: hsl(210 40% 98%);
+  --color-primary: #3B82F6;
+  --color-primary-hover: #60A5FA;
+  --color-primary-foreground: #FFFFFF;
   --color-muted: hsl(240 4% 16%);
   --color-muted-foreground: hsl(240 5% 65%);
   --color-popover: hsl(240 10% 4%);
@@ -44,7 +51,12 @@
   --color-accent-foreground: hsl(0 0% 98%);
   --color-border: hsl(240 4% 16%);
   --color-input: hsl(240 4% 16%);
-  --color-ring: hsl(217 91% 60%);
+  --color-ring: #3B82F6;
+  --color-info: #38BDF8;
+  --color-info-light: #22D3EE;
+  --color-success: #34D399;
+  --color-success-light: #2DD4BF;
+  --color-surface: #1F2937;
 }
 
 body {

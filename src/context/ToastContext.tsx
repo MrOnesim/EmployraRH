@@ -20,9 +20,9 @@ const iconMap = {
 };
 
 const styleMap = {
-  success: 'bg-green-600 text-white',
+  success: 'bg-success text-white',
   error: 'bg-red-600 text-white',
-  info: 'bg-blue-600 text-white',
+  info: 'bg-info text-white',
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {

@@ -36,7 +36,7 @@ export default function EmployeeProfileModal({ employee, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={onClose}>
       <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-center relative">
+        <div className="bg-gradient-to-r from-primary to-primary-hover p-6 text-center relative">
           <button onClick={onClose} className="absolute top-3 right-3 text-white/70 hover:text-white text-xl leading-none">&times;</button>
           <div className="flex justify-center mb-3">
             <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">

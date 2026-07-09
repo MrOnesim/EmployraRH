@@ -174,7 +174,7 @@ export default function ShowcaseSection() {
                 <div className="text-[9px] text-emerald-400 font-bold mt-1">✔ Dans la zone</div>
               </div>
               
-              <button className="w-full bg-blue-600 text-white font-black text-[10px] py-1.5 rounded-lg mt-3 shadow-md hover:bg-blue-700 transition-colors">
+              <button className="w-full bg-primary text-white font-black text-[10px] py-1.5 rounded-lg mt-3 shadow-md hover:bg-primary-hover transition-colors">
                 Pointer Arrivée
               </button>
               
@@ -252,17 +252,17 @@ export default function ShowcaseSection() {
         
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 ring-1 ring-blue-200 shadow-sm mb-6">
-            <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Découvrez l'application</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 ring-1 ring-primary/20 shadow-sm mb-6">
+            <span className="text-xs font-bold text-primary tracking-wide uppercase">Découvrez l'application</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4 tracking-tight">
             Une plateforme unique, des{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 drop-shadow-sm">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-indigo-600 to-violet-600 drop-shadow-sm">
               possibilités infinies
             </span>
           </h2>
           <p className="text-gray-500 text-lg max-w-xl mx-auto">
-            Découvrez comment EmployePro centralise et simplifie vos opérations au quotidien.
+            Découvrez comment EmployraRH centralise et simplifie vos opérations au quotidien.
           </p>
         </div>
 
@@ -305,8 +305,8 @@ export default function ShowcaseSection() {
               transition={{ repeat: Infinity, duration: 4.5, ease: 'easeInOut' }}
               className="absolute -bottom-4 -left-4 bg-white rounded-2xl px-4 py-3 shadow-xl border border-slate-100 flex items-center gap-3 hidden sm:flex"
             >
-              <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
-                <QrCode size={16} className="text-blue-600" />
+              <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                <QrCode size={16} className="text-primary" />
               </div>
               <span className="text-xs font-extrabold text-slate-700">Pointage instantané</span>
             </motion.div>
@@ -336,12 +336,12 @@ export default function ShowcaseSection() {
                   />
                 )}
 
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-500/10`}>
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center flex-shrink-0 shadow-md shadow-primary/10`}>
                   <item.icon size={20} className="text-white" />
                 </div>
                 <div>
-                  <h4 className={`font-bold text-sm md:text-base ${i === current ? 'text-blue-800' : 'text-gray-800'}`}>{item.label}</h4>
-                  <p className={`text-xs md:text-sm mt-0.5 ${i === current ? 'text-blue-900/60' : 'text-gray-500'}`}>{item.desc}</p>
+                  <h4 className={`font-bold text-sm md:text-base ${i === current ? 'text-primary-hover' : 'text-gray-800'}`}>{item.label}</h4>
+                  <p className={`text-xs md:text-sm mt-0.5 ${i === current ? 'text-primary-hover/80' : 'text-gray-500'}`}>{item.desc}</p>
                 </div>
               </button>
             ))}

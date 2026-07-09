@@ -51,7 +51,7 @@ function ScreenshotViewer() {
         <source srcSet="/images/screenshots/hero-section.webp" type="image/webp" />
         <img
           src="/images/screenshots/hero-section.png"
-          alt="Aperçu de la plateforme EmployéPro"
+          alt="Aperçu de la plateforme EmployraRH"
           loading="lazy"
           className="w-full rounded-xl shadow-lg"
           onError={() => setFailed(true)}
@@ -66,9 +66,9 @@ export default function DocumentationPage() {
     const meta = document.querySelector('meta[name="description"]');
     const og = document.querySelector('meta[property="og:description"]');
     const title = document.title;
-    document.title = 'Documentation - EmployéPro';
-    if (meta) meta.setAttribute('content', 'Documentation complète EmployéPro : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.');
-    if (og) og.setAttribute('content', 'Documentation complète EmployéPro : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.');
+    document.title = 'Documentation - EmployraRH';
+    if (meta) meta.setAttribute('content', 'Documentation complète EmployraRH : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.');
+    if (og) og.setAttribute('content', 'Documentation complète EmployraRH : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.');
     return () => { document.title = title; };
   }, []);
 
@@ -81,7 +81,7 @@ export default function DocumentationPage() {
           <BookOpen size={48} className="mx-auto mb-6 text-blue-200" />
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Documentation</h1>
           <p className="text-lg text-blue-100/90 max-w-2xl mx-auto">
-            Tout ce qu'il faut savoir pour maîtriser EmployéPro : guides, tutoriels, API et bonnes pratiques.
+            Tout ce qu'il faut savoir pour maîtriser EmployraRH : guides, tutoriels, API et bonnes pratiques.
           </p>
           <div className="relative max-w-lg mx-auto mt-8">
             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300" />
@@ -99,7 +99,7 @@ export default function DocumentationPage() {
         <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden">
           <ScreenshotViewer />
           <div className="p-6 text-center text-sm text-gray-500 dark:text-gray-400">
-            Aperçu de la section d'accueil — Plateforme EmployéPro
+            Aperçu de la section d'accueil — Plateforme EmployraRH
           </div>
         </div>
       </section>

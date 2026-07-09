@@ -19,7 +19,7 @@ const socialLinks = [
   { icon: Globe, href: '#', label: 'Twitter' },
   { icon: Users, href: '#', label: 'LinkedIn' },
   { icon: Code2, href: '#', label: 'GitHub' },
-  { icon: Mail, href: 'mailto:contact@employepro.com', label: 'Email' },
+  { icon: Mail, href: 'mailto:employrarh@gmail.com', label: 'Email' },
 ];
 
 export default function FooterSection() {
@@ -39,12 +39,12 @@ export default function FooterSection() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <img
-                src="/images/logo.png"
-                alt="EmployéPro"
+                src="/images/employra-rh-logo.png"
+                alt="EmployraRH"
                 loading="lazy"
                 className="w-10 h-10 rounded-xl object-cover"
               />
-              <span className="text-xl font-bold text-white">EmployéPro</span>
+              <span className="text-xl font-bold text-white">EmployraRH</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-sm">
               La plateforme RH et paie tout-en-un pour les entreprises ambitieuses. Paie multi-pays,
@@ -91,10 +91,9 @@ export default function FooterSection() {
               Contact
             </h4>
             <ul className="space-y-3 text-sm text-gray-400">
-              <li>contact@employepro.com</li>
-              <li>+221 33 800 00 00</li>
-              <li>Dakar, Sénégal</li>
-              <li>Paris, France</li>
+              <li>employrarh@gmail.com</li>
+              <li>+229 01 41 96 92 08</li>
+              <li>Cotonou, Bénin</li>
             </ul>
           </div>
 
@@ -121,7 +120,7 @@ export default function FooterSection() {
         {/* Bottom bar */}
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} EmployéPro. Tous droits réservés.
+            &copy; {new Date().getFullYear()} EmployraRH. Tous droits réservés.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-600">
             <span>RGPD conform</span>

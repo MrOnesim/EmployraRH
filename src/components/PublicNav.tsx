@@ -42,8 +42,8 @@ export default function PublicNav() {
   };
 
   const linkBase = 'relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300';
-  const linkInactive = 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800';
-  const linkActive = 'bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400';
+  const linkInactive = 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-surface dark:hover:bg-gray-800';
+  const linkActive = 'bg-primary/10 text-primary dark:text-blue-400';
 
   const renderLink = (link: typeof sectionLinks[0], mobile: boolean) => {
     if (link.section && location.pathname === '/') {
@@ -55,7 +55,7 @@ export default function PublicNav() {
           <span className="relative z-10 inline-block group-hover:translate-y-[-1px] transition-transform duration-200">
             {t(link.labelKey)}
           </span>
-          <span className="absolute bottom-1 left-2 right-2 h-px bg-blue-500/50 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+          <span className="absolute bottom-1 left-2 right-2 h-px bg-primary/50 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
         </button>
       );
     }
@@ -67,9 +67,9 @@ export default function PublicNav() {
           {t(link.labelKey)}
         </span>
         {isActive(link) && (
-          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-blue-500 rounded-full" />
+          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
         )}
-        <span className="absolute bottom-1 left-2 right-2 h-px bg-blue-500/50 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+        <span className="absolute bottom-1 left-2 right-2 h-px bg-primary/50 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
       </Link>
     );
   };
@@ -80,9 +80,9 @@ export default function PublicNav() {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-3 group perspective-[600px]">
             <div className="w-9 h-9 rounded-lg overflow-hidden ring-2 ring-transparent group-hover:ring-blue-400/50 transition-all group-hover:scale-105 duration-300">
-              <img src="/images/logo.png" alt="EmployéPro" loading="lazy" className="w-full h-full object-cover" />
+              <img src="/images/employra-rh-logo.png" alt="EmployraRH" loading="lazy" className="w-full h-full object-cover" />
             </div>
-            <span className="font-bold text-gray-800 dark:text-gray-100 text-lg group-hover:text-blue-600 transition-colors">EmployePro</span>
+            <span className="font-bold text-gray-800 dark:text-gray-100 text-lg group-hover:text-primary transition-colors">EmployraRH</span>
           </Link>
 
           {/* Desktop links */}
@@ -97,7 +97,7 @@ export default function PublicNav() {
             <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-gray-800 px-4 py-2 transition-all hover:scale-105">
               {t('nav.login')}
             </Link>
-            <Link to="/register-company" className="bg-gradient-to-r from-blue-600 to-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:from-blue-700 hover:to-blue-800 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-blue-200/50">
+            <Link to="/register-company" className="bg-gradient-to-r from-primary to-primary-hover text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:brightness-110 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/30">
               {t('nav.get_started')}
             </Link>
           </div>
@@ -118,7 +118,7 @@ export default function PublicNav() {
             <Link to="/login" onClick={() => setOpen(false)}
               className="block px-4 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">{t('nav.login')}</Link>
             <Link to="/register-company" onClick={() => setOpen(false)}
-              className="block px-4 py-3 text-sm font-medium bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg text-center hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg">{t('nav.get_started')}</Link>
+              className="block px-4 py-3 text-sm font-medium bg-gradient-to-r from-primary to-primary-hover text-white rounded-lg text-center hover:brightness-110 transition-all shadow-lg">{t('nav.get_started')}</Link>
           </div>
         </div>
       )}

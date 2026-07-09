@@ -58,7 +58,7 @@ export default function ScrollSpy() {
           <div
             className={`rounded-full transition-all duration-300 ${
               active === id
-                ? 'w-3 h-3 bg-blue-600 shadow-md shadow-blue-300'
+                ? 'w-3 h-3 bg-primary shadow-md shadow-primary/40'
                 : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
             }`}
           />

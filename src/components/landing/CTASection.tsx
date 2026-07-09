@@ -6,7 +6,7 @@ export default function CTASection() {
   const { ref, isVisible } = useScrollReveal();
 
   return (
-    <section className="relative py-32 bg-gradient-to-br from-blue-600 to-blue-800 overflow-hidden">
+    <section className="relative py-32 bg-gradient-to-br from-primary to-primary-hover overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute top-10 left-10 w-40 h-40 bg-white/5 rounded-full animate-pulse" />
         <div
@@ -36,15 +36,15 @@ export default function CTASection() {
           ?
         </h2>
 
-        <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-          Rejoignez des milliers d'entreprises qui font confiance à EmployéPro Africa. Commencez
+        <p className="text-xl text-primary-foreground/80 mb-10 max-w-2xl mx-auto">
+          Rejoignez des milliers d'entreprises qui font confiance à EmployraRH Africa. Commencez
           gratuitement, sans carte bancaire.
         </p>
 
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             to="/register-company"
-            className="group inline-flex items-center gap-2 bg-white text-blue-600 px-10 py-5 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl"
+            className="group inline-flex items-center gap-2 bg-white text-primary px-10 py-5 rounded-xl font-bold text-lg hover:bg-primary/10 transition-all shadow-lg hover:shadow-xl"
           >
             Essai gratuit 14 jours
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
@@ -57,7 +57,7 @@ export default function CTASection() {
           </Link>
         </div>
 
-        <div className="mt-10 flex flex-wrap justify-center gap-8 text-sm text-blue-200">
+        <div className="mt-10 flex flex-wrap justify-center gap-8 text-sm text-primary-foreground/60">
           <span>&#10003; Sans carte bancaire</span>
           <span>&#10003; 14 jours d'essai</span>
           <span>&#10003; Accès complet</span>

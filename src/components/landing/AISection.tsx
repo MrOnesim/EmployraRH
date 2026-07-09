@@ -104,9 +104,9 @@ export default function AISection() {
       >
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 ring-1 ring-blue-200 shadow-sm mb-6">
-            <Sparkles size={14} className="text-blue-600 animate-pulse" />
-            <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Assistant IA</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 ring-1 ring-primary/20 shadow-sm mb-6">
+            <Sparkles size={14} className="text-primary animate-pulse" />
+            <span className="text-xs font-bold text-primary tracking-wide uppercase">Assistant IA</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4 tracking-tight">
             Votre assistant RH intelligent
@@ -169,7 +169,7 @@ export default function AISection() {
                   {/* Message Bubble */}
                   <div className={`rounded-2xl max-w-[80%] px-4 py-3 border text-xs md:text-sm font-medium ${
                     msg.sender === 'user'
-                      ? 'bg-blue-600 text-white border-blue-500 rounded-br-sm shadow-md'
+                      ? 'bg-primary text-white border-primary-hover rounded-br-sm shadow-md'
                       : 'bg-white/5 text-white/95 border-white/5 rounded-bl-sm shadow-inner'
                   }`}>
                     <div className="text-[9px] text-white/40 font-bold mb-1 uppercase tracking-wide">
@@ -234,12 +234,12 @@ export default function AISection() {
               onChange={(e) => setCustomInput(e.target.value)}
               placeholder={isTyping ? "L'IA est en train de formuler une réponse..." : "Tapez une question RH personnalisée..."}
               disabled={isTyping}
-              className="flex-1 bg-white/5 border border-white/10 focus:border-blue-500/50 rounded-xl px-4 py-3 text-xs md:text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium disabled:opacity-50"
+              className="flex-1 bg-white/5 border border-white/10 focus:border-primary/50 rounded-xl px-4 py-3 text-xs md:text-sm text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium disabled:opacity-50"
             />
             <button
               type="submit"
               disabled={isTyping || !customInput.trim()}
-              className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/40 text-white w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all shadow-md active:scale-95 border border-blue-500/30"
+              className="bg-primary hover:bg-primary-hover disabled:bg-primary/40 text-white w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all shadow-md active:scale-95 border border-primary/30"
             >
               <Send size={16} />
             </button>

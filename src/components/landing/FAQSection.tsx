@@ -5,8 +5,8 @@ import { ChevronDown } from 'lucide-react';
 
 const faqs = [
   {
-    q: 'EmployéPro est-il adapté à mon entreprise ?',
-    a: "EmployéPro convient aux PME, grandes entreprises, ONG et administrations publiques. Notre plateforme s'adapte à toutes les tailles d'organisation avec des fonctionnalités modulaires.",
+    q: 'EmployraRH est-il adapté à mon entreprise ?',
+    a: "EmployraRH convient aux PME, grandes entreprises, ONG et administrations publiques. Notre plateforme s'adapte à toutes les tailles d'organisation avec des fonctionnalités modulaires.",
   },
   {
     q: 'Comment fonctionne la facturation ?',
@@ -59,12 +59,12 @@ function FAQItem({ faq }: { faq: (typeof faqs)[0] }) {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between py-5 text-left group outline-none cursor-pointer"
       >
-        <span className={`text-base font-semibold transition-colors pr-4 ${open ? 'text-blue-700 font-bold' : 'text-gray-700 group-hover:text-gray-900'}`}>
+          <span className={`text-base font-semibold transition-colors pr-4 ${open ? 'text-primary-hover font-bold' : 'text-gray-700 group-hover:text-gray-900'}`}>
           {faq.q}
         </span>
         <ChevronDown
           size={18}
-          className={`text-gray-400 shrink-0 transition-transform duration-350 ${open ? 'rotate-180 text-blue-600' : ''}`}
+          className={`text-gray-400 shrink-0 transition-transform duration-350 ${open ? 'rotate-180 text-primary' : ''}`}
         />
       </button>
       <AnimatePresence initial={false}>
@@ -94,14 +94,14 @@ export default function FAQSection() {
         className={`max-w-3xl mx-auto px-4 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
       >
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 border border-gray-200 ring-1 ring-gray-300 shadow-sm mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-gray-200 ring-1 ring-gray-300 shadow-sm mb-6">
             <span className="text-sm font-medium text-gray-600">FAQ</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4 tracking-tight">
             Questions fréquentes
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Tout ce que vous devez savoir sur EmployéPro Africa.
+            Tout ce que vous devez savoir sur EmployraRH Africa.
           </p>
         </div>
 

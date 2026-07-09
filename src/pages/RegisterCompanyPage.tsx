@@ -65,7 +65,7 @@ export default function RegisterCompanyPage() {
             <span className="text-white font-bold text-2xl">EP</span>
           </Link>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Créer votre entreprise</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Rejoignez EmployéPro Africa</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Rejoignez EmployraRH Africa</p>
         </div>
 
         {/* Progress Steps */}

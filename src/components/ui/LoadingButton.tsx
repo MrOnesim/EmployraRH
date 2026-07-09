@@ -13,9 +13,9 @@ interface LoadingButtonProps {
 }
 
 const variantClasses = {
-  primary: 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-blue-400',
+  primary: 'bg-primary text-white hover:bg-primary-hover disabled:bg-primary/50',
   secondary: 'border-2 border-gray-200 text-gray-700 hover:border-gray-300 disabled:opacity-50',
-  ghost: 'text-gray-600 hover:bg-gray-100 disabled:opacity-50',
+  ghost: 'text-gray-600 hover:bg-surface disabled:opacity-50',
 };
 
 export default function LoadingButton({

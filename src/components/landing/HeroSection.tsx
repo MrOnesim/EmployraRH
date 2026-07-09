@@ -28,10 +28,10 @@ function StatCard({ stat, index }: { stat: (typeof stats)[0]; index: number }) {
       <div className="text-2xl md:text-3xl font-black text-white tracking-tight leading-none mb-1.5 flex justify-center items-baseline gap-0.5">
         <span>{stat.prefix ?? ''}</span>
         <span>{count}</span>
-        <span className="text-lg font-bold text-blue-300">{stat.suffix}</span>
+                <span className="text-lg font-bold text-primary-foreground/60">{stat.suffix}</span>
       </div>
       <div className="flex items-center justify-center gap-1.5">
-        <stat.icon size={14} className="text-blue-300 shrink-0 animate-pulse" />
+        <stat.icon size={14} className="text-primary-foreground/60 shrink-0 animate-pulse" />
         <span className="text-xs md:text-sm font-semibold text-white/80 leading-tight">
           {stat.label}
         </span>
@@ -219,14 +219,14 @@ export default function HeroSection() {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-400 to-pink-400 drop-shadow-md">
                 RH
               </span>{' '}
-              <span className="bg-gradient-to-r from-white via-blue-100 to-blue-200 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-white via-primary-foreground/80 to-primary-foreground/60 bg-clip-text text-transparent">
                 sans limites
               </span>
             </motion.h1>
 
             <motion.p 
               variants={textFadeUp}
-              className="text-lg md:text-xl text-blue-100/90 leading-relaxed mb-8 max-w-xl"
+              className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-8 max-w-xl"
             >
               La solution paie et RH tout-en-un conçue pour les entreprises d'Afrique et d'ailleurs. 
               Automatisez vos processus de bout en bout : paie multi-pays, IA, signatures en ligne et pointage QR.
@@ -239,9 +239,9 @@ export default function HeroSection() {
             >
               <Link
                 to="/register-company"
-                className="group relative inline-flex items-center gap-2.5 bg-white text-blue-700 hover:text-white px-8 py-4 rounded-2xl font-black text-lg transition-all shadow-xl hover:shadow-2xl overflow-hidden active:scale-95 duration-300"
+                className="group relative inline-flex items-center gap-2.5 bg-white text-primary-hover hover:text-white px-8 py-4 rounded-2xl font-black text-lg transition-all shadow-xl hover:shadow-2xl overflow-hidden active:scale-95 duration-300"
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 w-0 group-hover:w-full transition-all duration-300 ease-out z-0" />
+                <span className="absolute inset-0 bg-gradient-to-r from-primary to-indigo-600 w-0 group-hover:w-full transition-all duration-300 ease-out z-0" />
                 <span className="relative z-10 flex items-center gap-2">
                   Essai gratuit
                   <ArrowRight size={20} className="group-hover:translate-x-1.5 transition-transform duration-300" />
@@ -300,19 +300,19 @@ export default function HeroSection() {
                 <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
                   <button 
                     onClick={() => setActiveTab('overview')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'overview' ? 'bg-blue-600 text-white shadow-md' : 'text-white/60 hover:text-white'}`}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'overview' ? 'bg-primary text-white shadow-md' : 'text-white/60 hover:text-white'}`}
                   >
                     Tableau
                   </button>
                   <button 
                     onClick={() => setActiveTab('payroll')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'payroll' ? 'bg-blue-600 text-white shadow-md' : 'text-white/60 hover:text-white'}`}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'payroll' ? 'bg-primary text-white shadow-md' : 'text-white/60 hover:text-white'}`}
                   >
                     Paie Live
                   </button>
                   <button 
                     onClick={() => setActiveTab('qr')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'qr' ? 'bg-blue-600 text-white shadow-md' : 'text-white/60 hover:text-white'}`}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${activeTab === 'qr' ? 'bg-primary text-white shadow-md' : 'text-white/60 hover:text-white'}`}
                   >
                     Pointage
                   </button>
@@ -543,10 +543,10 @@ export default function HeroSection() {
                             disabled={isScanning}
                             className={`w-full py-2.5 px-4 rounded-xl font-extrabold text-xs transition-all active:scale-95 shadow-md flex items-center justify-center gap-2 ${
                               scanStatus === 'scanning' 
-                                ? 'bg-blue-600/50 text-white cursor-not-allowed'
+                                ? 'bg-primary/50 text-white cursor-not-allowed'
                                 : scanStatus === 'success'
                                 ? 'bg-emerald-500 text-white shadow-emerald-500/20'
-                                : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg'
+                                : 'bg-primary hover:bg-primary-hover text-white hover:shadow-lg'
                             }`}
                           >
                             {isScanning ? (
@@ -607,19 +607,7 @@ export default function HeroSection() {
             </motion.div>
 
             {/* Absolute floating decorations on right column */}
-            <motion.div 
-              animate={{ y: [0, -10, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-              className="absolute -bottom-3 -right-3 bg-white rounded-2xl px-4 py-3 shadow-2xl z-20 flex items-center gap-3 border border-slate-100 hidden sm:flex"
-            >
-              <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center">
-                <Shield size={18} className="text-emerald-600" />
-              </div>
-              <div>
-                <div className="text-slate-800 font-extrabold text-sm">RGPD 100%</div>
-                <div className="text-slate-400 text-[10px]">Hébergement sécurisé</div>
-              </div>
-            </motion.div>
+
 
 
           </div>

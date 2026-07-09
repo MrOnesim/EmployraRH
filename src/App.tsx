@@ -60,6 +60,8 @@ const RolesPage = lazy(() => import('./pages/RolesPage'));
 const NotificationsPage = lazy(() => import('./pages/NotificationsPage'));
 const LeavePolicyPage = lazy(() => import('./pages/LeavePolicyPage'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
+const SecurityGuardsPage = lazy(() => import('./pages/SecurityGuardsPage'));
+const GuardScanPage = lazy(() => import('./pages/GuardScanPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function ProtectedRoute({ children, adminOnly = false, requiredPermission }: { children: React.ReactNode; adminOnly?: boolean; requiredPermission?: Permission }) {
@@ -118,6 +120,11 @@ function AppRoutes() {
         <Route path="/qr-display" element={<PageTransition><QRDisplayPage /></PageTransition>} />
         <Route path="/signature" element={<PageTransition><SignaturePage /></PageTransition>} />
         <Route path="/marketplace" element={<PageTransition><MarketplacePage /></PageTransition>} />
+        <Route path="/guard-scan" element={
+          <ProtectedRoute>
+            <PageTransition><GuardScanPage /></PageTransition>
+          </ProtectedRoute>
+        } />
         
         {/* QR Scan / Feed (protected) */}
         <Route path="/scan" element={
@@ -172,6 +179,7 @@ function AppRoutes() {
           <Route path="leave-policy" element={<PageTransition><LeavePolicyPage /></PageTransition>} />
           <Route path="notifications" element={<PageTransition><NotificationsPage /></PageTransition>} />
           <Route path="settings" element={<PageTransition><SettingsPage /></PageTransition>} />
+          <Route path="security-guards" element={<PageTransition><SecurityGuardsPage /></PageTransition>} />
         </Route>
         
         {/* Protected Employee routes */}

@@ -63,9 +63,9 @@ export default function FeaturesSection() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: '-100px' }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 shadow-sm mb-6"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 shadow-sm mb-6"
           >
-            <span className="text-xs font-bold text-blue-600 tracking-wide uppercase">Modules Tout-en-un</span>
+            <span className="text-xs font-bold text-primary tracking-wide uppercase">Modules Tout-en-un</span>
           </motion.div>
           
           <motion.h2 
@@ -110,11 +110,11 @@ export default function FeaturesSection() {
               className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-150 transition-all duration-300 flex flex-col items-start text-left cursor-default shadow-sm group"
             >
               <div
-                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-md shadow-blue-500/10`}
+                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-md shadow-primary/10`}
               >
                 <feature.icon size={22} className="text-white" />
               </div>
-              <h3 className="text-base font-bold text-gray-850 group-hover:text-blue-700 transition-colors leading-tight mb-2">
+              <h3 className="text-base font-bold text-gray-850 group-hover:text-primary-hover transition-colors leading-tight mb-2">
                 {feature.title}
               </h3>
               <p className="text-xs md:text-sm text-gray-500 leading-relaxed font-medium">

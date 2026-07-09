@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, Body } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 
 @Controller('attendance')
@@ -33,5 +33,10 @@ export class AttendanceController {
   @Get('employee/:employeeId')
   findByEmployee(@Param('employeeId') employeeId: string) {
     return this.attendanceService.findByEmployee(employeeId);
+  }
+
+  @Post('scan')
+  scan(@Body() body: { qrToken: string; guardId: string; terminalId: string; deviceFingerprint: string; ipAddress?: string; scanMethod?: string }) {
+    return this.attendanceService.scanWithGuard(body);
   }
 }

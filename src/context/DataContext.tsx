@@ -242,7 +242,7 @@ const mockTeams: Team[] = [
 ];
 
 const mockPosts: Post[] = [
-  { id: '1', authorId: '1', authorName: 'Kofi Mensah', content: 'Bienvenue à tous sur EmployéPro Africa ! Nouveau module de paie disponible.', createdAt: new Date(Date.now() - 86400000), likes: ['2', '3'], comments: [{ id: 'c1', authorId: '2', authorName: 'Ama Gbeko', content: 'Super nouvelle !', createdAt: new Date(Date.now() - 43200000) }] },
+  { id: '1', authorId: '1', authorName: 'Kofi Mensah', content: 'Bienvenue à tous sur EmployraRH Africa ! Nouveau module de paie disponible.', createdAt: new Date(Date.now() - 86400000), likes: ['2', '3'], comments: [{ id: 'c1', authorId: '2', authorName: 'Ama Gbeko', content: 'Super nouvelle !', createdAt: new Date(Date.now() - 43200000) }] },
   { id: '2', authorId: '2', authorName: 'Ama Gbeko', content: 'Rappel : les demandes de congé pour les fêtes de fin d\'année doivent être soumises avant le 15 décembre.', createdAt: new Date(Date.now() - 172800000), likes: ['1', '4', '5'], comments: [] },
 ];
 
@@ -307,7 +307,7 @@ const mockEnrollments: Enrollment[] = [
 
 const mockMissions: Mission[] = [
   { id: '1', employeeId: '3', title: 'Déploiement client Abidjan', destination: 'Abidjan, Côte d\'Ivoire', startDate: new Date('2025-01-10'), endDate: new Date('2025-01-15'), objectives: 'Installation et formation sur le module paie', transportType: 'Avion', budget: 1500000, status: 'approved', approvedBy: '1', createdAt: new Date('2024-12-20') },
-  { id: '2', employeeId: '5', title: 'Salon marketing Dakar', destination: 'Dakar, Sénégal', startDate: new Date('2025-02-01'), endDate: new Date('2025-02-03'), objectives: 'Présentation EmployéPro au salon RH Afrique', transportType: 'Avion', budget: 2000000, status: 'pending', createdAt: new Date('2024-12-25') },
+  { id: '2', employeeId: '5', title: 'Salon marketing Dakar', destination: 'Dakar, Sénégal', startDate: new Date('2025-02-01'), endDate: new Date('2025-02-03'), objectives: 'Présentation EmployraRH au salon RH Afrique', transportType: 'Avion', budget: 2000000, status: 'pending', createdAt: new Date('2024-12-25') },
 ];
 
 const mockExpenses: ExpenseReport[] = [

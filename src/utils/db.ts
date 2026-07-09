@@ -1,4 +1,4 @@
-const DB_NAME = 'EmployeProDB';
+const DB_NAME = 'EmployraRHDB';
 const DB_VERSION = 1;
 
 function openDB(): Promise<IDBDatabase> {
@@ -51,6 +51,15 @@ export const offlineDB = {
     return new Promise<void>((resolve, reject) => {
       const tx = db.transaction('sync', 'readwrite');
       tx.objectStore('sync').add({ action, timestamp: new Date().toISOString(), status: 'pending' });
+      tx.oncomplete = () => { db.close(); resolve(); };
+      tx.onerror = () => reject(tx.error);
+    });
+  },
+  async clearSyncQueue() {
+    const db = await openDB();
+    return new Promise<void>((resolve, reject) => {
+      const tx = db.transaction('sync', 'readwrite');
+      tx.objectStore('sync').clear();
       tx.oncomplete = () => { db.close(); resolve(); };
       tx.onerror = () => reject(tx.error);
     });

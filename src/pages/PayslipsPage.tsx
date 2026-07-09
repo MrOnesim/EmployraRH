@@ -233,7 +233,7 @@ export default function PayslipsPage() {
               <div className="border border-gray-200 rounded-lg p-6">
                 {/* Header */}
                 <div className="text-center border-b border-gray-200 pb-4 mb-4">
-                  <h3 className="text-lg font-bold text-blue-600">EmployéPro Africa</h3>
+                  <h3 className="text-lg font-bold text-blue-600">EmployraRH Africa</h3>
                   <p className="text-sm text-gray-500">Bulletin de paie</p>
                 </div>
 
@@ -285,7 +285,7 @@ export default function PayslipsPage() {
                 {/* Footer */}
                 <div className="text-center text-sm text-gray-500">
                   <p>Document généré le {new Date(payslip.generatedAt).toLocaleDateString('fr-FR')}</p>
-                  <p className="mt-1">EmployéPro Africa - Plateforme de gestion RH</p>
+                  <p className="mt-1">EmployraRH Africa - Plateforme de gestion RH</p>
                 </div>
               </div>
 

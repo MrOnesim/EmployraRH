@@ -14,10 +14,10 @@ const faqData: FAQItem[] = [
     category: 'Général',
     icon: Globe,
     items: [
-      { question: 'Qu\'est-ce que EmployePro ?', answer: 'EmployePro est une plateforme RH globale qui permet aux entreprises de gérer leurs employés, salaires, présences, congés et communication interne depuis une seule interface. Disponible dans 60+ pays avec support multilingue.' },
-      { question: 'Quels types d\'entreprises peuvent utiliser EmployePro ?', answer: 'EmployePro convient à tous types d\'entreprises : PME, startups, grandes entreprises, ONG, et organisations de toute taille. Que vous ayez 5 ou 5000 employés, notre plateforme s\'adapte à vos besoins.' },
-      { question: 'EmployePro est-il disponible dans mon pays ?', answer: 'Oui ! EmployePro supporte plus de 60 pays incluant la France, les pays africains francophones et anglophones, l\'Amérique latine, le Moyen-Orient, l\'Asie et l\'Europe. Chaque pays a ses indicateurs téléphoniques et formats adaptés.' },
-      { question: 'Est-ce que EmployePro est gratuit ?', answer: 'Nous offrons un plan gratuit pour les entreprises de moins de 10 employés. Pour les équipes plus grandes, nous avons des plans Premium et Entreprise avec toutes les fonctionnalités avancées.' },
+      { question: 'Qu\'est-ce que EmployraRH ?', answer: 'EmployraRH est une plateforme RH globale qui permet aux entreprises de gérer leurs employés, salaires, présences, congés et communication interne depuis une seule interface. Disponible dans 60+ pays avec support multilingue.' },
+      { question: 'Quels types d\'entreprises peuvent utiliser EmployraRH ?', answer: 'EmployraRH convient à tous types d\'entreprises : PME, startups, grandes entreprises, ONG, et organisations de toute taille. Que vous ayez 5 ou 5000 employés, notre plateforme s\'adapte à vos besoins.' },
+      { question: 'EmployraRH est-il disponible dans mon pays ?', answer: 'Oui ! EmployraRH supporte plus de 60 pays incluant la France, les pays africains francophones et anglophones, l\'Amérique latine, le Moyen-Orient, l\'Asie et l\'Europe. Chaque pays a ses indicateurs téléphoniques et formats adaptés.' },
+      { question: 'Est-ce que EmployraRH est gratuit ?', answer: 'Nous offrons un plan gratuit pour les entreprises de moins de 10 employés. Pour les équipes plus grandes, nous avons des plans Premium et Entreprise avec toutes les fonctionnalités avancées.' },
     ]
   },
   {
@@ -33,10 +33,10 @@ const faqData: FAQItem[] = [
     category: 'Salaires & Paie',
     icon: DollarSign,
     items: [
-      { question: 'Comment fonctionne le calcul des salaires ?', answer: 'EmployePro calcule automatiquement les salaires en tenant compte du salaire de base, des primes, des bonus et des déductions (CNSS, IR, etc.). Vous pouvez personnaliser les règles de calcul selon les réglementations locales de chaque pays.' },
+      { question: 'Comment fonctionne le calcul des salaires ?', answer: 'EmployraRH calcule automatiquement les salaires en tenant compte du salaire de base, des primes, des bonus et des déductions (CNSS, IR, etc.). Vous pouvez personnaliser les règles de calcul selon les réglementations locales de chaque pays.' },
       { question: 'Puis-je générer des bulletins de paie ?', answer: 'Oui ! Les bulletins de paie sont générés automatiquement chaque mois. Vous pouvez les télécharger en PDF, les imprimer ou les envoyer par email aux employés. Les bulletins incluent toutes les informations légales requises.' },
-      { question: 'EmployePro supporte-t-il plusieurs devises ?', answer: 'Absolument ! EmployePro supporte toutes les devises majeures : FCFA (XOF, XAF), EUR, USD, MAD, GBP, JPY, CNY, et bien d\'autres. Vous pouvez configurer la devise selon le pays de votre entreprise.' },
-      { question: 'Comment fonctionnent les paiements des salaires ?', answer: 'Vous pouvez traiter les paiements directement depuis la plateforme. EmployePro est compatible avec les systèmes de paiement locaux (Mobile Money, virements bancaires, etc.) et les solutions internationales comme Flutterwave et Paystack.' },
+      { question: 'EmployraRH supporte-t-il plusieurs devises ?', answer: 'Absolument ! EmployraRH supporte toutes les devises majeures : FCFA (XOF, XAF), EUR, USD, MAD, GBP, JPY, CNY, et bien d\'autres. Vous pouvez configurer la devise selon le pays de votre entreprise.' },
+      { question: 'Comment fonctionnent les paiements des salaires ?', answer: 'Vous pouvez traiter les paiements directement depuis la plateforme. EmployraRH est compatible avec les systèmes de paiement locaux (Mobile Money, virements bancaires, etc.) et les solutions internationales comme Flutterwave et Paystack.' },
     ]
   },
   {
@@ -45,7 +45,7 @@ const faqData: FAQItem[] = [
     items: [
       { question: 'Comment les employés pointent-ils leurs heures ?', answer: 'Les employés peuvent pointer leur arrivée, pause, et départ directement depuis leur tableau de bord. Le système calcule automatiquement le temps de travail, les retards, les absences et les heures supplémentaires.' },
       { question: 'Comment fonctionne la gestion des congés ?', answer: 'Les employés peuvent soumettre des demandes de congé (annuel, maladie, maternité, spécial). Les administrateurs reçoivent une notification et peuvent approuver ou refuser les demandes. Un calendrier visuel montre toutes les absences.' },
-      { question: 'Quels types de congés sont supportés ?', answer: 'EmployePro supporte les congés annuels, maladie, maternité/paternité, mariage, décès, permission spéciale, et des types personnalisés que vous pouvez configurer selon les lois locales.' },
+      { question: 'Quels types de congés sont supportés ?', answer: 'EmployraRH supporte les congés annuels, maladie, maternité/paternité, mariage, décès, permission spéciale, et des types personnalisés que vous pouvez configurer selon les lois locales.' },
     ]
   },
   {
@@ -61,16 +61,16 @@ const faqData: FAQItem[] = [
     category: 'Sécurité & Confidentialité',
     icon: Shield,
     items: [
-      { question: 'Mes données sont-elles sécurisées ?', answer: 'Absolument. EmployePro utilise le chiffrement SSL/TLS, l\'authentification JWT, et propose l\'authentification à deux facteurs (2FA). Les données sont stockées sur des serveurs sécurisés avec des sauvegardes automatiques quotidiennes.' },
+      { question: 'Mes données sont-elles sécurisées ?', answer: 'Absolument. EmployraRH utilise le chiffrement SSL/TLS, l\'authentification JWT, et propose l\'authentification à deux facteurs (2FA). Les données sont stockées sur des serveurs sécurisés avec des sauvegardes automatiques quotidiennes.' },
       { question: 'Qui peut accéder à mes données ?', answer: 'Seuls les membres de votre entreprise ont accès à vos données. Les administrateurs voient toutes les informations, tandis que les employés ne voient que leurs propres données et les informations générales de l\'entreprise.' },
-      { question: 'EmployePro est-il conforme au RGPD ?', answer: 'Oui, EmployePro est conforme au RGPD et aux réglementations de protection des données des pays supportés. Vous pouvez demander la suppression de vos données à tout moment.' },
+      { question: 'EmployraRH est-il conforme au RGPD ?', answer: 'Oui, EmployraRH est conforme au RGPD et aux réglementations de protection des données des pays supportés. Vous pouvez demander la suppression de vos données à tout moment.' },
     ]
   },
   {
     category: 'Support & Assistance',
     icon: Headphones,
     items: [
-      { question: 'Comment obtenir de l\'aide ?', answer: 'Vous pouvez nous contacter par email à support@employepro.com, par téléphone, ou via le chat en direct sur notre site. Notre équipe est disponible 24/7 dans plusieurs langues.' },
+      { question: 'Comment obtenir de l\'aide ?', answer: 'Vous pouvez nous contacter par email à support@employrarh.com, par téléphone, ou via le chat en direct sur notre site. Notre équipe est disponible 24/7 dans plusieurs langues.' },
       { question: 'Y a-t-il une formation disponible ?', answer: 'Oui ! Nous offrons des guides en ligne, des tutoriels vidéo, et des sessions de formation personnalisées pour les entreprises. Chaque nouvelle fonctionnalité inclut une documentation détaillée.' },
       { question: 'Comment passer à un plan supérieur ?', answer: 'Vous pouvez changer de plan à tout moment depuis les Paramètres > Abonnement. La mise à niveau est instantanée et le prix est prorata pour le reste de la période de facturation.' },
     ]
@@ -117,7 +117,7 @@ export default function FAQPage() {
             Questions Fréquentes
           </h1>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Tout ce que vous devez savoir sur EmployePro. Ne trouvez pas votre réponse ? Contactez-nous !
+            Tout ce que vous devez savoir sur EmployraRH. Ne trouvez pas votre réponse ? Contactez-nous !
           </p>
 
           {/* Search Bar */}
@@ -216,7 +216,7 @@ export default function FAQPage() {
             <h3 className="text-xl font-bold text-gray-800 mb-2">Aucun résultat trouvé</h3>
             <p className="text-gray-500 mb-6">Essayez une autre recherche ou contactez notre équipe.</p>
             <a
-              href="mailto:support@employepro.com"
+              href="mailto:support@employrarh.com"
               className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors"
             >
               Contact Support
@@ -229,8 +229,8 @@ export default function FAQPage() {
           <h3 className="text-2xl font-bold mb-3">Vous n'avez pas trouvé votre réponse ?</h3>
           <p className="text-blue-100 mb-6">Notre équipe est disponible 24/7 pour vous aider.</p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="mailto:support@employepro.com" className="inline-flex items-center bg-white text-blue-600 px-6 py-3 rounded-xl font-medium hover:bg-blue-50 active:scale-95 transition-all">
-              <Mail size={18} className="mr-2" /> support@employepro.com
+            <a href="mailto:support@employrarh.com" className="inline-flex items-center bg-white text-blue-600 px-6 py-3 rounded-xl font-medium hover:bg-blue-50 active:scale-95 transition-all">
+              <Mail size={18} className="mr-2" /> support@employrarh.com
             </a>
             <a href="tel:+33123456789" className="inline-flex items-center bg-white/10 text-white px-6 py-3 rounded-xl font-medium hover:bg-white/20 active:scale-95 transition-all border border-white/20">
               <Phone size={18} className="mr-2" /> +33 1 23 45 67 89

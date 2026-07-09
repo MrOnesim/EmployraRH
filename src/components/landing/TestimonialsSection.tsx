@@ -5,7 +5,7 @@ import { Star, MapPin, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 const testimonials = [
   {
     name: 'Amadou Diallo', role: 'CEO', company: 'AfriTech Solutions', country: 'Sénégal',
-    text: 'EmployéPro a révolutionné notre gestion RH. Nous sommes passés de 3 logiciels différents à une seule plateforme. Gain de temps de 40%.',
+    text: 'EmployraRH a révolutionné notre gestion RH. Nous sommes passés de 3 logiciels différents à une seule plateforme. Gain de temps de 40%.',
     rating: 5, initials: 'AD', gradient: 'from-blue-500 to-blue-600',
   },
   {
@@ -20,7 +20,7 @@ const testimonials = [
   },
   {
     name: 'Amina Benali', role: 'CHRO', company: 'Maghreb Industries', country: 'Maroc',
-    text: 'Nous gérons 3 000 employés dans 5 pays. EmployéPro nous offre une vision consolidée de notre capital humain.',
+    text: 'Nous gérons 3 000 employés dans 5 pays. EmployraRH nous offre une vision consolidée de notre capital humain.',
     rating: 5, initials: 'AB', gradient: 'from-blue-600 to-blue-700',
   },
 ];
@@ -41,9 +41,9 @@ export default function TestimonialsSection() {
     <section className="py-28 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
       <div ref={ref} className={`relative max-w-6xl mx-auto px-4 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 ring-1 ring-blue-200 shadow-sm mb-6">
-            <Star size={14} className="text-blue-600" />
-            <span className="text-sm font-medium text-blue-600">Ils nous font confiance</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 ring-1 ring-primary/20 shadow-sm mb-6">
+            <Star size={14} className="text-primary" />
+            <span className="text-sm font-medium text-primary">Ils nous font confiance</span>
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4 tracking-tight">
             Ce qu'ils disent
@@ -96,7 +96,7 @@ export default function TestimonialsSection() {
                   key={i}
                   onClick={() => setCurrent(i)}
                   className={`h-2.5 rounded-full transition-all ${
-                    i === current ? 'bg-blue-600 w-8' : 'bg-gray-300 hover:bg-gray-400 w-2.5'
+                    i === current ? 'bg-primary w-8' : 'bg-gray-300 hover:bg-gray-400 w-2.5'
                   }`}
                 />
               ))}

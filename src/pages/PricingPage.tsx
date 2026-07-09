@@ -1,4 +1,4 @@
-import { Check, X, Shield, Zap, Crown, Users, DollarSign, BarChart3, MessageSquare, HelpCircle, ArrowRight, Sparkles } from 'lucide-react';
+import { Check, X, Shield, Zap, Crown, Users, Building2, ArrowRight, DollarSign, BarChart3, MessageSquare, HelpCircle } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import PublicNav from '../components/PublicNav';
 import FooterSection from '../components/landing/FooterSection';
@@ -12,62 +12,100 @@ interface Plan {
   description: string;
   badge?: string;
   badgeColor?: string;
-  features: { text: string; included: boolean }[];
+  features: string[];
+  excluded?: string[];
   cta: string;
+  ctaLink: string;
   highlighted?: boolean;
   gradient?: string;
 }
 
 const plans: Plan[] = [
   {
-    name: 'À l’employé',
+    name: 'Starter',
     icon: Users,
-    price: '6',
-    period: '/employé/mois',
-    description: 'Vous ne payez que pour vos employés actifs',
+    price: '0',
+    period: '/ mois',
+    description: 'Pour démarrer en toute liberté. Jusqu\'à 5 employés.',
     badge: 'Sans engagement',
-    badgeColor: 'bg-blue-500',
+    badgeColor: 'bg-gray-500',
     features: [
-      { text: "Employés sans limite", included: true },
-      { text: 'Gestion des présences', included: true },
-      { text: 'Bulletins de paie (PDF)', included: true },
-      { text: 'Gestion des congés', included: true },
-      { text: 'Messages internes', included: true },
-      { text: 'Documents RH', included: true },
-      { text: 'Assistant IA', included: true },
-      { text: 'Rapports avancés', included: true },
-      { text: 'Performance & Évaluations', included: true },
-      { text: 'Support email prioritaire', included: true },
-      { text: 'API & Intégrations', included: false },
-      { text: 'Support dédié 24/7', included: false },
+      "Jusqu'à 5 employés",
+      'Gestion des présences',
+      'Bulletins de paie (PDF)',
+      'Gestion des congés',
+      'Documents RH',
+    ],
+    excluded: [
+      'Assistant IA',
+      'API & Intégrations',
+      'Rapports avancés',
+      'Support prioritaire',
     ],
     cta: 'Commencer',
+    ctaLink: '/register-company',
+  },
+  {
+    name: 'Pro',
+    icon: Zap,
+    price: '6',
+    period: '/employé/mois',
+    description: 'Pour les PME en croissance',
+    badge: 'Populaire',
+    badgeColor: 'bg-primary',
+    features: [
+      'Employés sans limite',
+      'Gestion des présences',
+      'Bulletins de paie (PDF)',
+      'Gestion des congés',
+      'Messages internes',
+      'Documents RH',
+      'Assistant IA',
+      'Rapports avancés',
+      'Performance & Évaluations',
+      'API & Intégrations',
+      'Support email prioritaire',
+    ],
+    cta: 'Essai gratuit 14 jours',
+    ctaLink: '/register-company',
     highlighted: true,
   },
   {
-    name: 'PME 10',
-    icon: Crown,
-    price: '79',
+    name: 'Business',
+    icon: Building2,
+    price: '250',
     period: '/mois',
-    description: 'Forfait 10 employés, tout inclus',
-    badge: 'Économisez 15%',
+    description: "50 employés inclus, +4€/supplémentaire",
+    badge: 'Économisez 17%',
     badgeColor: 'bg-green-500',
     features: [
-      { text: "10 employés inclus", included: true },
-      { text: 'Gestion des présences', included: true },
-      { text: 'Bulletins de paie (PDF)', included: true },
-      { text: 'Gestion des congés', included: true },
-      { text: 'Messages internes', included: true },
-      { text: 'Documents RH', included: true },
-      { text: 'Assistant IA', included: true },
-      { text: 'Rapports avancés', included: true },
-      { text: 'Performance & Évaluations', included: true },
-      { text: 'API & Intégrations', included: true },
-      { text: 'Support prioritaire', included: true },
-      { text: 'Account Manager dédié', included: false },
+      "50 employés inclus",
+      'Tout le plan Pro',
+      'SSO & Audits',
+      'BI & Tableaux de bord',
+      'Support dédié 24/7',
+      'Account Manager',
     ],
-    cta: 'Choisir PME 10',
+    cta: 'Essai gratuit 14 jours',
+    ctaLink: '/register-company',
     gradient: 'from-gray-900 to-gray-800',
+  },
+  {
+    name: 'Enterprise',
+    icon: Crown,
+    price: 'Sur mesure',
+    period: '',
+    description: 'Pour les grands groupes',
+    features: [
+      'Tout le plan Business',
+      'Multi-entreprises',
+      'SLA 99.99%',
+      'Data center dédié',
+      'On-premise possible',
+      'Formation on-site',
+    ],
+    cta: 'WhatsApp',
+    ctaLink: 'https://wa.me/2290141969208',
   },
 ];
 
@@ -109,92 +147,81 @@ export default function PricingPage() {
           <div className="absolute top-1/3 right-1/4 w-32 h-32 bg-white/5 rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
         </div>
         <div className="relative max-w-4xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-white/20">
-            <Sparkles size={16} className="mr-2 text-yellow-300" />
-            <span className="text-sm font-medium text-white">Tarification simple et transparente</span>
-          </div>
           <h1 className="text-4xl md:text-6xl font-black text-white mb-4">
             Un plan pour chaque entreprise
           </h1>
           <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
-            De la startup de 2 employés à l'entreprise de 500+, EmployePro s'adapte à vos besoins.
+            De la startup de 2 employés à l'entreprise de 500+, EmployraRH s'adapte à vos besoins.
           </p>
         </div>
       </section>
 
       {/* Plans */}
       <section className="max-w-6xl mx-auto px-4 -mt-16 relative z-10 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
           {plans.map((plan, i) => (
             <div
               key={i}
-              className={`relative rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 ${
+              className={`relative rounded-2xl p-6 transition-all duration-300 hover:-translate-y-2 ${
                 plan.highlighted
-                  ? 'bg-white border-2 border-blue-500 shadow-2xl shadow-blue-200 scale-105 z-10'
+                  ? 'bg-white border-2 border-primary shadow-2xl shadow-primary/20 scale-[1.02] z-10 ring-1 ring-primary/30'
                   : plan.gradient
                   ? `bg-gradient-to-br ${plan.gradient} text-white shadow-xl`
                   : 'bg-white border border-gray-200 shadow-lg'
               }`}
             >
               {plan.badge && (
-                <div className={`absolute -top-4 left-1/2 -translate-x-1/2 ${plan.badgeColor} text-gray-900 text-sm font-bold px-4 py-1.5 rounded-full shadow-lg`}>
+                <div className={`absolute -top-4 left-1/2 -translate-x-1/2 ${plan.badgeColor} text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-lg`}>
                   {plan.badge}
                 </div>
               )}
 
               <div className="flex items-center justify-center mb-4">
-                <div className={`w-14 h-14 rounded-xl flex items-center justify-center ${
-                  plan.highlighted ? 'bg-blue-100' : plan.gradient ? 'bg-white/10' : 'bg-gray-100'
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  plan.highlighted ? 'bg-primary/10' : plan.gradient ? 'bg-white/10' : 'bg-gray-100'
                 }`}>
-                  <plan.icon size={28} className={plan.highlighted ? 'text-blue-600' : plan.gradient ? 'text-white' : 'text-gray-600'} />
+                  <plan.icon size={24} className={plan.highlighted ? 'text-primary' : plan.gradient ? 'text-white' : 'text-gray-600'} />
                 </div>
               </div>
 
-              <h3 className={`text-2xl font-bold text-center mb-2 ${plan.gradient ? 'text-white' : 'text-gray-800'}`}>
+              <h3 className={`text-xl font-bold text-center mb-1 ${plan.gradient ? 'text-white' : 'text-gray-800'}`}>
                 {plan.name}
               </h3>
-              <p className={`text-center mb-6 ${plan.gradient ? 'text-gray-300' : 'text-gray-500'}`}>
+              <p className={`text-center text-sm mb-4 ${plan.gradient ? 'text-gray-300' : 'text-gray-500'}`}>
                 {plan.description}
               </p>
 
               <div className="text-center mb-6">
-                <span className={`text-5xl font-black ${plan.gradient ? 'text-white' : 'text-gray-800'}`}>
-                  {plan.price}€
+                <span className={`text-4xl font-black ${plan.gradient ? 'text-white' : 'text-gray-800'}`}>
+                  {plan.price === 'Sur mesure' ? 'Sur mesure' : `${plan.price} €`}
                 </span>
-                <span className={plan.gradient ? 'text-gray-400' : 'text-gray-400'}>{plan.period}</span>
+                <span className={`text-sm ${plan.gradient ? 'text-gray-400' : 'text-gray-400'}`}>{plan.period}</span>
               </div>
 
-              <button className={`w-full py-3.5 px-4 rounded-xl font-bold text-lg transition-all active:scale-95 mb-8 ${
-                plan.highlighted
-                  ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'
-                  : plan.gradient
-                  ? 'bg-white text-gray-900 hover:bg-gray-100'
-                  : 'bg-gray-900 text-white hover:bg-gray-800'
-              }`}>
+              <a
+                href={plan.ctaLink}
+                className={`block text-center w-full py-3 px-4 rounded-xl font-bold text-sm transition-all active:scale-95 mb-6 ${
+                  plan.highlighted
+                    ? 'bg-primary text-white hover:bg-primary-hover shadow-lg shadow-primary/20'
+                    : plan.gradient
+                    ? 'bg-white text-gray-900 hover:bg-gray-100'
+                    : 'border-2 border-gray-200 text-gray-700 hover:border-gray-300'
+                }`}
+              >
                 {plan.cta}
-              </button>
+              </a>
 
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {plan.features.map((feature, j) => (
-                  <div key={j} className="flex items-start space-x-3">
-                    <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                      feature.included
-                        ? plan.gradient ? 'bg-green-400/20' : 'bg-green-100'
-                        : plan.gradient ? 'bg-gray-500/20' : 'bg-gray-100'
-                    }`}>
-                      {feature.included ? (
-                        <Check size={12} className={plan.gradient ? 'text-green-400' : 'text-green-600'} />
-                      ) : (
-                        <X size={12} className={plan.gradient ? 'text-gray-400' : 'text-gray-400'} />
-                      )}
-                    </div>
-                    <span className={`text-sm ${
-                      feature.included
-                        ? plan.gradient ? 'text-gray-200' : 'text-gray-700'
-                        : plan.gradient ? 'text-gray-500' : 'text-gray-400'
-                    }`}>
-                      {feature.text}
-                    </span>
+                  <div key={j} className="flex items-start gap-2.5">
+                    <Check size={14} className={`shrink-0 mt-0.5 ${plan.gradient ? 'text-green-400' : 'text-green-500'}`} />
+                    <span className={`text-sm ${plan.gradient ? 'text-gray-200' : 'text-gray-700'}`}>{feature}</span>
+                  </div>
+                ))}
+                {plan.excluded?.map((feature, j) => (
+                  <div key={`x-${j}`} className="flex items-start gap-2.5">
+                    <X size={14} className={`shrink-0 mt-0.5 ${plan.gradient ? 'text-gray-500' : 'text-gray-300'}`} />
+                    <span className={`text-sm ${plan.gradient ? 'text-gray-500' : 'text-gray-400'}`}>{feature}</span>
                   </div>
                 ))}
               </div>
@@ -206,7 +233,7 @@ export default function PricingPage() {
       {/* Features Comparison */}
       <section className="max-w-6xl mx-auto px-4 pb-24">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-black text-gray-800 mb-4">Pourquoi choisir EmployePro ?</h2>
+          <h2 className="text-3xl font-black text-gray-800 mb-4">Pourquoi choisir EmployraRH ?</h2>
           <p className="text-gray-500 text-lg">Des fonctionnalités puissantes pour gérer votre entreprise</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -225,7 +252,7 @@ export default function PricingPage() {
           </div>
           <div className="relative">
             <h3 className="text-3xl font-black mb-4">Prêt à transformer votre gestion RH ?</h3>
-            <p className="text-blue-100 text-lg mb-8">Essayez EmployePro gratuitement pendant 14 jours. Aucune carte de crédit requise.</p>
+            <p className="text-blue-100 text-lg mb-8">Essayez EmployraRH gratuitement pendant 14 jours. Aucune carte de crédit requise.</p>
             <a href="/register-company" className="inline-flex items-center bg-white text-blue-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-lg group">
               Commencer maintenant
               <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
