@@ -1,18 +1,18 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Employee dashboard', () => {
-  test('redirects to login when not authenticated', async ({ page }) => {
-    await page.goto('/employee-dashboard');
+test.describe('Employee routes (no auth)', () => {
+  test('redirects payslips to login', async ({ page }) => {
+    await page.goto('/employee-dashboard/payslips');
     await expect(page).toHaveURL(/\/login/);
   });
 
-  test('redirects to login from employee sub-routes', async ({ page }) => {
-    await page.goto('/employee-dashboard/attendance');
+  test('redirects messages to login', async ({ page }) => {
+    await page.goto('/employee-dashboard/messages');
     await expect(page).toHaveURL(/\/login/);
   });
 
-  test('redirects to login from employee leaves', async ({ page }) => {
-    await page.goto('/employee-dashboard/leaves');
+  test('redirects settings to login', async ({ page }) => {
+    await page.goto('/employee-dashboard/settings');
     await expect(page).toHaveURL(/\/login/);
   });
 });
