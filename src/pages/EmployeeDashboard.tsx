@@ -33,16 +33,18 @@ const item = {
   show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 110, damping: 16 } },
 };
 
-// ─── Weekly bar chart data ───────────────────────────────────────────────────
-const weekData = [
-  { day: 'Lun', hours: 8.5, target: 8 },
-  { day: 'Mar', hours: 7.0, target: 8 },
-  { day: 'Mer', hours: 9.2, target: 8 },
-  { day: 'Jeu', hours: 8.0, target: 8 },
-  { day: 'Ven', hours: 4.0, target: 8 },
-  { day: 'Sam', hours: 0, target: 0 },
-  { day: 'Dim', hours: 0, target: 0 },
-];
+const getWeekDates = () => {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+  monday.setHours(0, 0, 0, 0);
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+};
 
 export default function EmployeeDashboard() {
   const { currentUser, attendance, leaves, payslips, clockIn, startBreak, endBreak, clockOut } = useApp();
@@ -132,6 +134,19 @@ export default function EmployeeDashboard() {
     if (status === 'rejected') return { bar: 'bg-rose-500', badge: 'bg-rose-500/10 text-rose-600 dark:text-rose-400', label: 'Refusé' };
     return { bar: 'bg-amber-400', badge: 'bg-amber-400/10 text-amber-600', label: 'En attente' };
   };
+
+  const weekData = getWeekDates().map((date, i) => {
+    const dayAttendance = attendance.filter(a =>
+      a.employeeId === currentUser?.id &&
+      new Date(a.date).toDateString() === date.toDateString()
+    );
+    const hours = dayAttendance.reduce((sum, a) => sum + a.totalHours, 0);
+    return {
+      day: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'][i],
+      hours,
+      target: i >= 1 && i <= 5 ? 8 : 0,
+    };
+  });
 
   const maxBarHours = Math.max(...weekData.map(d => d.hours), 1);
 

@@ -31,13 +31,28 @@ export default function EmployeeAttendancePage() {
   };
 
   // Weekly chart data
-  const weeklyData = [
-    { day: 'Lun', hours: 8 },
-    { day: 'Mar', hours: 7.5 },
-    { day: 'Mer', hours: 8.5 },
-    { day: 'Jeu', hours: 7 },
-    { day: 'Ven', hours: todayAttendance?.totalHours || 0 },
-  ];
+  const getWeekDates = () => {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    monday.setHours(0, 0, 0, 0);
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      return d;
+    });
+  };
+  const weeklyData = getWeekDates().filter((_, i) => i >= 1 && i <= 5).map((date) => {
+    const dayAttendance = myAttendance.filter(a =>
+      new Date(a.date).toDateString() === date.toDateString()
+    );
+    const hours = dayAttendance.reduce((sum, a) => sum + a.totalHours, 0);
+    return {
+      day: date.toLocaleDateString('fr-FR', { weekday: 'short' }).slice(0, 3).replace(/\.$/, ''),
+      hours,
+    };
+  });
 
   return (
     <div className="space-y-6">

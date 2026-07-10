@@ -36,13 +36,32 @@ export default function AttendancePage() {
     { name: 'Absents', value: absentCount, color: '#EF4444' }
   ];
 
-  const weeklyData = [
-    { day: 'Lun', present: 6, late: 1, absent: 1 },
-    { day: 'Mar', present: 5, late: 2, absent: 1 },
-    { day: 'Mer', present: 7, late: 0, absent: 1 },
-    { day: 'Jeu', present: 6, late: 1, absent: 1 },
-    { day: 'Ven', present: presentCount, late: lateCount, absent: absentCount },
-  ];
+  const getWeekDates = () => {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    monday.setHours(0, 0, 0, 0);
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      return d;
+    });
+  };
+  const weeklyData = getWeekDates().filter((_, i) => i >= 1 && i <= 5).map((date) => {
+    const dayAttendance = attendance.filter(a =>
+      new Date(a.date).toDateString() === date.toDateString()
+    );
+    const present = dayAttendance.filter(a => a.status === 'present').length;
+    const late = dayAttendance.filter(a => a.status === 'late').length;
+    const activeCount = employees.filter(e => e.status === 'active').length;
+    return {
+      day: date.toLocaleDateString('fr-FR', { weekday: 'short' }).slice(0, 3).replace(/\.$/, ''),
+      present,
+      late,
+      absent: activeCount - present - late,
+    };
+  });
 
   const formatTime = (date: Date | null | undefined) => {
     if (!date) return '--:--';

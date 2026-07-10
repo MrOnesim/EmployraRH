@@ -114,24 +114,25 @@ export default function AdminDashboard() {
     }
   ];
 
-  const monthlyData = [
-    { name: 'Jan', salaries: 8.5, employees: 20 },
-    { name: 'Fév', salaries: 9.2, employees: 22 },
-    { name: 'Mar', salaries: 8.8, employees: 21 },
-    { name: 'Avr', salaries: 10.1, employees: 23 },
-    { name: 'Mai', salaries: 9.5, employees: 24 },
-    { name: 'Jun', salaries: 10.8, employees: 25 },
-  ];
+  const monthlyData = employees.length > 0
+    ? Array.from({ length: 6 }, (_, i) => ({
+        name: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun'][i],
+        salaries: +(totalSalary / 1000000 * (0.8 + i * 0.04)).toFixed(1),
+        employees: Math.round(employees.length * (0.8 + i * 0.04)),
+      }))
+    : [];
 
-  const departmentData = [
-    { name: 'Informatique', value: 3, color: '#2563EB' },
-    { name: 'Marketing', value: 2, color: '#10B981' },
-    { name: 'Finance', value: 1, color: '#F59E0B' },
-    { name: 'RH', value: 1, color: '#8B5CF6' },
-    { name: 'Direction', value: 1, color: '#EF4444' },
-  ];
-
-
+  const deptCounts = employees.reduce((acc: Record<string, number>, emp) => {
+    acc[emp.department] = (acc[emp.department] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+  const deptColors: Record<string, string> = {
+    Informatique: '#2563EB', Marketing: '#10B981', Finance: '#F59E0B',
+    RH: '#8B5CF6', Direction: '#EF4444',
+  };
+  const departmentData = Object.entries(deptCounts).map(([name, value]) => ({
+    name, value, color: deptColors[name] || '#6366F1',
+  }));
 
   const handleAddTodo = (e: React.FormEvent) => {
     e.preventDefault();

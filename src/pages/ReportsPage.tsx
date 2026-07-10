@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { 
@@ -14,7 +14,7 @@ import {
 } from 'recharts';
 
 export default function ReportsPage() {
-  const { employees, leaves } = useApp();
+  const { employees, leaves, attendance } = useApp();
   const { addToast } = useToast();
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [showDetails, setShowDetails] = useState<Record<string, boolean>>({
@@ -42,24 +42,25 @@ export default function ReportsPage() {
   const pieColors = ['#2563EB', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#EC4899', '#14B8A6', '#6366F1'];
 
   // Monthly salary trend
-  const monthlySalaryData = [
-    { month: 'Jan', amount: 7800000, employees: 18 },
-    { month: 'Fév', amount: 8200000, employees: 20 },
-    { month: 'Mar', amount: 8500000, employees: 21 },
-    { month: 'Avr', amount: 9100000, employees: 22 },
-    { month: 'Mai', amount: 9300000, employees: 24 },
-    { month: 'Jun', amount: 9800000, employees: 25 },
-  ];
+  const monthlySalaryData = useMemo(() => employees.length > 0
+    ? Array.from({ length: 6 }, (_, i) => ({
+        month: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun'][i],
+        amount: Math.round(totalSalary * (0.8 + i * 0.04)),
+        employees: Math.round(employees.length * (0.8 + i * 0.04)),
+      }))
+    : [], [employees, totalSalary]);
 
-  // Attendance by department
-  const attendanceByDept = [
-    { department: 'Informatique', rate: 95.2 },
-    { department: 'Marketing', rate: 92.8 },
-    { department: 'Finance', rate: 97.1 },
-    { department: 'RH', rate: 94.5 },
-    { department: 'Ventes', rate: 88.3 },
-    { department: 'Operations', rate: 91.7 },
-  ];
+  // Attendance by department (computed from actual records)
+  const attendanceByDept = useMemo(() => {
+    const deptNames = [...new Set(employees.map(e => e.department))];
+    return deptNames.map(dept => {
+      const deptEmpIds = employees.filter(e => e.department === dept).map(e => e.id);
+      const deptAttendance = attendance.filter(a => deptEmpIds.includes(a.employeeId));
+      const presentCount = deptAttendance.filter(a => a.status === 'present' || a.status === 'late').length;
+      const rate = deptAttendance.length > 0 ? (presentCount / deptAttendance.length * 100) : 0;
+      return { department: dept, rate: Math.round(rate * 10) / 10 };
+    });
+  }, [employees, attendance]);
 
   // Leave distribution
   const leaveTypeData = leaves.length > 0 ? Object.entries(
