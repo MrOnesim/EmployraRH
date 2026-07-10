@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PerformanceReviewService } from './performance-review.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { CreatePerformanceReviewDto } from './dto/create-performance-review.dto';
@@ -7,6 +7,7 @@ import { UpdatePerformanceReviewDto } from './dto/update-performance-review.dto'
 import { AcknowledgeReviewDto } from './dto/acknowledge-review.dto';
 
 @ApiTags('Performance Reviews')
+@ApiBearerAuth()
 @Controller('performance-reviews')
 @UseGuards(RolesGuard)
 export class PerformanceReviewController {

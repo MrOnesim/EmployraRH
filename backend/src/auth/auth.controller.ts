@@ -1,14 +1,23 @@
-import { Controller, Get, Req, Post, Body, UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
-import { Request } from 'express';
-import * as bcrypt from 'bcryptjs';
+import { Body, Controller, Get, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { SignInDto } from './dto/sign-in.dto';
-import { SignUpDto } from './dto/sign-up.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { Public } from '../common/decorators/public.decorator';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ensureCsrfCookie } from '../common/security/request-security';
 
-@Controller('auth')
+@ApiTags('auth')
+@Controller('security')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @Public()
+  @Get('csrf')
+  @ApiOperation({ summary: 'Issue un token CSRF pour les appels API mutables' })
+  getCsrfToken(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const csrfToken = ensureCsrfCookie(req, res);
+    return { csrfToken };
+  }
 
   @Get('session')
   async getSession(@Req() req: Request) {
@@ -20,29 +29,23 @@ export class AuthController {
     return safe;
   }
 
-  @Public()
-  @Post('sign-in')
-  async signIn(@Body() dto: SignInDto) {
-    const user = await this.authService.findUserByEmail(dto.email);
-    if (!user || !user.password) throw new UnauthorizedException('Invalid credentials');
+  @Post('change-password')
+  @ApiOperation({ summary: 'Change le mot de passe et invalide toutes les sessions actives' })
+  async changePassword(@Req() req: Request, @Body() dto: ChangePasswordDto) {
+    const user = (req as any).user;
+    if (!user?.id) throw new UnauthorizedException();
 
-    const valid = await bcrypt.compare(dto.password, user.password);
-    if (!valid) throw new UnauthorizedException('Invalid credentials');
-
-    const { password, ...safe } = user;
-    return { user: safe };
+    await this.authService.changePassword(user.id, dto.currentPassword, dto.newPassword);
+    return { success: true };
   }
 
-  @Public()
-  @Post('sign-up')
-  async signUp(@Body() dto: SignUpDto) {
-    const hashed = await bcrypt.hash(dto.password, 12);
-    const user = await this.authService.createUser({
-      email: dto.email,
-      name: dto.name,
-      password: hashed,
-    });
-    const { password, ...safe } = user;
-    return safe;
+  @Post('logout-all')
+  @ApiOperation({ summary: 'Invalide toutes les sessions actives de l’utilisateur courant' })
+  async logoutAll(@Req() req: Request) {
+    const user = (req as any).user;
+    if (!user?.id) throw new UnauthorizedException();
+
+    await this.authService.revokeAllUserSessions(user.id);
+    return { success: true };
   }
 }

@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { SignatureTemplateService } from './signature-template.service';
 import { CreateSignatureTemplateDto } from './dto/create-signature-template.dto';
@@ -7,6 +7,7 @@ import { UpdateSignatureTemplateDto } from './dto/update-signature-template.dto'
 import { UpdatePlaceholdersDto } from './dto/update-placeholders.dto';
 
 @ApiTags('signature-templates')
+@ApiBearerAuth()
 @Controller('signature-templates')
 @UseGuards(RolesGuard)
 export class SignatureTemplateController {

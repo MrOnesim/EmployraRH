@@ -1,9 +1,10 @@
 import { Controller, Post, Get, Param, Body, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { QrTokenService } from './qr-token.service';
 
 @ApiTags('qr-tokens')
+@ApiBearerAuth()
 @Controller('qr-tokens')
 @UseGuards(RolesGuard)
 export class QrTokenController {

@@ -1,11 +1,64 @@
 import axios, { AxiosError } from 'axios';
 import { offlineDB } from '../utils/db';
 
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
+  baseURL,
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
   withCredentials: true,
+});
+
+let csrfTokenPromise: Promise<string> | null = null;
+
+function getCsrfUrl(): string {
+  if (/^https?:\/\//i.test(baseURL)) {
+    return `${baseURL.replace(/\/$/, '')}/security/csrf`;
+  }
+
+  return new URL(`${baseURL.replace(/\/$/, '')}/security/csrf`, window.location.origin).toString();
+}
+
+async function getCsrfToken(): Promise<string> {
+  if (!csrfTokenPromise) {
+    csrfTokenPromise = fetch(getCsrfUrl(), {
+      method: 'GET',
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error('Impossible de récupérer le token CSRF');
+        }
+
+        const data = await response.json() as { csrfToken?: string };
+        if (!data.csrfToken) {
+          throw new Error('Réponse CSRF invalide');
+        }
+
+        return data.csrfToken;
+      })
+      .finally(() => {
+        csrfTokenPromise = null;
+      });
+  }
+
+  return csrfTokenPromise;
+}
+
+api.interceptors.request.use(async (config) => {
+  const method = config.method?.toLowerCase();
+  const needsCsrf = !!method && ['post', 'put', 'patch', 'delete'].includes(method);
+
+  if (!needsCsrf || !navigator.onLine) {
+    return config;
+  }
+
+  const csrfToken = await getCsrfToken();
+  config.headers = config.headers || {};
+  config.headers['X-CSRF-Token'] = csrfToken;
+  return config;
 });
 
 api.interceptors.response.use(

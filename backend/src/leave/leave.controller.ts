@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { LeaveService } from './leave.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { CreateLeaveDto } from './dto/create-leave.dto';
@@ -7,6 +7,7 @@ import { UpdateLeaveDto } from './dto/update-leave.dto';
 import { RejectLeaveDto } from './dto/reject-leave.dto';
 
 @ApiTags('leaves')
+@ApiBearerAuth()
 @Controller('leaves')
 @UseGuards(RolesGuard)
 export class LeaveController {

@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Param, Patch, UseGuards, ParseUUIDPipe } f
 import { EnrollmentService } from './enrollment.service';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
 import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('enrollments')
+@ApiBearerAuth()
 @Controller('enrollments')
 @UseGuards(RolesGuard)
 export class EnrollmentController {

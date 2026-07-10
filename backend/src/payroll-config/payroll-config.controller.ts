@@ -1,11 +1,12 @@
 import { Controller, Get, Put, Body, Query, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PayrollConfigService } from './payroll-config.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { CreatePayrollConfigDto } from './dto/create-payroll-config.dto';
 import { UpdatePayrollConfigDto } from './dto/update-payroll-config.dto';
 
 @ApiTags('Payroll Config')
+@ApiBearerAuth()
 @Controller('payroll/config')
 @UseGuards(RolesGuard)
 export class PayrollConfigController {

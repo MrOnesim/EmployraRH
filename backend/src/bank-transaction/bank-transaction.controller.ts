@@ -1,10 +1,11 @@
 import { Controller, Get, Post, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { BankTransactionService } from './bank-transaction.service';
 import { CreateBankTransactionDto } from './dto/create-bank-transaction.dto';
 
 @ApiTags('Bank Transactions')
+@ApiBearerAuth()
 @Controller('bank-transactions')
 @UseGuards(RolesGuard)
 export class BankTransactionController {

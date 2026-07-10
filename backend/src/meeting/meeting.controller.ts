@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { MeetingService } from './meeting.service';
 import { CreateMeetingDto } from './dto/create-meeting.dto';
@@ -7,6 +7,7 @@ import { UpdateMeetingDto } from './dto/update-meeting.dto';
 import { JoinMeetingDto } from './dto/join-meeting.dto';
 
 @ApiTags('Meetings')
+@ApiBearerAuth()
 @Controller('meetings')
 @UseGuards(RolesGuard)
 export class MeetingController {

@@ -1,11 +1,12 @@
 import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { WellnessSurveyService } from './wellness-survey.service';
 import { CreateWellnessSurveyDto } from './dto/create-wellness-survey.dto';
 import { UpdateWellnessSurveyDto } from './dto/update-wellness-survey.dto';
 
 @ApiTags('wellness-surveys')
+@ApiBearerAuth()
 @Controller('wellness-surveys')
 @UseGuards(RolesGuard)
 export class WellnessSurveyController {

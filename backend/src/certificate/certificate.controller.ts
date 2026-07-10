@@ -1,10 +1,11 @@
 import { Controller, Get, Post, Body, Param, Patch, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { CertificateService } from './certificate.service';
 import { GenerateCertificateDto } from './dto/generate-certificate.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('certificates')
+@ApiBearerAuth()
 @Controller('certificates')
 @UseGuards(RolesGuard)
 export class CertificateController {

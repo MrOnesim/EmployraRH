@@ -5,10 +5,11 @@ import { UpdateEquipmentDto } from './dto/update-equipment.dto';
 import { UpdateEquipmentStatusDto } from './dto/update-equipment-status.dto';
 import { AssignEquipmentDto } from './dto/assign.dto';
 import { ReturnEquipmentDto } from './dto/return.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('equipment')
+@ApiBearerAuth()
 @Controller('equipment')
 @UseGuards(RolesGuard)
 export class EquipmentController {

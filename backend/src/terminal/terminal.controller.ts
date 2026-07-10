@@ -1,10 +1,11 @@
 import { Controller, Post, Get, Patch, Param, Delete, Body, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { TerminalService } from './terminal.service';
 import { RegisterTerminalDto } from './dto/register-terminal.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('terminals')
+@ApiBearerAuth()
 @Controller('terminals')
 @UseGuards(RolesGuard)
 export class TerminalController {

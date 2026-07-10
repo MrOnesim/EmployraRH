@@ -1,24 +1,68 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import helmet from 'helmet';
+import type { Request, Response, NextFunction } from 'express';
 import { AppModule } from './app.module';
+import { validateEnvironment } from './common/security/env.validation';
+import {
+  CSRF_COOKIE_NAME,
+  CSRF_HEADER_NAME,
+  ensureCsrfCookie,
+  getAllowedOrigins,
+  isSafeMethod,
+  matchesAllowedOrigin,
+  parseCookieHeader,
+} from './common/security/request-security';
 
 async function bootstrap() {
+  validateEnvironment();
+
   const app = await NestFactory.create(AppModule);
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.set('trust proxy', 1);
+
+  const allowedOrigins = getAllowedOrigins();
+  const isProduction = process.env.NODE_ENV === 'production';
 
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', CSRF_HEADER_NAME],
     credentials: true,
   });
 
-  app.use((_req: any, res: any, next: () => void) => {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('X-XSS-Protection', '0');
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    hsts: isProduction
+      ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+      : false,
+  }));
+
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    ensureCsrfCookie(req, res);
+
+    if (isSafeMethod(req.method)) {
+      return next();
+    }
+
+    if (!matchesAllowedOrigin(req)) {
+      return res.status(403).json({ message: 'Untrusted request origin' });
+    }
+
+    if (req.path.startsWith('/api/auth/')) {
+      return next();
+    }
+
+    const cookies = parseCookieHeader(req.headers.cookie);
+    const csrfCookie = cookies[CSRF_COOKIE_NAME];
+    const csrfHeader = req.headers[CSRF_HEADER_NAME] || req.headers[CSRF_HEADER_NAME.toLowerCase()];
+
+    if (!csrfCookie || typeof csrfHeader !== 'string' || csrfCookie !== csrfHeader) {
+      return res.status(403).json({ message: 'Invalid CSRF token' });
+    }
+
     next();
   });
 

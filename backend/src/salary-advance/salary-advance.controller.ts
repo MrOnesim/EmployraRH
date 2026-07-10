@@ -1,11 +1,12 @@
 import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SalaryAdvanceService } from './salary-advance.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { CreateSalaryAdvanceDto } from './dto/create-salary-advance.dto';
 import { ApproveAdvanceDto } from './dto/approve-advance.dto';
 
 @ApiTags('Salary Advances')
+@ApiBearerAuth()
 @Controller('salary-advances')
 @UseGuards(RolesGuard)
 export class SalaryAdvanceController {

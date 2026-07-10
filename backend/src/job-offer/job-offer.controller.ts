@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, Pa
 import { JobOfferService } from './job-offer.service';
 import { CreateJobOfferDto } from './dto/create-job-offer.dto';
 import { UpdateJobOfferDto } from './dto/update-job-offer.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('job-offers')
+@ApiBearerAuth()
 @Controller('job-offers')
 @UseGuards(RolesGuard)
 export class JobOfferController {

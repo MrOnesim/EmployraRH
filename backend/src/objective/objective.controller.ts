@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { ObjectiveService } from './objective.service';
 import { CreateObjectiveDto } from './dto/create-objective.dto';
@@ -7,6 +7,7 @@ import { UpdateObjectiveDto } from './dto/update-objective.dto';
 import { UpdateObjectiveStatusDto } from './dto/update-status.dto';
 
 @ApiTags('objectives')
+@ApiBearerAuth()
 @Controller('objectives')
 @UseGuards(RolesGuard)
 export class ObjectiveController {

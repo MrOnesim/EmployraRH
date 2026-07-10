@@ -1,10 +1,11 @@
 import { Controller, Get, Post, Body, Param, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { QuizAttemptService } from './quiz-attempt.service';
 import { SubmitQuizDto } from './dto/submit-quiz.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('quiz-attempts')
+@ApiBearerAuth()
 @Controller('quiz-attempts')
 @UseGuards(RolesGuard)
 export class QuizAttemptController {

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
@@ -41,12 +42,20 @@ import { TerminalModule } from './terminal/terminal.module';
 import { InvitationModule } from './invitation/invitation.module';
 import { HealthController } from './health.controller';
 import { AuthGuard } from './common/guards/auth.guard';
+import { ThrottlerBehindProxyGuard } from './common/throttler-behind-proxy.guard';
 
 @Module({
-  imports: [PrismaModule, AuthModule, CompanyModule, EmployeeModule, LeaveModule, AttendanceModule, PayslipModule, DocumentModule, MeetingModule, PayrollConfigModule, NotificationModule, CalendarEventModule, ConversationModule, BankAccountModule, BankTransactionModule, SalaryAdvanceModule, SalaryTransferModule, SignatureRequestModule, SignatureTemplateModule, CourseModule, EnrollmentModule, QuizModule, QuizAttemptModule, CertificateModule, JobOfferModule, CandidateModule, ObjectiveModule, PerformanceReviewModule, EquipmentModule, EquipmentAssignmentModule, WellnessSurveyModule, WellnessResponseModule, MissionModule, ExpenseReportModule, TaxDeclarationModule, SecurityGuardModule, QrTokenModule, TerminalModule, InvitationModule],
+  imports: [
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 100,
+    }]),
+    PrismaModule, AuthModule, CompanyModule, EmployeeModule, LeaveModule, AttendanceModule, PayslipModule, DocumentModule, MeetingModule, PayrollConfigModule, NotificationModule, CalendarEventModule, ConversationModule, BankAccountModule, BankTransactionModule, SalaryAdvanceModule, SalaryTransferModule, SignatureRequestModule, SignatureTemplateModule, CourseModule, EnrollmentModule, QuizModule, QuizAttemptModule, CertificateModule, JobOfferModule, CandidateModule, ObjectiveModule, PerformanceReviewModule, EquipmentModule, EquipmentAssignmentModule, WellnessSurveyModule, WellnessResponseModule, MissionModule, ExpenseReportModule, TaxDeclarationModule, SecurityGuardModule, QrTokenModule, TerminalModule, InvitationModule,
+  ],
   controllers: [HealthController],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_GUARD, useClass: ThrottlerBehindProxyGuard },
   ],
 })
 export class AppModule {}

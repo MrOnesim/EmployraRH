@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDP
 import { QuizService } from './quiz.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('quizzes')
+@ApiBearerAuth()
 @Controller('quizzes')
 @UseGuards(RolesGuard)
 export class QuizController {

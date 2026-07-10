@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ExpenseReportService } from './expense-report.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { CreateExpenseReportDto } from './dto/create-expense-report.dto';
@@ -18,6 +18,7 @@ import { RejectExpenseDto } from './dto/reject-expense.dto';
 import { ReceiptExpenseDto } from './dto/receipt-expense.dto';
 
 @ApiTags('expense-reports')
+@ApiBearerAuth()
 @Controller('expense-reports')
 @UseGuards(RolesGuard)
 export class ExpenseReportController {

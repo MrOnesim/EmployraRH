@@ -59,8 +59,23 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  members   Member[]
-  employees Employee[]
+  members       Member[]
+  employees     Employee[]
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  tokenHash String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  userId String
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
 }
 
 model Member {
@@ -168,13 +183,21 @@ model Attendance {
 }
 
 model Payslip {
-  id          String   @id @default(cuid())
-  month       Int
-  year        Int
-  grossSalary Float
-  netSalary   Float
-  pdfUrl      String?
-  createdAt   DateTime @default(now())
+  id                 String   @id @default(cuid())
+  month              Int
+  year               Int
+  grossSalary        Float
+  netSalary          Float
+  totalContributions Float    @default(0)
+  incomeTax          Float    @default(0)
+  netSocial          Float    @default(0)
+  netPayable         Float    @default(0)
+  overtimeHours      Float    @default(0)
+  overtimePay        Float    @default(0)
+  bonusTotal         Float    @default(0)
+  rubrics            Json     @default("[]")
+  pdfUrl             String?
+  createdAt          DateTime @default(now())
 
   employeeId String
   employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)

@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDP
 import { EquipmentAssignmentService } from './equipment-assignment.service';
 import { CreateEquipmentAssignmentDto } from './dto/create-equipment-assignment.dto';
 import { UpdateEquipmentAssignmentDto } from './dto/update-equipment-assignment.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('equipment-assignments')
+@ApiBearerAuth()
 @Controller('equipment-assignments')
 @UseGuards(RolesGuard)
 export class EquipmentAssignmentController {

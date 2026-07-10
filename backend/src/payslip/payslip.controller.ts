@@ -1,10 +1,11 @@
 import { Controller, Get, Post, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PayslipService } from './payslip.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { GeneratePayslipDto } from './dto/generate-payslip.dto';
 
 @ApiTags('Payslips')
+@ApiBearerAuth()
 @Controller('payslips')
 @UseGuards(RolesGuard)
 export class PayslipController {

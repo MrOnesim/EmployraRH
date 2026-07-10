@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Param, UseGuards, ParseUUIDPipe } from '@n
 import { CompanyService } from './company.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { AddMemberDto } from './dto/add-member.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('companies')
+@ApiBearerAuth()
 @Controller('companies')
 @UseGuards(RolesGuard)
 export class CompanyController {

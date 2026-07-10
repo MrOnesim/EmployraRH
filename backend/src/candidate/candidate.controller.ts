@@ -4,10 +4,11 @@ import { CreateCandidateDto } from './dto/create-candidate.dto';
 import { UpdateCandidateDto } from './dto/update-candidate.dto';
 import { UpdateCandidateStatusDto } from './dto/update-status.dto';
 import { ScheduleInterviewDto } from './dto/schedule-interview.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('candidates')
+@ApiBearerAuth()
 @Controller('candidates')
 @UseGuards(RolesGuard)
 export class CandidateController {

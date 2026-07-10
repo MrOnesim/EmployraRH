@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { MissionService } from './mission.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { CreateMissionDto } from './dto/create-mission.dto';
@@ -17,6 +17,7 @@ import { CompleteMissionDto } from './dto/complete-mission.dto';
 import { SubmitExpenseDto } from './dto/submit-expense.dto';
 
 @ApiTags('missions')
+@ApiBearerAuth()
 @Controller('missions')
 @UseGuards(RolesGuard)
 export class MissionController {

@@ -1,11 +1,12 @@
 import { Controller, Get, Post, Patch, Delete, Param, Query, Body, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { SecurityGuardService } from './security-guard.service';
 import { AssignSecurityGuardDto } from './dto/assign-security-guard.dto';
 import { ScanAttendanceDto } from './dto/scan-attendance.dto';
 
 @ApiTags('security-guards')
+@ApiBearerAuth()
 @Controller('security-guards')
 @UseGuards(RolesGuard)
 export class SecurityGuardController {

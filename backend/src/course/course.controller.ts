@@ -3,9 +3,10 @@ import { CourseService } from './course.service';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('courses')
+@ApiBearerAuth()
 @Controller('courses')
 @UseGuards(RolesGuard)
 export class CourseController {

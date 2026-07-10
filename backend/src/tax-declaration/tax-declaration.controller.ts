@@ -1,11 +1,12 @@
 import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { TaxDeclarationService } from './tax-declaration.service';
 import { CreateTaxDeclarationDto } from './dto/create-tax-declaration.dto';
 import { ConfirmAmountDto } from './dto/confirm-amount.dto';
 
 @ApiTags('Tax Declarations')
+@ApiBearerAuth()
 @Controller('tax-declarations')
 @UseGuards(RolesGuard)
 export class TaxDeclarationController {
