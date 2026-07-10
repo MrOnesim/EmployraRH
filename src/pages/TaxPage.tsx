@@ -2,6 +2,8 @@ import { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 import { FileText, Landmark, Plus, Download, CheckCircle, Clock, AlertTriangle, Search, Filter } from 'lucide-react';
 import Modal from '../components/Modal';
 import Badge from '../components/Badge';
@@ -86,6 +88,7 @@ export default function TaxPage() {
   const { currentCompany } = useApp();
   const { taxDeclarations, employees, addTaxDeclaration } = useData();
   const { addToast } = useToast();
+  const loading = usePageLoading();
 
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState(DEFAULT_FORM);
@@ -117,21 +120,26 @@ export default function TaxPage() {
       addToast('Veuillez remplir tous les champs', 'error');
       return;
     }
-    addTaxDeclaration({
-      companyId: currentCompany.id,
-      country: form.country,
-      period: form.period,
-      type: form.type,
-      totalSalary: autoCalculated.totalSalary,
-      totalTax: autoCalculated.totalTax,
-      status: 'draft',
-      dueDate: new Date(),
-    });
-    addToast('Déclaration fiscale créée', 'success');
-    setShowModal(false);
-    resetForm();
+    try {
+      addTaxDeclaration({
+        companyId: currentCompany.id,
+        country: form.country,
+        period: form.period,
+        type: form.type,
+        totalSalary: autoCalculated.totalSalary,
+        totalTax: autoCalculated.totalTax,
+        status: 'draft',
+        dueDate: new Date(),
+      });
+      addToast('Déclaration fiscale créée', 'success');
+      setShowModal(false);
+      resetForm();
+    } catch {
+      addToast('Erreur lors de la création de la déclaration', 'error');
+    }
   };
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

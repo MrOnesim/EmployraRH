@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 import { BookOpen, Play, CheckCircle, Clock, User, BarChart3, Plus, Search, ClipboardCheck, Award, GraduationCap, ChevronRight, FileDown, XCircle } from 'lucide-react';
 import Modal from '../components/Modal';
 import Badge from '../components/Badge';
@@ -29,6 +31,7 @@ export default function TrainingPage() {
   const { currentUser } = useApp();
   const { courses, enrollments, enrollCourse, updateLessonProgress, quizzes, certificates, submitQuizAttempt } = useData();
   const { addToast } = useToast();
+  const loading = usePageLoading();
 
   const [activeTab, setActiveTab] = useState<'catalogue' | 'my' | 'quiz' | 'certificates'>('catalogue');
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
@@ -58,13 +61,21 @@ export default function TrainingPage() {
 
   const handleEnroll = (courseId: string) => {
     if (!currentUser) return;
-    enrollCourse(currentUser.id, courseId);
-    addToast('Inscription réussie', 'success');
+    try {
+      enrollCourse(currentUser.id, courseId);
+      addToast('Inscription réussie', 'success');
+    } catch {
+      addToast("Erreur lors de l'inscription", 'error');
+    }
   };
 
   const handleMarkLesson = (enrollmentId: string, lessonId: string) => {
-    updateLessonProgress(enrollmentId, lessonId);
-    addToast('Leçon marquée comme terminée', 'success');
+    try {
+      updateLessonProgress(enrollmentId, lessonId);
+      addToast('Leçon marquée comme terminée', 'success');
+    } catch {
+      addToast('Erreur lors du marquage de la leçon', 'error');
+    }
   };
 
   const handleContinue = (enrollment: Enrollment) => {
@@ -82,19 +93,23 @@ export default function TrainingPage() {
 
   const handleSubmitQuiz = () => {
     if (!selectedQuiz || !currentUser) return;
-    const result = submitQuizAttempt({
-      quizId: selectedQuiz.id,
-      courseId: selectedQuiz.courseId,
-      employeeId: currentUser.id,
-      answers: quizAnswers,
-      score: 0,
-      totalPoints: 0,
-    });
-    setQuizResult(result);
-    if (result.passed) {
-      setShowConfetti(true);
-      addToast('Félicitations ! Certificat émis avec succès', 'success');
-      confettiTimerRef.current = setTimeout(() => setShowConfetti(false), 4000);
+    try {
+      const result = submitQuizAttempt({
+        quizId: selectedQuiz.id,
+        courseId: selectedQuiz.courseId,
+        employeeId: currentUser.id,
+        answers: quizAnswers,
+        score: 0,
+        totalPoints: 0,
+      });
+      setQuizResult(result);
+      if (result.passed) {
+        setShowConfetti(true);
+        addToast('Félicitations ! Certificat émis avec succès', 'success');
+        confettiTimerRef.current = setTimeout(() => setShowConfetti(false), 4000);
+      }
+    } catch {
+      addToast('Erreur lors de la soumission du quiz', 'error');
     }
   };
 
@@ -347,6 +362,7 @@ export default function TrainingPage() {
     </div>
   );
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       {showConfetti && (

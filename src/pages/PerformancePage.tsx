@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 import { 
   Star, TrendingUp, Target, Search, Plus, X,
   CheckCircle, Clock, ThumbsUp, Eye
@@ -12,6 +14,7 @@ export default function PerformancePage() {
   const { employees, currentUser } = useApp();
   const { performanceReviews, objectives, addObjective } = useData();
   const { addToast } = useToast();
+  const loading = usePageLoading();
   const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null);
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [newGoal, setNewGoal] = useState('');
@@ -45,18 +48,22 @@ export default function PerformancePage() {
 
   const handleAddGoal = () => {
     if (!newGoal.trim() || !selectedEmployee) return;
-    addObjective({
-      employeeId: selectedEmployee,
-      title: newGoal,
-      description: '',
-      deadline: new Date(),
-      status: 'pending',
-      category: 'performance',
-      createdBy: currentUser?.id || '1',
-    });
-    addToast(`Objectif ajouté: ${newGoal}`, 'success');
-    setNewGoal('');
-    setShowAddGoal(false);
+    try {
+      addObjective({
+        employeeId: selectedEmployee,
+        title: newGoal,
+        description: '',
+        deadline: new Date(),
+        status: 'pending',
+        category: 'performance',
+        createdBy: currentUser?.id || '1',
+      });
+      addToast(`Objectif ajouté: ${newGoal}`, 'success');
+      setNewGoal('');
+      setShowAddGoal(false);
+    } catch {
+      addToast("Erreur lors de l'ajout de l'objectif", 'error');
+    }
   };
 
   const baseScore = currentPerf?.rating || 5;
@@ -73,6 +80,7 @@ export default function PerformancePage() {
     score: Math.round(d.value / 10),
   }));
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       {/* Header */}

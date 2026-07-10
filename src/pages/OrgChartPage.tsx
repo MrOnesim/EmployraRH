@@ -4,6 +4,8 @@ import { Building2, Users, Search, ChevronDown, ChevronRight, Star, Crown, Mail,
 import type { Employee } from '../types';
 import Avatar from '../components/Avatar';
 import { cn } from '../utils/cn';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 
 const ROLE_ORDER: Record<string, number> = { admin: 0, manager: 1, rh: 2, employee: 3 };
 
@@ -16,6 +18,7 @@ export default function OrgChartPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedDepts, setExpandedDepts] = useState<Set<string>>(new Set());
   const [popoverEmployee, setPopoverEmployee] = useState<Employee | null>(null);
+  const loading = usePageLoading();
   const popoverRef = useRef<HTMLDivElement>(null);
 
   const filtered = employees.filter((emp) => {
@@ -64,6 +67,7 @@ export default function OrgChartPage() {
     });
   };
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="p-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

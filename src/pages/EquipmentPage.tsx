@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 import {
   Monitor, Smartphone, Car, CreditCard, Wrench, Plus, Search,
 } from 'lucide-react';
@@ -70,6 +72,7 @@ export default function EquipmentPage() {
   const { currentUser } = useApp();
   const { equipment, equipmentAssignments, addEquipment, assignEquipment, returnEquipment, employees } = useData();
   const { addToast } = useToast();
+  const loading = usePageLoading();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -114,29 +117,42 @@ export default function EquipmentPage() {
       addToast('Veuillez saisir un nom', 'error');
       return;
     }
-    addEquipment({ ...form, companyId: '' });
-    addToast('Équipement ajouté', 'success');
-    setShowAddModal(false);
-    resetForm();
+    try {
+      addEquipment({ ...form, companyId: '' });
+      addToast('Équipement ajouté', 'success');
+      setShowAddModal(false);
+      resetForm();
+    } catch {
+      addToast("Erreur lors de l'ajout de l'équipement", 'error');
+    }
   };
 
   const handleAssign = () => {
     if (!selectedEq || !assignEmployeeId) return;
-    assignEquipment(selectedEq.id, assignEmployeeId);
-    addToast('Équipement assigné', 'success');
-    setShowAssignModal(false);
-    setAssignEmployeeId('');
-    setSelectedEq(null);
+    try {
+      assignEquipment(selectedEq.id, assignEmployeeId);
+      addToast('Équipement assigné', 'success');
+      setShowAssignModal(false);
+      setAssignEmployeeId('');
+      setSelectedEq(null);
+    } catch {
+      addToast("Erreur lors de l'assignation", 'error');
+    }
   };
 
   const handleReturn = () => {
     if (!selectedEq) return;
-    returnEquipment(selectedEq.id, returnCondition);
-    addToast('Équipement retourné', 'success');
-    setSelectedEq(null);
-    setReturnCondition('good');
+    try {
+      returnEquipment(selectedEq.id, returnCondition);
+      addToast('Équipement retourné', 'success');
+      setSelectedEq(null);
+      setReturnCondition('good');
+    } catch {
+      addToast('Erreur lors du retour', 'error');
+    }
   };
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

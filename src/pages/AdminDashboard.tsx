@@ -7,10 +7,15 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { useToast } from '../context/ToastContext';
+import { LoadingScreen } from '../components/ui';
 
 export default function AdminDashboard() {
   const { employees, attendance, leaves, currentCompany, approveLeave, rejectLeave } = useApp();
   const navigate = useNavigate();
+  const loading = usePageLoading();
+  const { addToast } = useToast();
   const [showKpiSettings, setShowKpiSettings] = useState(false);
   const [kpiTargets, setKpiTargets] = useState<Record<string, number>>(() => {
     try {
@@ -160,6 +165,7 @@ export default function AdminDashboard() {
     visible: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 100, damping: 15 } }
   };
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       
@@ -475,13 +481,13 @@ export default function AdminDashboard() {
                           <td className="py-3 text-right">
                             <div className="flex justify-end gap-2">
                               <button 
-                                onClick={() => approveLeave(leave.id)}
+                                onClick={() => { try { approveLeave(leave.id); } catch { addToast("Erreur lors de l'approbation du congé", 'error'); } }}
                                 className="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold active:scale-95 transition-all shadow-md shadow-emerald-500/10 cursor-pointer"
                               >
                                 Approuver
                               </button>
                               <button 
-                                onClick={() => rejectLeave(leave.id)}
+                                onClick={() => { try { rejectLeave(leave.id); } catch { addToast("Erreur lors du refus du congé", 'error'); } }}
                                 className="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold active:scale-95 transition-all shadow-md shadow-rose-500/10 cursor-pointer"
                               >
                                 Refuser

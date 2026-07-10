@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 import {
   Building2, Smartphone, Plus, ArrowUpRight, ArrowDownLeft,
   CreditCard, X, Banknote, FileText,
@@ -42,6 +44,7 @@ export default function BankingPage() {
   const { currentCompany } = useApp();
   const { bankAccounts, transactions, addBankAccount } = useData();
   const { addToast } = useToast();
+  const loading = usePageLoading();
   const [activeTab, setActiveTab] = useState<'accounts' | 'transactions'>('accounts');
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState(DEFAULT_BANK_ACCOUNT);
@@ -59,11 +62,16 @@ export default function BankingPage() {
       addToast('Aucune entreprise sélectionnée', 'error');
       return;
     }
-    addBankAccount({ ...form, companyId: currentCompany.id });
-    addToast('Compte bancaire ajouté', 'success');
-    setShowModal(false);
+    try {
+      addBankAccount({ ...form, companyId: currentCompany.id });
+      addToast('Compte bancaire ajouté', 'success');
+      setShowModal(false);
+    } catch {
+      addToast("Erreur lors de l'ajout du compte", 'error');
+    }
   };
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

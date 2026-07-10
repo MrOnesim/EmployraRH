@@ -4,6 +4,9 @@ import {
   Calendar, Plus, Clock, CheckCircle,
   AlertCircle
 } from 'lucide-react';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { useToast } from '../context/ToastContext';
+import { LoadingScreen } from '../components/ui';
 
 export default function EmployeeLeavesPage() {
   const { currentUser, leaves, requestLeave } = useApp();
@@ -14,6 +17,8 @@ export default function EmployeeLeavesPage() {
     endDate: '',
     reason: ''
   });
+  const loading = usePageLoading();
+  const { addToast } = useToast();
 
   const STORAGE_KEY = 'leave_policy';
   const DEFAULT_POLICY = { annual: 22, sick: 10, maternity: 90, special: 5 };
@@ -47,17 +52,20 @@ export default function EmployeeLeavesPage() {
   const handleSubmitLeave = () => {
     if (!newLeave.startDate || !newLeave.endDate || !newLeave.reason) return;
     
-    requestLeave({
-      employeeId: currentUser?.id || '',
-      type: newLeave.type as 'annual' | 'sick' | 'maternity' | 'special',
-      startDate: new Date(newLeave.startDate),
-      endDate: new Date(newLeave.endDate),
-      reason: newLeave.reason,
-      status: 'pending'
-    });
-    
-    setNewLeave({ type: 'annual', startDate: '', endDate: '', reason: '' });
-    setShowRequestModal(false);
+    try {
+      requestLeave({
+        employeeId: currentUser?.id || '',
+        type: newLeave.type as 'annual' | 'sick' | 'maternity' | 'special',
+        startDate: new Date(newLeave.startDate),
+        endDate: new Date(newLeave.endDate),
+        reason: newLeave.reason,
+        status: 'pending'
+      });
+      setNewLeave({ type: 'annual', startDate: '', endDate: '', reason: '' });
+      setShowRequestModal(false);
+    } catch {
+      addToast("Erreur lors de la demande de congé", 'error');
+    }
   };
 
   const getLeaveTypeLabel = (type: string) => {
@@ -93,6 +101,7 @@ export default function EmployeeLeavesPage() {
     return Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1;
   };
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       {/* Header */}

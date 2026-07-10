@@ -7,6 +7,9 @@ import {
   Sun, Coffee, Sunset
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { useToast } from '../context/ToastContext';
+import { LoadingScreen } from '../components/ui';
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -49,6 +52,8 @@ const getWeekDates = () => {
 export default function EmployeeDashboard() {
   const { currentUser, attendance, leaves, payslips, clockIn, startBreak, endBreak, clockOut } = useApp();
   const navigate = useNavigate();
+  const loading = usePageLoading();
+  const { addToast } = useToast();
 
   // Clock state
   const [isWorking, setIsWorking] = useState(true);
@@ -85,10 +90,10 @@ export default function EmployeeDashboard() {
   const approvedLeaves = myLeaves.filter(l => l.status === 'approved').length;
   const myPayslips = payslips.filter(p => p.employeeId === currentUser?.id);
 
-  const handleClockIn = () => { clockIn(); setIsWorking(true); };
-  const handleStartBreak = () => { startBreak(); setIsOnBreak(true); };
-  const handleEndBreak = () => { endBreak(); setIsOnBreak(false); };
-  const handleClockOut = () => { clockOut(); setIsWorking(false); };
+  const handleClockIn = () => { try { clockIn(); setIsWorking(true); } catch { addToast("Erreur lors du pointage d'arrivée", 'error'); } };
+  const handleStartBreak = () => { try { startBreak(); setIsOnBreak(true); } catch { addToast("Erreur lors du début de pause", 'error'); } };
+  const handleEndBreak = () => { try { endBreak(); setIsOnBreak(false); } catch { addToast("Erreur lors de la fin de pause", 'error'); } };
+  const handleClockOut = () => { try { clockOut(); setIsWorking(false); } catch { addToast("Erreur lors du pointage de départ", 'error'); } };
 
   const elapsedH = Math.floor(elapsed / 3600);
   const elapsedM = Math.floor((elapsed % 3600) / 60);
@@ -150,6 +155,7 @@ export default function EmployeeDashboard() {
 
   const maxBarHours = Math.max(...weekData.map(d => d.hours), 1);
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
 

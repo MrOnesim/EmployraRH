@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { CheckCheck, Filter, BellOff } from 'lucide-react';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { useToast } from '../context/ToastContext';
+import { LoadingScreen } from '../components/ui';
 
 const TYPE_LABELS: Record<string, string> = {
   invitation: 'Invitation', payment: 'Paiement', leave: 'Congé',
@@ -24,10 +27,13 @@ const TYPE_COLORS: Record<string, string> = {
 export default function NotificationsPage() {
   const { notifications, currentUser, markNotificationRead, markAllNotificationsRead } = useApp();
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const loading = usePageLoading();
+  const { addToast } = useToast();
 
   const userNotifications = notifications.filter(n => n.userId === currentUser?.id);
   const filtered = filter === 'unread' ? userNotifications.filter(n => !n.read) : userNotifications;
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -47,7 +53,7 @@ export default function NotificationsPage() {
           </button>
           {userNotifications.some(n => !n.read) && (
             <button
-              onClick={markAllNotificationsRead}
+              onClick={() => { try { markAllNotificationsRead(); } catch { addToast("Erreur lors du marquage des notifications", 'error'); } }}
               className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <CheckCheck size={16} />
@@ -70,7 +76,7 @@ export default function NotificationsPage() {
           {filtered.map(n => (
             <div
               key={n.id}
-              onClick={() => markNotificationRead(n.id)}
+              onClick={() => { try { markNotificationRead(n.id); } catch { addToast("Erreur lors du marquage de la notification", 'error'); } }}
               className={`bg-white dark:bg-gray-800 rounded-xl border p-4 cursor-pointer transition-colors ${
                 n.read
                   ? 'border-gray-100 dark:border-gray-700'

@@ -5,6 +5,9 @@ import {
   Search, Send, Phone, Video, Paperclip, MoreVertical,
   ArrowLeft, Smile, Image
 } from 'lucide-react';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { useToast } from '../context/ToastContext';
+import { LoadingScreen } from '../components/ui';
 
 export default function MessagesPage() {
   const { currentUser } = useApp();
@@ -13,6 +16,8 @@ export default function MessagesPage() {
   const [messageInput, setMessageInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showMobileChat, setShowMobileChat] = useState(false);
+  const loading = usePageLoading();
+  const { addToast } = useToast();
 
   const currentConv = conversations.find(c => c.id === selectedConversation);
 
@@ -22,14 +27,18 @@ export default function MessagesPage() {
 
   const handleSend = () => {
     if (!messageInput.trim() || !selectedConversation) return;
-    addMessage(selectedConversation, {
-      senderId: currentUser?.id || '1',
-      senderName: currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'Kofi Mensah',
-      content: messageInput,
-      timestamp: new Date(),
-      type: 'text'
-    });
-    setMessageInput('');
+    try {
+      addMessage(selectedConversation, {
+        senderId: currentUser?.id || '1',
+        senderName: currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'Kofi Mensah',
+        content: messageInput,
+        timestamp: new Date(),
+        type: 'text'
+      });
+      setMessageInput('');
+    } catch {
+      addToast("Erreur lors de l'envoi du message", 'error');
+    }
   };
 
   const formatTime = (date: Date) => {
@@ -41,6 +50,7 @@ export default function MessagesPage() {
     return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
   };
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="h-[calc(100vh-8rem)] dark:bg-gray-800 bg-white rounded-2xl shadow-sm border dark:border-gray-700 border-gray-100 overflow-hidden flex">
       {/* Conversation List */}

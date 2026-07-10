@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 import { Users, Plus, Trash2, Edit3 } from 'lucide-react';
 import Modal from '../components/Modal';
 import Avatar from '../components/Avatar';
@@ -8,6 +10,7 @@ import Avatar from '../components/Avatar';
 export default function TeamsPage() {
   const { teams, employees, addTeam, updateTeam, deleteTeam } = useData();
   const { addToast } = useToast();
+  const loading = usePageLoading();
   const [showCreate, setShowCreate] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [showMembers, setShowMembers] = useState<string | null>(null);
@@ -17,17 +20,25 @@ export default function TeamsPage() {
 
   const handleCreate = () => {
     if (!form.name.trim()) return;
-    addTeam({ name: form.name, description: form.description, leaderId: form.leaderId || activeEmployees[0]?.id || '', memberIds: form.memberIds });
-    setForm({ name: '', description: '', leaderId: '', memberIds: [] });
-    setShowCreate(false);
-    addToast('Équipe créée', 'success');
+    try {
+      addTeam({ name: form.name, description: form.description, leaderId: form.leaderId || activeEmployees[0]?.id || '', memberIds: form.memberIds });
+      setForm({ name: '', description: '', leaderId: '', memberIds: [] });
+      setShowCreate(false);
+      addToast('Équipe créée', 'success');
+    } catch {
+      addToast("Erreur lors de la création de l'équipe", 'error');
+    }
   };
 
   const handleUpdate = (id: string) => {
     if (!form.name.trim()) return;
-    updateTeam(id, { name: form.name, description: form.description, leaderId: form.leaderId, memberIds: form.memberIds });
-    setEditId(null);
-    addToast('Équipe mise à jour', 'success');
+    try {
+      updateTeam(id, { name: form.name, description: form.description, leaderId: form.leaderId, memberIds: form.memberIds });
+      setEditId(null);
+      addToast('Équipe mise à jour', 'success');
+    } catch {
+      addToast('Erreur lors de la mise à jour', 'error');
+    }
   };
 
   const startEdit = (team: typeof teams[0]) => {
@@ -44,6 +55,7 @@ export default function TeamsPage() {
     }));
   };
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -74,7 +86,7 @@ export default function TeamsPage() {
                 </div>
                 <div className="flex items-center space-x-1">
                   <button onClick={() => startEdit(team)} className="p-1.5 hover:bg-gray-100 rounded-lg"><Edit3 size={14} className="text-gray-400" /></button>
-                  <button onClick={() => { deleteTeam(team.id); addToast('Équipe supprimée', 'success'); }} className="p-1.5 hover:bg-red-50 rounded-lg"><Trash2 size={14} className="text-gray-400 hover:text-red-500" /></button>
+                  <button onClick={() => { try { deleteTeam(team.id); addToast('Équipe supprimée', 'success'); } catch { addToast('Erreur lors de la suppression', 'error'); } }} className="p-1.5 hover:bg-red-50 rounded-lg"><Trash2 size={14} className="text-gray-400 hover:text-red-500" /></button>
                 </div>
               </div>
               {team.description && <p className="text-sm text-gray-500 mb-3">{team.description}</p>}

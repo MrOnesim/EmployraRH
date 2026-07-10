@@ -7,6 +7,9 @@ import {
   Briefcase, AlertTriangle
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { useToast } from '../context/ToastContext';
+import { LoadingScreen } from '../components/ui';
 
 export default function CalendarPage() {
   const { events, addEvent } = useData();
@@ -16,6 +19,8 @@ export default function CalendarPage() {
   const [newEvent, setNewEvent] = useState({
     title: '', description: '', date: '', time: '', location: '', type: 'meeting' as CalendarEvent['type'], allDay: true
   });
+  const loading = usePageLoading();
+  const { addToast } = useToast();
 
   const typeConfig: Record<string, { label: string; color: string; bg: string; icon: LucideIcon | null }> = {
     all: { label: 'Tous', color: '', bg: '', icon: null },
@@ -40,9 +45,13 @@ export default function CalendarPage() {
 
   const handleAddEvent = () => {
     if (!newEvent.title || !newEvent.date) return;
-    addEvent({ ...newEvent, attendees: [] });
-    setNewEvent({ title: '', description: '', date: '', time: '', location: '', type: 'meeting', allDay: true });
-    setShowModal(false);
+    try {
+      addEvent({ ...newEvent, attendees: [] });
+      setNewEvent({ title: '', description: '', date: '', time: '', location: '', type: 'meeting', allDay: true });
+      setShowModal(false);
+    } catch {
+      addToast("Erreur lors de la création de l'événement", 'error');
+    }
   };
 
   const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
@@ -52,6 +61,7 @@ export default function CalendarPage() {
   const birthdaysThisMonth = events.filter(e => e.type === 'birthday' && new Date(e.date).getMonth() === currentMonth).length;
   const holidaysThisMonth = events.filter(e => e.type === 'holiday' && new Date(e.date).getMonth() === currentMonth).length;
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       {/* Header */}

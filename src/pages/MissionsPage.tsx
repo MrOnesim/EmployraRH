@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 import {
   Plane, Receipt, Plus, CheckCircle, XCircle, MapPin, Calendar, DollarSign, FileText
 } from 'lucide-react';
@@ -52,6 +54,7 @@ export default function MissionsPage() {
   const { currentUser } = useApp();
   const { employees, missions, expenses, addMission, updateMission, addExpense, updateExpense } = useData();
   const { addToast } = useToast();
+  const loading = usePageLoading();
   const [activeTab, setActiveTab] = useState<'missions' | 'expenses'>('missions');
 
   const [showMissionModal, setShowMissionModal] = useState(false);
@@ -79,27 +82,33 @@ export default function MissionsPage() {
       addToast('Veuillez remplir tous les champs obligatoires', 'error');
       return;
     }
-
-    addMission({
-      employeeId: currentUser?.id || '',
-      title: missionForm.title,
-      destination: missionForm.destination,
-      startDate: new Date(missionForm.startDate),
-      endDate: new Date(missionForm.endDate),
-      objectives: missionForm.objectives,
-      transportType: missionForm.transportType,
-      budget: missionForm.budget,
-      status: 'pending',
-    });
-
-    addToast('Mission créée', 'success');
-    setShowMissionModal(false);
-    setMissionForm(defaultMissionForm);
+    try {
+      addMission({
+        employeeId: currentUser?.id || '',
+        title: missionForm.title,
+        destination: missionForm.destination,
+        startDate: new Date(missionForm.startDate),
+        endDate: new Date(missionForm.endDate),
+        objectives: missionForm.objectives,
+        transportType: missionForm.transportType,
+        budget: missionForm.budget,
+        status: 'pending',
+      });
+      addToast('Mission créée', 'success');
+      setShowMissionModal(false);
+      setMissionForm(defaultMissionForm);
+    } catch {
+      addToast('Erreur lors de la création de la mission', 'error');
+    }
   };
 
   const handleMissionAction = (id: string, status: 'approved' | 'rejected') => {
-    updateMission(id, { status, approvedBy: currentUser?.id });
-    addToast(status === 'approved' ? 'Mission approuvée' : 'Mission refusée', 'success');
+    try {
+      updateMission(id, { status, approvedBy: currentUser?.id });
+      addToast(status === 'approved' ? 'Mission approuvée' : 'Mission refusée', 'success');
+    } catch {
+      addToast('Erreur lors de la mise à jour de la mission', 'error');
+    }
   };
 
   const openCreateExpense = () => {
@@ -112,28 +121,35 @@ export default function MissionsPage() {
       addToast('Veuillez remplir tous les champs obligatoires', 'error');
       return;
     }
-
-    addExpense({
-      missionId: expenseForm.missionId || undefined,
-      employeeId: currentUser?.id || '',
-      category: expenseForm.category,
-      amount: expenseForm.amount,
-      currency: expenseForm.currency,
-      date: new Date(expenseForm.date),
-      description: expenseForm.description,
-      status: 'pending',
-    });
-
-    addToast('Note de frais créée', 'success');
-    setShowExpenseModal(false);
-    setExpenseForm(defaultExpenseForm);
+    try {
+      addExpense({
+        missionId: expenseForm.missionId || undefined,
+        employeeId: currentUser?.id || '',
+        category: expenseForm.category,
+        amount: expenseForm.amount,
+        currency: expenseForm.currency,
+        date: new Date(expenseForm.date),
+        description: expenseForm.description,
+        status: 'pending',
+      });
+      addToast('Note de frais créée', 'success');
+      setShowExpenseModal(false);
+      setExpenseForm(defaultExpenseForm);
+    } catch {
+      addToast('Erreur lors de la création de la note de frais', 'error');
+    }
   };
 
   const handleExpenseAction = (id: string, status: 'approved' | 'rejected') => {
-    updateExpense(id, { status, approvedBy: currentUser?.id });
-    addToast(status === 'approved' ? 'Note de frais approuvée' : 'Note de frais refusée', 'success');
+    try {
+      updateExpense(id, { status, approvedBy: currentUser?.id });
+      addToast(status === 'approved' ? 'Note de frais approuvée' : 'Note de frais refusée', 'success');
+    } catch {
+      addToast('Erreur lors de la mise à jour de la note de frais', 'error');
+    }
   };
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       <div>

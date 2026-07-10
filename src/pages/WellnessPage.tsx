@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 import { Heart, Smile, Frown, Brain, Activity, Plus, BarChart3 } from 'lucide-react';
 import Modal from '../components/Modal';
 import type { WellnessSurvey, WellnessQuestion, WellnessResponse } from '../types';
@@ -58,6 +60,7 @@ export default function WellnessPage() {
   const { currentUser } = useApp();
   const { wellnessSurveys, wellnessResponses, addWellnessSurvey, submitWellnessResponse, employees } = useData();
   const { addToast } = useToast();
+  const loading = usePageLoading();
 
   const [activeTab, setActiveTab] = useState<'surveys' | 'dashboard'>('surveys');
   const [selectedSurvey, setSelectedSurvey] = useState<WellnessSurvey | null>(null);
@@ -90,15 +93,19 @@ export default function WellnessPage() {
       addToast('Veuillez répondre à toutes les questions', 'error');
       return;
     }
-    submitWellnessResponse({
-      surveyId: selectedSurvey.id,
-      employeeId: currentUser.id,
-      answers: Object.fromEntries(allQuestions.map((q) => [q.id, answers[q.id]])) as Record<string, string | number | boolean>,
-      submittedAt: new Date(),
-      anonymous,
-    });
-    addToast('Réponse soumise anonymement', 'success');
-    setSelectedSurvey(null);
+    try {
+      submitWellnessResponse({
+        surveyId: selectedSurvey.id,
+        employeeId: currentUser.id,
+        answers: Object.fromEntries(allQuestions.map((q) => [q.id, answers[q.id]])) as Record<string, string | number | boolean>,
+        submittedAt: new Date(),
+        anonymous,
+      });
+      addToast('Réponse soumise anonymement', 'success');
+      setSelectedSurvey(null);
+    } catch {
+      addToast('Erreur lors de la soumission des réponses', 'error');
+    }
   };
 
   const addQuestion = () => {
@@ -136,23 +143,27 @@ export default function WellnessPage() {
       addToast('Les questions à choix multiples doivent avoir des options', 'error');
       return;
     }
-    addWellnessSurvey({
-      title: surveyForm.title,
-      description: surveyForm.description,
-      questions: surveyQuestions.map((q) => ({
-        id: crypto.randomUUID(),
-        text: q.text,
-        type: q.type,
-        category: q.category,
-        options: q.type === 'multiple' ? q.options.split(',').map((o) => o.trim()).filter(Boolean) : undefined,
-      })),
-      active: surveyForm.active,
-      expiresAt: surveyForm.expiresAt ? new Date(surveyForm.expiresAt) : undefined,
-    });
-    addToast('Sondage créé avec succès', 'success');
-    setShowNewSurvey(false);
-    setSurveyForm({ title: '', description: '', expiresAt: '', active: true });
-    setSurveyQuestions([]);
+    try {
+      addWellnessSurvey({
+        title: surveyForm.title,
+        description: surveyForm.description,
+        questions: surveyQuestions.map((q) => ({
+          id: crypto.randomUUID(),
+          text: q.text,
+          type: q.type,
+          category: q.category,
+          options: q.type === 'multiple' ? q.options.split(',').map((o) => o.trim()).filter(Boolean) : undefined,
+        })),
+        active: surveyForm.active,
+        expiresAt: surveyForm.expiresAt ? new Date(surveyForm.expiresAt) : undefined,
+      });
+      addToast('Sondage créé avec succès', 'success');
+      setShowNewSurvey(false);
+      setSurveyForm({ title: '', description: '', expiresAt: '', active: true });
+      setSurveyQuestions([]);
+    } catch {
+      addToast('Erreur lors de la création du sondage', 'error');
+    }
   };
 
   const getResponsesForSurvey = (surveyId: string) => wellnessResponses.filter((r) => r.surveyId === surveyId);
@@ -367,6 +378,7 @@ export default function WellnessPage() {
     </div>
   );
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -4,6 +4,9 @@ import {
   Upload, Search, Folder, Download,
   Eye, Trash2, X, File, User
 } from 'lucide-react';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { useToast } from '../context/ToastContext';
+import { LoadingScreen } from '../components/ui';
 
 export default function DocumentsPage() {
   const { documents, addDocument, deleteDocument } = useData();
@@ -11,6 +14,8 @@ export default function DocumentsPage() {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadData, setUploadData] = useState({ name: '', category: '', type: 'other' });
+  const loading = usePageLoading();
+  const { addToast } = useToast();
 
   const categories = ['all', 'Contrats', 'Certificats', 'Rapports', 'Politiques', 'Autres'];
   const typeIcons: Record<string, typeof File> = {
@@ -44,21 +49,25 @@ export default function DocumentsPage() {
 
   const handleUpload = () => {
     if (!uploadData.name) return;
-    addDocument({
-      name: uploadData.name,
-      type: uploadData.type,
-      department: 'Ressources Humaines',
-      uploadedBy: 'Kofi Mensah',
-      uploadedAt: new Date(),
-      size: '1.0 MB',
-      category: uploadData.category || 'Autres'
-    });
-    setUploadData({ name: '', category: '', type: 'other' });
-    setShowUploadModal(false);
+    try {
+      addDocument({
+        name: uploadData.name,
+        type: uploadData.type,
+        department: 'Ressources Humaines',
+        uploadedBy: 'Kofi Mensah',
+        uploadedAt: new Date(),
+        size: '1.0 MB',
+        category: uploadData.category || 'Autres'
+      });
+      setUploadData({ name: '', category: '', type: 'other' });
+      setShowUploadModal(false);
+    } catch {
+      addToast("Erreur lors du téléchargement du document", 'error');
+    }
   };
 
   const handleDelete = (id: string) => {
-    deleteDocument(id);
+    try { deleteDocument(id); } catch { addToast("Erreur lors de la suppression du document", 'error'); }
   };
 
   const categoryStats = categories.filter(c => c !== 'all').map(cat => ({
@@ -66,6 +75,7 @@ export default function DocumentsPage() {
     count: documents.filter(d => d.category === cat).length
   })).filter(s => s.count > 0);
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       {/* Header */}

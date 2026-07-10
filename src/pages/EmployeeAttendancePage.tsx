@@ -1,9 +1,12 @@
 import { useApp } from '../context/AppContext';
 import { Clock, Calendar, TrendingUp, CheckCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 
 export default function EmployeeAttendancePage() {
   const { currentUser, attendance } = useApp();
+  const loading = usePageLoading();
 
   const myAttendance = attendance
     .filter(a => a.employeeId === currentUser?.id)
@@ -54,6 +57,7 @@ export default function EmployeeAttendancePage() {
     };
   });
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       {/* Header */}

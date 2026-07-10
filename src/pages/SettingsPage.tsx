@@ -4,12 +4,17 @@ import {
   User, Building2, Bell, Shield, Lock, Mail,
   Camera, Save, Check
 } from 'lucide-react';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { useToast } from '../context/ToastContext';
+import { LoadingScreen } from '../components/ui';
 
 export default function SettingsPage() {
   const { currentUser, currentCompany } = useApp();
   const isAdmin = currentUser?.role === 'ADMIN';
   const [activeTab, setActiveTab] = useState('profile');
   const [saved, setSaved] = useState(false);
+  const loading = usePageLoading();
+  const { addToast } = useToast();
 
   const [profileData, setProfileData] = useState({
     firstName: currentUser?.firstName || '',
@@ -36,8 +41,12 @@ export default function SettingsPage() {
   });
 
   const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    try {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch {
+      addToast("Erreur lors de l'enregistrement des paramètres", 'error');
+    }
   };
 
   const tabs = [
@@ -47,6 +56,7 @@ export default function SettingsPage() {
     { id: 'security', label: 'Sécurité', icon: Shield }
   ];
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       {/* Header */}

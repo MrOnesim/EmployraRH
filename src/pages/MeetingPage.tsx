@@ -2,6 +2,8 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 import { Video, Monitor, MapPin, Laptop, Plus, Search, Filter, Calendar, Clock, Users, Star, AlertTriangle, MessageSquare, ListTodo, ChevronLeft, ChevronRight, Mic, MicOff, VideoOff, Phone } from 'lucide-react';
 import Badge from '../components/Badge';
 import Modal from '../components/Modal';
@@ -41,6 +43,7 @@ export default function MeetingPage() {
   const { currentUser, currentCompany } = useApp();
   const { meetings, employees, addMeeting, addMeetingNote, addMeetingTask, updateMeetingTask, updateParticipantStatus, joinMeeting, leaveMeeting } = useData();
   const { addToast } = useToast();
+  const loading = usePageLoading();
   const seeded = useRef(false);
 
   useEffect(() => {
@@ -150,74 +153,94 @@ export default function MeetingPage() {
       return;
     }
     if (!currentCompany || !currentUser) return;
-    addMeeting({
-      companyId: currentCompany.id,
-      title: newMeeting.title,
-      description: newMeeting.description,
-      date: new Date(newMeeting.date + 'T' + newMeeting.startTime),
-      startTime: newMeeting.startTime,
-      endTime: newMeeting.endTime,
-      department: newMeeting.department,
-      type: newMeeting.type,
-      priority: newMeeting.priority,
-      createdBy: currentUser.id,
-      participants: newMeeting.participantIds.map(pid => ({ employeeId: pid, status: 'pending' as ParticipantStatus })),
-      notes: [],
-      tasks: [],
-      agenda: [],
-      virtualRoomUrl: undefined,
-      summary: undefined,
-    });
-    setShowCreateModal(false);
-    setNewMeeting({ title: '', description: '', date: '', startTime: '', endTime: '', department: 'Direction', type: 'physical', priority: 'normal', participantIds: [] });
-    addToast('Réunion créée avec succès', 'success');
+    try {
+      addMeeting({
+        companyId: currentCompany.id,
+        title: newMeeting.title,
+        description: newMeeting.description,
+        date: new Date(newMeeting.date + 'T' + newMeeting.startTime),
+        startTime: newMeeting.startTime,
+        endTime: newMeeting.endTime,
+        department: newMeeting.department,
+        type: newMeeting.type,
+        priority: newMeeting.priority,
+        createdBy: currentUser.id,
+        participants: newMeeting.participantIds.map(pid => ({ employeeId: pid, status: 'pending' as ParticipantStatus })),
+        notes: [],
+        tasks: [],
+        agenda: [],
+        virtualRoomUrl: undefined,
+        summary: undefined,
+      });
+      setShowCreateModal(false);
+      setNewMeeting({ title: '', description: '', date: '', startTime: '', endTime: '', department: 'Direction', type: 'physical', priority: 'normal', participantIds: [] });
+      addToast('Réunion créée avec succès', 'success');
+    } catch {
+      addToast('Erreur lors de la création de la réunion', 'error');
+    }
   };
 
   const handleAddNote = () => {
     if (!newNote.trim() || !selectedMeeting || !currentUser) return;
-    addMeetingNote(selectedMeeting.id, {
-      meetingId: selectedMeeting.id,
-      authorId: currentUser.id,
-      content: newNote,
-      type: 'comment',
-    });
-    setSelectedMeeting(prev => prev ? {
-      ...prev,
-      notes: [...prev.notes, { id: String(Date.now()), meetingId: prev.id, authorId: currentUser.id, content: newNote, type: 'comment' as const, createdAt: new Date() }],
-    } : null);
-    setNewNote('');
-    addToast('Note ajoutée', 'success');
+    try {
+      addMeetingNote(selectedMeeting.id, {
+        meetingId: selectedMeeting.id,
+        authorId: currentUser.id,
+        content: newNote,
+        type: 'comment',
+      });
+      setSelectedMeeting(prev => prev ? {
+        ...prev,
+        notes: [...prev.notes, { id: String(Date.now()), meetingId: prev.id, authorId: currentUser.id, content: newNote, type: 'comment' as const, createdAt: new Date() }],
+      } : null);
+      setNewNote('');
+      addToast('Note ajoutée', 'success');
+    } catch {
+      addToast('Erreur lors de l\'ajout de la note', 'error');
+    }
   };
 
   const handleAddTask = () => {
     if (!newTask.title || !newTask.assignedTo || !newTask.deadline || !selectedMeeting) return;
-    addMeetingTask(selectedMeeting.id, {
-      meetingId: selectedMeeting.id,
-      title: newTask.title,
-      assignedTo: newTask.assignedTo,
-      deadline: new Date(newTask.deadline),
-      status: 'pending',
-    });
-    setSelectedMeeting(prev => prev ? {
-      ...prev,
-      tasks: [...prev.tasks, { id: String(Date.now()), meetingId: prev.id, title: newTask.title, assignedTo: newTask.assignedTo, deadline: new Date(newTask.deadline), status: 'pending' as const, createdAt: new Date() }],
-    } : null);
-    setNewTask({ title: '', assignedTo: '', deadline: '' });
-    addToast('Tâche ajoutée', 'success');
+    try {
+      addMeetingTask(selectedMeeting.id, {
+        meetingId: selectedMeeting.id,
+        title: newTask.title,
+        assignedTo: newTask.assignedTo,
+        deadline: new Date(newTask.deadline),
+        status: 'pending',
+      });
+      setSelectedMeeting(prev => prev ? {
+        ...prev,
+        tasks: [...prev.tasks, { id: String(Date.now()), meetingId: prev.id, title: newTask.title, assignedTo: newTask.assignedTo, deadline: new Date(newTask.deadline), status: 'pending' as const, createdAt: new Date() }],
+      } : null);
+      setNewTask({ title: '', assignedTo: '', deadline: '' });
+      addToast('Tâche ajoutée', 'success');
+    } catch {
+      addToast('Erreur lors de l\'ajout de la tâche', 'error');
+    }
   };
 
   const handleUpdateTask = (taskId: string, status: MeetingTask['status']) => {
     if (!selectedMeeting) return;
-    updateMeetingTask(selectedMeeting.id, taskId, { status });
-    setSelectedMeeting(prev => prev ? { ...prev, tasks: prev.tasks.map(t => t.id === taskId ? { ...t, status } : t) } : null);
-    addToast('Tâche mise à jour', 'success');
+    try {
+      updateMeetingTask(selectedMeeting.id, taskId, { status });
+      setSelectedMeeting(prev => prev ? { ...prev, tasks: prev.tasks.map(t => t.id === taskId ? { ...t, status } : t) } : null);
+      addToast('Tâche mise à jour', 'success');
+    } catch {
+      addToast('Erreur lors de la mise à jour de la tâche', 'error');
+    }
   };
 
   const handleUpdateParticipantStatus = (employeeId: string, status: ParticipantStatus) => {
     if (!selectedMeeting) return;
-    updateParticipantStatus(selectedMeeting.id, employeeId, status);
-    setSelectedMeeting(prev => prev ? { ...prev, participants: prev.participants.map(p => p.employeeId === employeeId ? { ...p, status } : p) } : null);
-    addToast('Statut mis à jour', 'success');
+    try {
+      updateParticipantStatus(selectedMeeting.id, employeeId, status);
+      setSelectedMeeting(prev => prev ? { ...prev, participants: prev.participants.map(p => p.employeeId === employeeId ? { ...p, status } : p) } : null);
+      addToast('Statut mis à jour', 'success');
+    } catch {
+      addToast('Erreur lors de la mise à jour du statut', 'error');
+    }
   };
 
   const handleJoinRoom = (meeting: Meeting) => {
@@ -324,6 +347,7 @@ export default function MeetingPage() {
     );
   }
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

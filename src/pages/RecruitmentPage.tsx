@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import { usePageLoading } from '../hooks/usePageLoading';
+import { LoadingScreen } from '../components/ui';
 import { Briefcase, Users, Plus, Edit2, Trash2, Search, Filter, Eye, Mail, Phone, Calendar as CalIcon } from 'lucide-react';
 import type { JobOffer, Candidate, CandidateStatus } from '../types';
 import Badge from '../components/Badge';
@@ -22,6 +24,7 @@ const CANDIDATE_STATUS_MAP: Record<CandidateStatus, { variant: 'yellow' | 'blue'
 export default function RecruitmentPage() {
   const { jobOffers, candidates, addJobOffer, updateJobOffer, deleteJobOffer, addCandidate, updateCandidate } = useData();
   const { addToast } = useToast();
+  const loading = usePageLoading();
   const [tab, setTab] = useState<'offers' | 'candidates' | 'pipeline'>('offers');
   const [search, setSearch] = useState('');
   const [offerFilter, setOfferFilter] = useState('');
@@ -58,43 +61,55 @@ export default function RecruitmentPage() {
 
   const handleCreateOffer = () => {
     if (!offerForm.title || !offerForm.department) return;
-    addJobOffer({
-      title: offerForm.title,
-      department: offerForm.department,
-      description: offerForm.description,
-      requirements: offerForm.requirements,
-      salary: offerForm.salary,
-      location: offerForm.location,
-      type: offerForm.type,
-      status: offerForm.status,
-      createdBy: '',
-    });
-    setOfferForm({ title: '', department: '', description: '', requirements: '', salary: 0, location: '', type: 'CDI', status: 'draft' });
-    setShowCreateOffer(false);
-    addToast('Offre créée avec succès', 'success');
+    try {
+      addJobOffer({
+        title: offerForm.title,
+        department: offerForm.department,
+        description: offerForm.description,
+        requirements: offerForm.requirements,
+        salary: offerForm.salary,
+        location: offerForm.location,
+        type: offerForm.type,
+        status: offerForm.status,
+        createdBy: '',
+      });
+      setOfferForm({ title: '', department: '', description: '', requirements: '', salary: 0, location: '', type: 'CDI', status: 'draft' });
+      setShowCreateOffer(false);
+      addToast('Offre créée avec succès', 'success');
+    } catch {
+      addToast("Erreur lors de la création de l'offre", 'error');
+    }
   };
 
   const handleEditOffer = () => {
     if (!selectedOffer) return;
-    updateJobOffer(selectedOffer, {
-      title: offerForm.title,
-      department: offerForm.department,
-      description: offerForm.description,
-      requirements: offerForm.requirements,
-      salary: offerForm.salary,
-      location: offerForm.location,
-      type: offerForm.type,
-      status: offerForm.status,
-    });
-    setShowEditOffer(false);
-    setSelectedOffer(null);
-    addToast('Offre modifiée avec succès', 'success');
+    try {
+      updateJobOffer(selectedOffer, {
+        title: offerForm.title,
+        department: offerForm.department,
+        description: offerForm.description,
+        requirements: offerForm.requirements,
+        salary: offerForm.salary,
+        location: offerForm.location,
+        type: offerForm.type,
+        status: offerForm.status,
+      });
+      setShowEditOffer(false);
+      setSelectedOffer(null);
+      addToast('Offre modifiée avec succès', 'success');
+    } catch {
+      addToast("Erreur lors de la modification de l'offre", 'error');
+    }
   };
 
   const handleDeleteOffer = (id: string) => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette offre ?')) return;
-    deleteJobOffer(id);
-    addToast('Offre supprimée', 'success');
+    try {
+      deleteJobOffer(id);
+      addToast('Offre supprimée', 'success');
+    } catch {
+      addToast('Erreur lors de la suppression', 'error');
+    }
   };
 
   const openEditOffer = (offer: JobOffer) => {
@@ -114,40 +129,53 @@ export default function RecruitmentPage() {
 
   const handleAddCandidate = () => {
     if (!candidateForm.firstName || !candidateForm.lastName || !candidateForm.email) return;
-    addCandidate({
-      jobOfferId: candidateJobOfferId,
-      firstName: candidateForm.firstName,
-      lastName: candidateForm.lastName,
-      email: candidateForm.email,
-      phone: candidateForm.phone,
-      status: 'received',
-      resumeUrl: candidateForm.resumeUrl || undefined,
-      coverLetter: candidateForm.coverLetter || undefined,
-    });
-    setCandidateForm({ firstName: '', lastName: '', email: '', phone: '', coverLetter: '', resumeUrl: '' });
-    setShowCandidateModal(false);
-    addToast('Candidat ajouté avec succès', 'success');
+    try {
+      addCandidate({
+        jobOfferId: candidateJobOfferId,
+        firstName: candidateForm.firstName,
+        lastName: candidateForm.lastName,
+        email: candidateForm.email,
+        phone: candidateForm.phone,
+        status: 'received',
+        resumeUrl: candidateForm.resumeUrl || undefined,
+        coverLetter: candidateForm.coverLetter || undefined,
+      });
+      setCandidateForm({ firstName: '', lastName: '', email: '', phone: '', coverLetter: '', resumeUrl: '' });
+      setShowCandidateModal(false);
+      addToast('Candidat ajouté avec succès', 'success');
+    } catch {
+      addToast("Erreur lors de l'ajout du candidat", 'error');
+    }
   };
 
   const handleUpdateStatus = (candidateId: string, status: string) => {
-    updateCandidate(candidateId, { status: status as CandidateStatus });
-    addToast('Statut mis à jour', 'success');
+    try {
+      updateCandidate(candidateId, { status: status as CandidateStatus });
+      addToast('Statut mis à jour', 'success');
+    } catch {
+      addToast('Erreur lors de la mise à jour du statut', 'error');
+    }
   };
 
   const handleScheduleInterview = () => {
     if (!interviewCandidate || !interviewDate) return;
-    updateCandidate(interviewCandidate.id, {
-      status: 'interview',
-      interviewDate: new Date(interviewDate),
-      notes: interviewNotes || interviewCandidate.notes,
-    });
-    setShowInterviewModal(false);
-    setInterviewCandidate(null);
-    setInterviewDate('');
-    setInterviewNotes('');
-    addToast('Entretien programmé', 'success');
+    try {
+      updateCandidate(interviewCandidate.id, {
+        status: 'interview',
+        interviewDate: new Date(interviewDate),
+        notes: interviewNotes || interviewCandidate.notes,
+      });
+      setShowInterviewModal(false);
+      setInterviewCandidate(null);
+      setInterviewDate('');
+      setInterviewNotes('');
+      addToast('Entretien programmé', 'success');
+    } catch {
+      addToast("Erreur lors de la programmation de l'entretien", 'error');
+    }
   };
 
+  if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
