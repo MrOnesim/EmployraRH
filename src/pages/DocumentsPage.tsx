@@ -1,33 +1,12 @@
 import { useState } from 'react';
+import { useData } from '../context/DataContext';
 import { 
   Upload, Search, Folder, Download,
   Eye, Trash2, X, File, User
 } from 'lucide-react';
 
-interface Document {
-  id: string;
-  name: string;
-  type: 'contract' | 'certificate' | 'report' | 'policy' | 'other';
-  department: string;
-  uploadedBy: string;
-  uploadedAt: Date;
-  size: string;
-  category: string;
-}
-
-const mockDocuments: Document[] = [
-  { id: '1', name: 'Politique RH 2024.pdf', type: 'policy', department: 'Ressources Humaines', uploadedBy: 'Ama Gbeko', uploadedAt: new Date('2024-01-15'), size: '2.4 MB', category: 'Politiques' },
-  { id: '2', name: 'Contrat - Kwame Adjei.pdf', type: 'contract', department: 'Informatique', uploadedBy: 'Ama Gbeko', uploadedAt: new Date('2024-03-15'), size: '1.1 MB', category: 'Contrats' },
-  { id: '3', name: 'Rapport financier Q3.pdf', type: 'report', department: 'Finance', uploadedBy: 'Efua Asante', uploadedAt: new Date('2024-10-01'), size: '3.8 MB', category: 'Rapports' },
-  { id: '4', name: 'Certificat - Efua Asante.pdf', type: 'certificate', department: 'Finance', uploadedBy: 'Ama Gbeko', uploadedAt: new Date('2024-09-30'), size: '0.5 MB', category: 'Certificats' },
-  { id: '5', name: 'Manuel des procédures.pdf', type: 'policy', department: 'Ressources Humaines', uploadedBy: 'Kofi Mensah', uploadedAt: new Date('2024-02-01'), size: '5.2 MB', category: 'Politiques' },
-  { id: '6', name: 'Contrat - Yaw Boakye.pdf', type: 'contract', department: 'Marketing', uploadedBy: 'Ama Gbeko', uploadedAt: new Date('2024-05-15'), size: '1.0 MB', category: 'Contrats' },
-  { id: '7', name: 'Rapport de présence mensuel.pdf', type: 'report', department: 'Ressources Humaines', uploadedBy: 'Ama Gbeko', uploadedAt: new Date('2024-12-01'), size: '1.5 MB', category: 'Rapports' },
-  { id: '8', name: 'Charte informatique.pdf', type: 'policy', department: 'Informatique', uploadedBy: 'Kwame Adjei', uploadedAt: new Date('2024-04-01'), size: '800 KB', category: 'Politiques' },
-];
-
 export default function DocumentsPage() {
-  const [documents, setDocuments] = useState<Document[]>(mockDocuments);
+  const { documents, addDocument, deleteDocument } = useData();
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -65,23 +44,21 @@ export default function DocumentsPage() {
 
   const handleUpload = () => {
     if (!uploadData.name) return;
-    const newDoc: Document = {
-      id: String(documents.length + 1),
+    addDocument({
       name: uploadData.name,
-      type: uploadData.type as Document['type'],
+      type: uploadData.type,
       department: 'Ressources Humaines',
       uploadedBy: 'Kofi Mensah',
       uploadedAt: new Date(),
       size: '1.0 MB',
       category: uploadData.category || 'Autres'
-    };
-    setDocuments([newDoc, ...documents]);
+    });
     setUploadData({ name: '', category: '', type: 'other' });
     setShowUploadModal(false);
   };
 
   const handleDelete = (id: string) => {
-    setDocuments(documents.filter(d => d.id !== id));
+    deleteDocument(id);
   };
 
   const categoryStats = categories.filter(c => c !== 'all').map(cat => ({

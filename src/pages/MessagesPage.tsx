@@ -1,107 +1,14 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useData } from '../context/DataContext';
 import { 
   Search, Send, Phone, Video, Paperclip, MoreVertical,
   ArrowLeft, Smile, Image
 } from 'lucide-react';
 
-interface ChatMessage {
-  id: string;
-  senderId: string;
-  senderName: string;
-  content: string;
-  timestamp: Date;
-  type: 'text' | 'image' | 'file';
-}
-
-interface Conversation {
-  id: string;
-  participantId: string;
-  participantName: string;
-  participantPosition: string;
-  lastMessage: string;
-  lastMessageTime: Date;
-  unread: number;
-  online: boolean;
-  messages: ChatMessage[];
-}
-
-const mockConversations: Conversation[] = [
-  {
-    id: '1',
-    participantId: '2',
-    participantName: 'Ama Gbeko',
-    participantPosition: 'Responsable RH',
-    lastMessage: 'Le rapport de ce mois est prêt !',
-    lastMessageTime: new Date(Date.now() - 300000),
-    unread: 2,
-    online: true,
-    messages: [
-      { id: '1', senderId: '2', senderName: 'Ama Gbeko', content: 'Bonjour Kofi ! J\'ai besoin de votre signature sur les contrats.', timestamp: new Date(Date.now() - 3600000), type: 'text' },
-      { id: '2', senderId: '1', senderName: 'Kofi Mensah', content: 'Bien sûr, je les signe ce matin.', timestamp: new Date(Date.now() - 3500000), type: 'text' },
-      { id: '3', senderId: '2', senderName: 'Ama Gbeko', content: 'Merci ! Le rapport de ce mois est prêt !', timestamp: new Date(Date.now() - 300000), type: 'text' },
-    ]
-  },
-  {
-    id: '2',
-    participantId: '3',
-    participantName: 'Kwame Adjei',
-    participantPosition: 'Développeur Senior',
-    lastMessage: 'La fonctionnalité est déployée ✅',
-    lastMessageTime: new Date(Date.now() - 1800000),
-    unread: 0,
-    online: true,
-    messages: [
-      { id: '1', senderId: '3', senderName: 'Kwame Adjei', content: 'J\'ai terminé la refacturation du module de paie.', timestamp: new Date(Date.now() - 7200000), type: 'text' },
-      { id: '2', senderId: '1', senderName: 'Kofi Mensah', content: 'Excellent ! On peut faire un test ?', timestamp: new Date(Date.now() - 5400000), type: 'text' },
-      { id: '3', senderId: '3', senderName: 'Kwame Adjei', content: 'La fonctionnalité est déployée ✅', timestamp: new Date(Date.now() - 1800000), type: 'text' },
-    ]
-  },
-  {
-    id: '3',
-    participantId: '4',
-    participantName: 'Efua Asante',
-    participantPosition: 'Comptable',
-    lastMessage: 'Les factures de novembre sont traitées',
-    lastMessageTime: new Date(Date.now() - 7200000),
-    unread: 1,
-    online: false,
-    messages: [
-      { id: '1', senderId: '4', senderName: 'Efua Asante', content: 'Les factures de novembre sont traitées et envoyées par email.', timestamp: new Date(Date.now() - 7200000), type: 'text' },
-    ]
-  },
-  {
-    id: '4',
-    participantId: '5',
-    participantName: 'Yaw Boakye',
-    participantPosition: 'Designer UI/UX',
-    lastMessage: 'Tu as vu les nouvelles maquettes ?',
-    lastMessageTime: new Date(Date.now() - 86400000),
-    unread: 0,
-    online: false,
-    messages: [
-      { id: '1', senderId: '5', senderName: 'Yaw Boakye', content: 'Tu as vu les nouvelles maquettes ? Je les ai mises dans le dossier partagé.', timestamp: new Date(Date.now() - 86400000), type: 'text' },
-    ]
-  },
-  {
-    id: '5',
-    participantId: '7',
-    participantName: 'Kossi Amoussou',
-    participantPosition: 'Développeur Full Stack',
-    lastMessage: 'Je vais corriger le bug ce soir',
-    lastMessageTime: new Date(Date.now() - 172800000),
-    unread: 0,
-    online: true,
-    messages: [
-      { id: '1', senderId: '1', senderName: 'Kofi Mensah', content: 'Il y a un bug sur le pointage, les employés ne peuvent pas se connecter.', timestamp: new Date(Date.now() - 200000000), type: 'text' },
-      { id: '2', senderId: '7', senderName: 'Kossi Amoussou', content: 'Je vais corriger le bug ce soir', timestamp: new Date(Date.now() - 172800000), type: 'text' },
-    ]
-  }
-];
-
 export default function MessagesPage() {
   const { currentUser } = useApp();
-  const [conversations, setConversations] = useState<Conversation[]>(mockConversations);
+  const { conversations, addMessage, readConversation } = useData();
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [messageInput, setMessageInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -115,47 +22,14 @@ export default function MessagesPage() {
 
   const handleSend = () => {
     if (!messageInput.trim() || !selectedConversation) return;
-    
-    const newMessage: ChatMessage = {
-      id: String(Date.now()),
+    addMessage(selectedConversation, {
       senderId: currentUser?.id || '1',
-      senderName: `${currentUser?.firstName} ${currentUser?.lastName}`,
+      senderName: currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'Kofi Mensah',
       content: messageInput,
       timestamp: new Date(),
       type: 'text'
-    };
-
-    setConversations(prev => prev.map(c => 
-      c.id === selectedConversation 
-        ? { ...c, messages: [...c.messages, newMessage], lastMessage: messageInput, lastMessageTime: new Date() }
-        : c
-    ));
+    });
     setMessageInput('');
-
-    // Simulate reply
-    setTimeout(() => {
-      const conv = conversations.find(c => c.id === selectedConversation);
-      const replies = [
-        'D\'accord, je vais m\'en occuper ! 👍',
-        'Bien reçu, merci !',
-        'Je t\'envoie les détails plus tard.',
-        'C\'est noté ! Je vous tiens informé(e).',
-        'Parfait, on se tient au courant !',
-      ];
-      const replyMessage: ChatMessage = {
-        id: String(Date.now() + 1),
-        senderId: conv?.participantId || '',
-        senderName: conv?.participantName || '',
-        content: replies[Math.floor(Math.random() * replies.length)],
-        timestamp: new Date(),
-        type: 'text'
-      };
-      setConversations(prev => prev.map(c => 
-        c.id === selectedConversation 
-          ? { ...c, messages: [...c.messages, replyMessage], lastMessage: replyMessage.content, lastMessageTime: new Date() }
-          : c
-      ));
-    }, 2000);
   };
 
   const formatTime = (date: Date) => {
@@ -194,6 +68,7 @@ export default function MessagesPage() {
               onClick={() => {
                 setSelectedConversation(conv.id);
                 setShowMobileChat(true);
+                readConversation(conv.id);
               }}
               className={`w-full flex items-center space-x-3 px-4 py-3 dark:hover:bg-gray-700 hover:bg-gray-50 transition-colors ${
                 selectedConversation === conv.id ? 'dark:bg-blue-900/30 bg-blue-50' : ''

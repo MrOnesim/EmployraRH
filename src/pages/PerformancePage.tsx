@@ -1,63 +1,16 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
 import { 
   Star, TrendingUp, Target, Search, Plus, X,
-  CheckCircle, Clock, ThumbsUp, Trophy, Eye
+  CheckCircle, Clock, ThumbsUp, Eye
 } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
 
-interface Performance {
-  employeeId: string;
-  scores: Record<string, number>;
-  strengths: string[];
-  areasToImprove: string[];
-  goals: { title: string; completed: boolean }[];
-  rating: number;
-  lastReview: Date;
-  badges: string[];
-}
-
-const mockPerformances: Record<string, Performance> = {
-  '2': {
-    employeeId: '2', scores: { communication: 9, organisation: 8, leadership: 7, teamwork: 9, adaptabilité: 8 },
-    strengths: ['Excellente communication', 'Organisation impeccable', 'Leadership naturel'],
-    areasToImprove: ['Déléguer plus efficacement', 'Gestion du temps'],
-    goals: [{ title: 'Former un nouveau recruteur', completed: true }, { title: 'Créer un processus d\'onboarding', completed: true }, { title: 'Réduire le turnover de 10%', completed: false }],
-    rating: 8.5, lastReview: new Date('2024-11-15'), badges: ['🏆 MENTOR', '⭐ ÉTOILE', '🤝 TEAMWORK']
-  },
-  '3': {
-    employeeId: '3', scores: { communication: 7, organisation: 9, leadership: 6, teamwork: 8, adaptabilité: 9 },
-    strengths: ['Compétences techniques exceptionnelles', 'Très organisé', 'Adaptable'],
-    areasToImprove: ['Présentation devant groupe', 'Documentation du code'],
-    goals: [{ title: 'Mentor un développeur junior', completed: true }, { title: 'Refactorer le module paie', completed: true }, { title: 'Obtenir cert AWS', completed: false }],
-    rating: 8.2, lastReview: new Date('2024-11-20'), badges: ['💻 TECH LEAD', '🚀 INNOVATION']
-  },
-  '4': {
-    employeeId: '4', scores: { communication: 8, organisation: 9, leadership: 6, teamwork: 8, adaptabilité: 7 },
-    strengths: ['Précision financière', 'Reporting rigoureux', 'Fiabilité'],
-    areasToImprove: ['Initiative', 'Collaboration inter-département'],
-    goals: [{ title: 'Automatiser les rapports mensuels', completed: true }, { title: 'Former sur le nouveau logiciel', completed: false }],
-    rating: 7.8, lastReview: new Date('2024-10-25'), badges: ['📊 PRÉCISION']
-  },
-  '5': {
-    employeeId: '5', scores: { communication: 8, organisation: 7, leadership: 5, teamwork: 9, adaptabilité: 8 },
-    strengths: ['Créativité', 'Design intuitif', 'Collaboration'],
-    areasToImprove: ['Gestion des délais', 'Présentation de projets'],
-    goals: [{ title: 'Refonte UI de l\'app', completed: true }, { title: 'Créer le design system', completed: true }, { title: 'Former l\'équipe UX', completed: false }],
-    rating: 8.0, lastReview: new Date('2024-11-10'), badges: ['🎨 CRÉATIVITÉ', '⭐ ÉTOILE']
-  },
-  '7': {
-    employeeId: '7', scores: { communication: 7, organisation: 8, leadership: 5, teamwork: 8, adaptabilité: 9 },
-    strengths: ['Polyvalence Full Stack', 'Résolution de bugs', 'Apprentissage rapide'],
-    areasToImprove: ['Leadership technique', 'Code review'],
-    goals: [{ title: 'Déployer microservices', completed: false }, { title: 'Mentor le stage', completed: true }],
-    rating: 7.5, lastReview: new Date('2024-12-01'), badges: ['🔧 BUG BUSTER']
-  }
-};
-
 export default function PerformancePage() {
-  const { employees } = useApp();
+  const { employees, currentUser } = useApp();
+  const { performanceReviews, objectives, addObjective } = useData();
   const { addToast } = useToast();
   const [selectedEmployee, setSelectedEmployee] = useState<string | null>(null);
   const [showAddGoal, setShowAddGoal] = useState(false);
@@ -71,32 +24,54 @@ export default function PerformancePage() {
     emp.lastName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const currentPerf = selectedEmployee ? mockPerformances[selectedEmployee] : null;
-  const selectedEmp = selectedEmployee ? employees.find(e => e.id === selectedEmployee) : null;
+  const getLatestReview = (employeeId: string) =>
+    performanceReviews
+      .filter(r => r.employeeId === employeeId)
+      .sort((a, b) => new Date(b.reviewDate).getTime() - new Date(a.reviewDate).getTime())[0];
 
-  const avgRating = Math.round(activeEmployees.reduce((sum, e) => sum + (mockPerformances[e.id]?.rating || 0), 0) / activeEmployees.length * 10) / 10;
-  const completedGoals = Object.values(mockPerformances).reduce((sum, p) => sum + p.goals.filter(g => g.completed).length, 0);
-  const totalGoals = Object.values(mockPerformances).reduce((sum, p) => sum + p.goals.length, 0);
+  const getEmployeeGoals = (employeeId: string) =>
+    objectives.filter(o => o.employeeId === employeeId);
+
+  const currentPerf = selectedEmployee ? getLatestReview(selectedEmployee) : null;
+  const selectedEmp = selectedEmployee ? employees.find(e => e.id === selectedEmployee) : null;
+  const selectedGoals = selectedEmployee ? getEmployeeGoals(selectedEmployee) : [];
+
+  const ratedEmployees = activeEmployees.filter(e => getLatestReview(e.id));
+  const avgRating = ratedEmployees.length > 0
+    ? Math.round(ratedEmployees.reduce((sum, e) => sum + (getLatestReview(e.id)?.rating || 0), 0) / ratedEmployees.length * 10) / 10
+    : 0;
+  const completedObjectives = objectives.filter(o => o.status === 'completed').length;
+  const totalObjectives = objectives.length;
 
   const handleAddGoal = () => {
     if (!newGoal.trim() || !selectedEmployee) return;
+    addObjective({
+      employeeId: selectedEmployee,
+      title: newGoal,
+      description: '',
+      deadline: new Date(),
+      status: 'pending',
+      category: 'performance',
+      createdBy: currentUser?.id || '1',
+    });
     addToast(`Objectif ajouté: ${newGoal}`, 'success');
     setNewGoal('');
     setShowAddGoal(false);
   };
 
+  const baseScore = currentPerf?.rating || 5;
   const radarData = currentPerf ? [
-    { subject: 'Communication', value: currentPerf.scores.communication * 10, fullMark: 100 },
-    { subject: 'Organisation', value: currentPerf.scores.organisation * 10, fullMark: 100 },
-    { subject: 'Leadership', value: currentPerf.scores.leadership * 10, fullMark: 100 },
-    { subject: 'Travail d\'équipe', value: currentPerf.scores.teamwork * 10, fullMark: 100 },
-    { subject: 'Adaptabilité', value: currentPerf.scores.adaptabilité * 10, fullMark: 100 },
+    { subject: 'Communication', value: Math.round(Math.min(100, baseScore * 11)), fullMark: 100 },
+    { subject: 'Organisation', value: Math.round(Math.min(100, baseScore * 10)), fullMark: 100 },
+    { subject: 'Leadership', value: Math.round(Math.min(100, baseScore * 9)), fullMark: 100 },
+    { subject: 'Travail d\'équipe', value: Math.round(Math.min(100, baseScore * 11)), fullMark: 100 },
+    { subject: 'Adaptabilité', value: Math.round(Math.min(100, baseScore * 10)), fullMark: 100 },
   ] : [];
 
-  const scoreBarData = currentPerf ? Object.entries(currentPerf.scores).map(([key, val]) => ({
-    name: key.charAt(0).toUpperCase() + key.slice(1),
-    score: val
-  })) : [];
+  const scoreBarData = radarData.map(d => ({
+    name: d.subject,
+    score: Math.round(d.value / 10),
+  }));
 
   return (
     <div className="space-y-6">
@@ -109,7 +84,7 @@ export default function PerformancePage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
           <div className="flex items-center space-x-3">
             <div className="bg-yellow-100 p-3 rounded-xl"><Star size={24} className="text-yellow-600" /></div>
@@ -124,18 +99,7 @@ export default function PerformancePage() {
             <div className="bg-green-100 p-3 rounded-xl"><CheckCircle size={24} className="text-green-600" /></div>
             <div>
               <p className="text-gray-500 text-sm">Objectifs atteints</p>
-              <p className="text-2xl font-bold text-gray-800">{completedGoals}/{totalGoals}</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-          <div className="flex items-center space-x-3">
-            <div className="bg-purple-100 p-3 rounded-xl"><Trophy size={24} className="text-purple-600" /></div>
-            <div>
-              <p className="text-gray-500 text-sm">Badges décernés</p>
-              <p className="text-2xl font-bold text-gray-800">
-                {Object.values(mockPerformances).reduce((sum, p) => sum + p.badges.length, 0)}
-              </p>
+              <p className="text-2xl font-bold text-gray-800">{completedObjectives}/{totalObjectives}</p>
             </div>
           </div>
         </div>
@@ -144,7 +108,7 @@ export default function PerformancePage() {
             <div className="bg-blue-100 p-3 rounded-xl"><TrendingUp size={24} className="text-blue-600" /></div>
             <div>
               <p className="text-gray-500 text-sm">Employés évalués</p>
-              <p className="text-2xl font-bold text-gray-800">{Object.keys(mockPerformances).length}/{activeEmployees.length}</p>
+              <p className="text-2xl font-bold text-gray-800">{ratedEmployees.length}/{activeEmployees.length}</p>
             </div>
           </div>
         </div>
@@ -169,7 +133,7 @@ export default function PerformancePage() {
           {/* Employee Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredEmployees.map((emp) => {
-              const perf = mockPerformances[emp.id];
+              const perf = getLatestReview(emp.id);
               return (
                 <div 
                   key={emp.id} 
@@ -197,15 +161,8 @@ export default function PerformancePage() {
                           <span className="text-gray-400 text-sm">/10</span>
                         </div>
                         <span className="text-xs text-gray-400">
-                          {perf.lastReview.toLocaleDateString('fr-FR')}
+                          {new Date(perf.reviewDate).toLocaleDateString('fr-FR')}
                         </span>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {perf.badges.slice(0, 3).map((badge, i) => (
-                          <span key={i} className="px-2 py-0.5 bg-gray-100 rounded-full text-xs">
-                            {badge}
-                          </span>
-                        ))}
                       </div>
                     </div>
                   )}
@@ -239,13 +196,9 @@ export default function PerformancePage() {
                     <div>
                       <h2 className="text-xl font-bold text-gray-800">{selectedEmp.firstName} {selectedEmp.lastName}</h2>
                       <p className="text-gray-500">{selectedEmp.position} • {selectedEmp.department}</p>
-                      <div className="flex flex-wrap gap-1 mt-2">
-                        {currentPerf.badges.map((badge, i) => (
-                          <span key={i} className="px-2 py-0.5 bg-yellow-50 text-yellow-700 rounded-full text-xs font-medium">
-                            {badge}
-                          </span>
-                        ))}
-                      </div>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Dernière évaluation : {new Date(currentPerf.reviewDate).toLocaleDateString('fr-FR')}
+                      </p>
                     </div>
                   </div>
                   <div className="text-center">
@@ -318,8 +271,8 @@ export default function PerformancePage() {
                     <Target size={20} className="text-orange-500 mr-2" />
                     Axes d'amélioration
                   </h3>
-                  <ul className="space-y-2">
-                    {currentPerf.areasToImprove.map((a, i) => (
+                    <ul className="space-y-2">
+                    {currentPerf.improvements.map((a, i) => (
                       <li key={i} className="flex items-center space-x-2 text-gray-700">
                         <Clock size={16} className="text-orange-500 flex-shrink-0" />
                         <span>{a}</span>
@@ -345,18 +298,21 @@ export default function PerformancePage() {
                   </button>
                 </div>
                 <div className="space-y-3">
-                  {currentPerf.goals.map((goal, i) => (
-                    <div key={i} className={`flex items-center space-x-3 p-3 rounded-lg ${goal.completed ? 'bg-green-50' : 'bg-gray-50'}`}>
+                  {selectedGoals.map((goal) => (
+                    <div key={goal.id} className={`flex items-center space-x-3 p-3 rounded-lg ${goal.status === 'completed' ? 'bg-green-50' : 'bg-gray-50'}`}>
                       <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        goal.completed ? 'bg-green-500' : 'bg-gray-300'
+                        goal.status === 'completed' ? 'bg-green-500' : 'bg-gray-300'
                       }`}>
-                        {goal.completed && <CheckCircle size={14} className="text-white" />}
+                        {goal.status === 'completed' && <CheckCircle size={14} className="text-white" />}
                       </div>
-                      <span className={`flex-1 ${goal.completed ? 'text-green-700 line-through' : 'text-gray-700'}`}>
+                      <span className={`flex-1 ${goal.status === 'completed' ? 'text-green-700 line-through' : 'text-gray-700'}`}>
                         {goal.title}
                       </span>
                     </div>
                   ))}
+                  {selectedGoals.length === 0 && (
+                    <p className="text-gray-400 text-sm text-center py-4">Aucun objectif défini</p>
+                  )}
                 </div>
               </div>
             </>

@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useData } from '../context/DataContext';
+import { CalendarEvent } from '../types';
 import { 
   Calendar, Plus, X, MapPin, Users, Clock, PartyPopper, Cake,
   ClipboardList, Umbrella, Megaphone, Pin, Heart,
@@ -6,36 +8,13 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  location: string;
-  type: 'birthday' | 'meeting' | 'holiday' | 'team' | 'announcement' | 'other';
-  attendees: string[];
-  allDay: boolean;
-}
-
-const mockEvents: Event[] = [
-  { id: '1', title: 'Réunion d\'équipe', description: 'Point hebdomadaire avec toute l\'équipe', date: new Date().toISOString().split('T')[0], time: '10:00', location: 'Salle de conférence', type: 'meeting', attendees: ['1', '2', '3', '5'], allDay: false },
-  { id: '2', title: '🎂 Anniversaire d\'Ama', description: 'Joyeux anniversaire Ama Gbeko !', date: '2024-03-20', time: '', location: '', type: 'birthday', attendees: [], allDay: true },
-  { id: '3', title: 'Noël - Fermeture', description: 'Fermeture annuelle de l\'entreprise', date: '2024-12-25', time: '', location: '', type: 'holiday', attendees: [], allDay: true },
-  { id: '4', title: 'Team Building', description: 'Journée de cohésion d\'équipe au bord de la mer', date: '2024-12-20', time: '09:00', location: 'Lomé, Plage du Togo', type: 'team', attendees: ['1', '2', '3', '4', '5', '7'], allDay: true },
-  { id: '5', title: 'Formation Sécurité', description: 'Formation obligatoire sur la sécurité informatique', date: new Date(Date.now() + 86400000).toISOString().split('T')[0], time: '14:00', location: 'Salle de formation', type: 'meeting', attendees: ['3', '7'], allDay: false },
-  { id: '6', title: '🎂 Anniversaire de Kwame', description: 'Joyeux anniversaire Kwame Adjei !', date: '2024-08-10', time: '', location: '', type: 'birthday', attendees: [], allDay: true },
-  { id: '7', title: 'Nouvel an africain', description: 'Journée fériée', date: '2025-01-08', time: '', location: '', type: 'holiday', attendees: [], allDay: true },
-  { id: '8', title: 'Soirée de fin d\'année', description: 'Gala annuel de l\'entreprise', date: '2024-12-31', time: '19:00', location: 'Hôtel du Lac', type: 'team', attendees: ['1', '2', '3', '4', '5', '7'], allDay: false },
-];
-
 export default function CalendarPage() {
-  const [events, setEvents] = useState<Event[]>(mockEvents);
+  const { events, addEvent } = useData();
   const [view, setView] = useState<'month' | 'list'>('month');
   const [typeFilter, setTypeFilter] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [newEvent, setNewEvent] = useState({
-    title: '', description: '', date: '', time: '', location: '', type: 'meeting' as Event['type'], allDay: true
+    title: '', description: '', date: '', time: '', location: '', type: 'meeting' as CalendarEvent['type'], allDay: true
   });
 
   const typeConfig: Record<string, { label: string; color: string; bg: string; icon: LucideIcon | null }> = {
@@ -44,7 +23,7 @@ export default function CalendarPage() {
     meeting: { label: 'Réunions', color: 'text-blue-600', bg: 'bg-blue-50 border-blue-200', icon: ClipboardList },
     holiday: { label: 'Jours fériés', color: 'text-red-600', bg: 'bg-red-50 border-red-200', icon: Umbrella },
     team: { label: 'Événements équipe', color: 'text-purple-600', bg: 'bg-purple-50 border-purple-200', icon: PartyPopper },
-    announcement: { label: 'Annonces', color: 'text-orange-600', bg: 'bg-orange-50 border-orange-200', icon: Megaphone },
+    training: { label: 'Formations', color: 'text-orange-600', bg: 'bg-orange-50 border-orange-200', icon: Megaphone },
     other: { label: 'Autres', color: 'text-gray-600', bg: 'bg-gray-50 border-gray-200', icon: Pin },
   };
 
@@ -61,12 +40,7 @@ export default function CalendarPage() {
 
   const handleAddEvent = () => {
     if (!newEvent.title || !newEvent.date) return;
-    const event: Event = {
-      id: String(events.length + 1),
-      ...newEvent,
-      attendees: [],
-    };
-    setEvents([...events, event]);
+    addEvent({ ...newEvent, attendees: [] });
     setNewEvent({ title: '', description: '', date: '', time: '', location: '', type: 'meeting', allDay: true });
     setShowModal(false);
   };
@@ -272,12 +246,12 @@ export default function CalendarPage() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                <select value={newEvent.type} onChange={(e) => setNewEvent({...newEvent, type: e.target.value as Event['type']})} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
+                <select value={newEvent.type} onChange={(e) => setNewEvent({...newEvent, type: e.target.value as CalendarEvent['type']})} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
                   <option value="meeting">Réunion</option>
                   <option value="team">Événement équipe</option>
                   <option value="holiday">Jour férié</option>
                   <option value="birthday">Anniversaire</option>
-                  <option value="announcement">Annonce</option>
+                  <option value="training">Formation</option>
                   <option value="other">Autre</option>
                 </select>
               </div>
