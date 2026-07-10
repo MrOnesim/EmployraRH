@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
+import { EmptyState } from '../components/ui';
 import { 
   BarChart3, TrendingUp, Users, DollarSign,
   Clock, Calendar, Download, Eye, EyeOff,
   ChevronDown, ChevronUp, Target, Award, AlertTriangle,
-  Wallet, UserCheck
+  Wallet, UserCheck, BarChart4
 } from 'lucide-react';
 import { 
   BarChart, Bar, Line, XAxis, YAxis, 
@@ -122,6 +123,20 @@ export default function ReportsPage() {
   const handleExport = () => {
     addToast('Export du rapport en cours... (PDF/Excel via backend)', 'info');
   };
+
+  if (employees.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Rapports & Analyses</h1>
+            <p className="text-gray-500">Tableau de bord analytique RH complet</p>
+          </div>
+        </div>
+        <EmptyState icon={BarChart4} title="Aucune donnée disponible" description="Ajoutez des employés pour voir les rapports" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

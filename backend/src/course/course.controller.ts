@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { CourseService } from './course.service';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('courses')
 @Controller('courses')
+@UseGuards(RolesGuard)
 export class CourseController {
   constructor(private service: CourseService) {}
 
@@ -29,25 +31,25 @@ export class CourseController {
 
   @Get('company/:companyId')
   @ApiOperation({ summary: 'Get courses by company with counts' })
-  findByCompany(@Param('companyId') companyId: string) {
+  findByCompany(@Param('companyId', ParseUUIDPipe) companyId: string) {
     return this.service.findByCompany(companyId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get course by ID' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a course' })
-  update(@Param('id') id: string, @Body() dto: UpdateCourseDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateCourseDto) {
     return this.service.update(id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a course (only if no enrollments)' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.delete(id);
   }
 }

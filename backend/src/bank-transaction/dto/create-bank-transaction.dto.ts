@@ -1,9 +1,10 @@
-import { IsString, IsOptional, IsNumber, IsPositive } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsPositive, IsIn } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateBankTransactionDto {
   @ApiProperty()
   @IsString()
+  @IsIn(['credit', 'debit', 'transfer'])
   type: string;
 
   @ApiProperty()

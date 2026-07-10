@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { EmptyState } from '../components/ui';
 import { 
   Search, Calendar, Clock, UserCheck, UserX, 
-  AlertTriangle, Download, TrendingUp
+  AlertTriangle, Download, TrendingUp, Users
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -326,6 +327,9 @@ export default function AttendancePage() {
               }
             </tbody>
           </table>
+          {filteredAttendance.length === 0 && employees.filter(e => e.status === 'active').length === 0 && (
+            <EmptyState icon={Users} title="Aucun pointage pour cette date" />
+          )}
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsUrl } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class GenerateCertificateDto {
@@ -13,5 +13,6 @@ export class GenerateCertificateDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  @IsUrl()
   certificateUrl?: string;
 }

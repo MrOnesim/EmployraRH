@@ -19,10 +19,12 @@ export class CreatePayslipDto {
 
   @ApiProperty()
   @IsNumber()
+  @Min(0)
   grossSalary: number;
 
   @ApiProperty()
   @IsNumber()
+  @Min(0)
   netSalary: number;
 
   @ApiPropertyOptional()

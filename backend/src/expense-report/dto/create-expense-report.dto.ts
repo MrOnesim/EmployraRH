@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, IsDateString, Min } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsDateString, Min, IsUrl } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateExpenseReportDto {
@@ -32,6 +32,7 @@ export class CreateExpenseReportDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  @IsUrl()
   receiptUrl?: string;
 
   @ApiPropertyOptional()

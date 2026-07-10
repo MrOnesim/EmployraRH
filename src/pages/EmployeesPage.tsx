@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
 import { 
   Search, Filter, Mail, Phone, Edit2, Trash2, 
   UserPlus, X, Save
@@ -8,6 +9,7 @@ import { type Department, type UserRole } from '../types';
 
 export default function EmployeesPage() {
   const { employees, addEmployee, updateEmployee, deleteEmployee, sendInvitation, currentCompany } = useApp();
+  const { addToast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('');
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -55,29 +57,37 @@ export default function EmployeesPage() {
 
   const handleInvite = () => {
     const emails = inviteEmails.split('\n').map(e => e.trim()).filter(e => e);
-    emails.forEach(email => sendInvitation(email));
+    try {
+      emails.forEach(email => sendInvitation(email));
+      addToast(`${emails.length} invitation(s) envoyée(s)`, 'success');
+    } catch { addToast("Erreur lors de l'envoi des invitations", 'error'); }
     setInviteEmails('');
     setShowInviteModal(false);
   };
 
   const handleAddEmployee = () => {
-    if (!newEmployee.firstName || !newEmployee.lastName || !newEmployee.email) return;
-    
-    addEmployee({
-      companyId: currentCompany?.id || '',
-      firstName: newEmployee.firstName,
-      lastName: newEmployee.lastName,
-      email: newEmployee.email,
-      phone: newEmployee.phone,
-      dateOfBirth: new Date(newEmployee.dateOfBirth),
-      position: newEmployee.position,
-      department: newEmployee.department as Department,
-      photo: '',
-      salary: newEmployee.salary,
-      status: 'active',
-      joinDate: new Date(),
-      role: 'EMPLOYEE'
-    });
+    if (!newEmployee.firstName || !newEmployee.lastName || !newEmployee.email) {
+      addToast('Veuillez remplir tous les champs obligatoires', 'error');
+      return;
+    }
+    try {
+      addEmployee({
+        companyId: currentCompany?.id || '',
+        firstName: newEmployee.firstName,
+        lastName: newEmployee.lastName,
+        email: newEmployee.email,
+        phone: newEmployee.phone,
+        dateOfBirth: new Date(newEmployee.dateOfBirth),
+        position: newEmployee.position,
+        department: newEmployee.department as Department,
+        photo: '',
+        salary: newEmployee.salary,
+        status: 'active',
+        joinDate: new Date(),
+        role: 'EMPLOYEE'
+      });
+      addToast('Employé ajouté avec succès', 'success');
+    } catch { addToast("Erreur lors de l'ajout", 'error'); }
     
     setNewEmployee({
       firstName: '', lastName: '', email: '', phone: '',
@@ -89,11 +99,14 @@ export default function EmployeesPage() {
 
   const handleEditEmployee = () => {
     if (!selectedEmployee) return;
-    updateEmployee(selectedEmployee, {
-      position: newEmployee.position,
-      department: newEmployee.department as Department,
-      salary: newEmployee.salary
-    });
+    try {
+      updateEmployee(selectedEmployee, {
+        position: newEmployee.position,
+        department: newEmployee.department as Department,
+        salary: newEmployee.salary
+      });
+      addToast('Employé modifié avec succès', 'success');
+    } catch { addToast('Erreur lors de la modification', 'error'); }
     setShowEditModal(false);
     setSelectedEmployee(null);
   };
@@ -250,7 +263,8 @@ export default function EmployeesPage() {
                       <button
                         onClick={() => {
                           if (window.confirm('Êtes-vous sûr de vouloir supprimer cet employé ?')) {
-                            deleteEmployee(employee.id);
+                            try { deleteEmployee(employee.id); addToast('Employé supprimé', 'success'); }
+                            catch { addToast('Erreur lors de la suppression', 'error'); }
                           }
                         }}
                         className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"

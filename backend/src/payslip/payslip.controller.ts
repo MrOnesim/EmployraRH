@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PayslipService } from './payslip.service';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { GeneratePayslipDto } from './dto/generate-payslip.dto';
 
 @ApiTags('Payslips')
 @Controller('payslips')
+@UseGuards(RolesGuard)
 export class PayslipController {
   constructor(private payslipService: PayslipService) {}
 
@@ -22,14 +24,14 @@ export class PayslipController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get payslips by employee' })
-  findByEmployee(@Param('employeeId') employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
     return this.payslipService.findByEmployee(employeeId);
   }
 
   @Get('employee/:employeeId/:month/:year')
   @ApiOperation({ summary: 'Get payslip by employee and period' })
   findByEmployeeAndPeriod(
-    @Param('employeeId') employeeId: string,
+    @Param('employeeId', ParseUUIDPipe) employeeId: string,
     @Param('month') month: string,
     @Param('year') year: string,
   ) {
@@ -38,7 +40,7 @@ export class PayslipController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a payslip by id' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.payslipService.findById(id);
   }
 }

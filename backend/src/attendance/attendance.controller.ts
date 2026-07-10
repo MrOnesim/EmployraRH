@@ -1,34 +1,36 @@
-import { Controller, Get, Post, Param, Query, Body } from '@nestjs/common';
+import { Controller, Get, Post, Param, Query, Body, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AttendanceService } from './attendance.service';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { CreateAttendanceDto } from './dto/create-attendance.dto';
 
 @ApiTags('Attendance')
 @Controller('attendance')
+@UseGuards(RolesGuard)
 export class AttendanceController {
   constructor(private attendanceService: AttendanceService) {}
 
   @Post('clock-in/:employeeId')
   @ApiOperation({ summary: 'Clock in an employee' })
-  clockIn(@Param('employeeId') employeeId: string) {
+  clockIn(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
     return this.attendanceService.clockIn(employeeId);
   }
 
   @Post('clock-out/:id')
   @ApiOperation({ summary: 'Clock out an employee' })
-  clockOut(@Param('id') id: string) {
+  clockOut(@Param('id', ParseUUIDPipe) id: string) {
     return this.attendanceService.clockOut(id);
   }
 
   @Post('break/start/:id')
   @ApiOperation({ summary: 'Start break' })
-  startBreak(@Param('id') id: string) {
+  startBreak(@Param('id', ParseUUIDPipe) id: string) {
     return this.attendanceService.startBreak(id);
   }
 
   @Post('break/end/:id')
   @ApiOperation({ summary: 'End break' })
-  endBreak(@Param('id') id: string) {
+  endBreak(@Param('id', ParseUUIDPipe) id: string) {
     return this.attendanceService.endBreak(id);
   }
 
@@ -40,7 +42,7 @@ export class AttendanceController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get attendance by employee' })
-  findByEmployee(@Param('employeeId') employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
     return this.attendanceService.findByEmployee(employeeId);
   }
 

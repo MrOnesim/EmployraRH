@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { ConversationService } from './conversation.service';
 import { CreateConversationDto } from './dto/create-conversation.dto';
 import { AddMessageDto } from './dto/add-message.dto';
 
 @ApiTags('Conversations')
 @Controller('conversations')
+@UseGuards(RolesGuard)
 export class ConversationController {
   constructor(private service: ConversationService) {}
 
@@ -32,19 +34,19 @@ export class ConversationController {
 
   @Get(':id/messages')
   @ApiOperation({ summary: 'Get messages for a conversation' })
-  findMessages(@Param('id') id: string) {
+  findMessages(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findMessages(id);
   }
 
   @Post(':id/messages')
   @ApiOperation({ summary: 'Send a message' })
-  sendMessage(@Param('id') id: string, @Body() body: AddMessageDto) {
+  sendMessage(@Param('id', ParseUUIDPipe) id: string, @Body() body: AddMessageDto) {
     return this.service.sendMessage(id, body);
   }
 
   @Post(':id/read')
   @ApiOperation({ summary: 'Mark conversation as read' })
-  markRead(@Param('id') id: string) {
+  markRead(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.markRead(id);
   }
 }

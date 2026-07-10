@@ -1,9 +1,11 @@
-import { Controller, Post, Get, Param, Body } from '@nestjs/common';
-import { QrTokenService } from './qr-token.service';
+import { Controller, Post, Get, Param, Body, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { QrTokenService } from './qr-token.service';
 
 @ApiTags('qr-tokens')
 @Controller('qr-tokens')
+@UseGuards(RolesGuard)
 export class QrTokenController {
   constructor(private qrTokenService: QrTokenService) {}
 
@@ -21,7 +23,7 @@ export class QrTokenController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get current valid QR token for employee' })
-  findByEmployee(@Param('employeeId') employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
     return this.qrTokenService.findByEmployee(employeeId);
   }
 

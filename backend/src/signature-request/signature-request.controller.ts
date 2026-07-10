@@ -1,11 +1,15 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { SignatureRequestService } from './signature-request.service';
 import { CreateSignatureRequestDto } from './dto/create-signature-request.dto';
 import { UpdateSignatureRequestDto } from './dto/update-signature-request.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ResendDto } from './dto/resend.dto';
+import { DeclineDto } from './dto/decline.dto';
 
 @ApiTags('signature-requests')
 @Controller('signature-requests')
+@UseGuards(RolesGuard)
 export class SignatureRequestController {
   constructor(private service: SignatureRequestService) {}
 
@@ -23,49 +27,49 @@ export class SignatureRequestController {
 
   @Get('company/:companyId')
   @ApiOperation({ summary: 'Get signature requests by company' })
-  findByCompany(@Param('companyId') companyId: string) {
+  findByCompany(@Param('companyId', ParseUUIDPipe) companyId: string) {
     return this.service.findByCompany(companyId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get signature request by ID' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id/send')
   @ApiOperation({ summary: 'Send signature request (draft → sent)' })
-  send(@Param('id') id: string) {
+  send(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.send(id);
   }
 
   @Patch(':id/sign')
   @ApiOperation({ summary: 'Sign a document as a recipient' })
-  sign(@Param('id') id: string, @Body('recipientEmail') recipientEmail: string) {
-    return this.service.sign(id, recipientEmail);
+  sign(@Param('id', ParseUUIDPipe) id: string, @Body() dto: ResendDto) {
+    return this.service.sign(id, dto.recipientEmail);
   }
 
   @Patch(':id/complete')
   @ApiOperation({ summary: 'Complete signature request (all signed)' })
-  complete(@Param('id') id: string) {
+  complete(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.complete(id);
   }
 
   @Patch(':id/reject')
   @ApiOperation({ summary: 'Reject signature request' })
-  reject(@Param('id') id: string, @Body('reason') reason: string) {
-    return this.service.reject(id, reason);
+  reject(@Param('id', ParseUUIDPipe) id: string, @Body() dto: DeclineDto) {
+    return this.service.reject(id, dto.reason);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a signature request' })
-  update(@Param('id') id: string, @Body() dto: UpdateSignatureRequestDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateSignatureRequestDto) {
     return this.service.update(id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a signature request' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.delete(id);
   }
 }

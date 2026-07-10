@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, IsOptional, IsUrl } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateDocumentDto {
@@ -15,6 +15,8 @@ export class CreateDocumentDto {
   type: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
+  @IsUrl()
   url: string;
 }

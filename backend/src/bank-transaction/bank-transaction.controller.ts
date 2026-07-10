@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { BankTransactionService } from './bank-transaction.service';
 import { CreateBankTransactionDto } from './dto/create-bank-transaction.dto';
 
 @ApiTags('Bank Transactions')
 @Controller('bank-transactions')
+@UseGuards(RolesGuard)
 export class BankTransactionController {
   constructor(private service: BankTransactionService) {}
 
@@ -22,7 +24,7 @@ export class BankTransactionController {
 
   @Get('by-account/:accountId')
   @ApiOperation({ summary: 'List transactions by account' })
-  findByAccount(@Param('accountId') accountId: string) {
+  findByAccount(@Param('accountId', ParseUUIDPipe) accountId: string) {
     return this.service.findByAccount(accountId);
   }
 
@@ -38,19 +40,19 @@ export class BankTransactionController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a bank transaction by id' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Post(':id/complete')
   @ApiOperation({ summary: 'Mark a transaction as completed' })
-  markCompleted(@Param('id') id: string) {
+  markCompleted(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.markCompleted(id);
   }
 
   @Post(':id/fail')
   @ApiOperation({ summary: 'Mark a transaction as failed' })
-  markFailed(@Param('id') id: string) {
+  markFailed(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.markFailed(id);
   }
 }

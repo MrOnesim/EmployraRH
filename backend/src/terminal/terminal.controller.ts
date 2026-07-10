@@ -1,10 +1,12 @@
-import { Controller, Post, Get, Patch, Param, Delete, Body, Query } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Param, Delete, Body, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { TerminalService } from './terminal.service';
 import { RegisterTerminalDto } from './dto/register-terminal.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('terminals')
 @Controller('terminals')
+@UseGuards(RolesGuard)
 export class TerminalController {
   constructor(private terminalService: TerminalService) {}
 
@@ -28,25 +30,25 @@ export class TerminalController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get terminal by ID' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.terminalService.findById(id);
   }
 
   @Patch(':id/activate')
   @ApiOperation({ summary: 'Activate a terminal' })
-  activate(@Param('id') id: string) {
+  activate(@Param('id', ParseUUIDPipe) id: string) {
     return this.terminalService.activate(id);
   }
 
   @Patch(':id/deactivate')
   @ApiOperation({ summary: 'Deactivate a terminal' })
-  deactivate(@Param('id') id: string) {
+  deactivate(@Param('id', ParseUUIDPipe) id: string) {
     return this.terminalService.deactivate(id);
   }
 
   @Patch(':id/last-seen')
   @ApiOperation({ summary: 'Update terminal last seen timestamp' })
-  updateLastSeen(@Param('id') id: string) {
+  updateLastSeen(@Param('id', ParseUUIDPipe) id: string) {
     return this.terminalService.updateLastSeen(id);
   }
 }

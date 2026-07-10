@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { CalendarEventService } from './calendar-event.service';
 import { CreateCalendarEventDto } from './dto/create-calendar-event.dto';
 import { UpdateCalendarEventDto } from './dto/update-calendar-event.dto';
 
 @ApiTags('Calendar Events')
 @Controller('calendar-events')
+@UseGuards(RolesGuard)
 export class CalendarEventController {
   constructor(private service: CalendarEventService) {}
 
@@ -45,19 +47,19 @@ export class CalendarEventController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get calendar event by id' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a calendar event' })
-  update(@Param('id') id: string, @Body() body: UpdateCalendarEventDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateCalendarEventDto) {
     return this.service.update(id, body);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a calendar event' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.delete(id);
   }
 }

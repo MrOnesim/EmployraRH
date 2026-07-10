@@ -1,10 +1,12 @@
-import { Controller, Post, Body, Param, Put, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Get, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { InvitationService } from './invitation.service';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('invitations')
 @Controller('invitations')
+@UseGuards(RolesGuard)
 export class InvitationController {
   constructor(private invitationService: InvitationService) {}
 
@@ -16,7 +18,7 @@ export class InvitationController {
 
   @Put(':id/accept')
   @ApiOperation({ summary: 'Accept an invitation' })
-  accept(@Param('id') id: string) {
+  accept(@Param('id', ParseUUIDPipe) id: string) {
     return this.invitationService.accept(id);
   }
 

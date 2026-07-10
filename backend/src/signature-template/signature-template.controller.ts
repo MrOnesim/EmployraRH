@@ -1,11 +1,14 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { SignatureTemplateService } from './signature-template.service';
 import { CreateSignatureTemplateDto } from './dto/create-signature-template.dto';
 import { UpdateSignatureTemplateDto } from './dto/update-signature-template.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { UpdatePlaceholdersDto } from './dto/update-placeholders.dto';
 
 @ApiTags('signature-templates')
 @Controller('signature-templates')
+@UseGuards(RolesGuard)
 export class SignatureTemplateController {
   constructor(private service: SignatureTemplateService) {}
 
@@ -23,31 +26,31 @@ export class SignatureTemplateController {
 
   @Get('company/:companyId/type/:documentType')
   @ApiOperation({ summary: 'Get templates by company and document type' })
-  findByDocumentType(@Param('companyId') companyId: string, @Param('documentType') documentType: string) {
+  findByDocumentType(@Param('companyId', ParseUUIDPipe) companyId: string, @Param('documentType') documentType: string) {
     return this.service.findByDocumentType(companyId, documentType);
   }
 
   @Get(':id/generate')
   @ApiOperation({ summary: 'Generate document from template with placeholders' })
-  generateDocument(@Param('id') id: string, @Body('placeholders') placeholders: Record<string, string>) {
-    return this.service.generateDocument(id, placeholders);
+  generateDocument(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdatePlaceholdersDto) {
+    return this.service.generateDocument(id, dto.placeholders);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get signature template by ID' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a signature template' })
-  update(@Param('id') id: string, @Body() dto: UpdateSignatureTemplateDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateSignatureTemplateDto) {
     return this.service.update(id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a signature template' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.delete(id);
   }
 }

@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber } from 'class-validator';
+import { IsString, IsOptional, IsNumber, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateSalaryAdvanceDto {
@@ -8,6 +8,7 @@ export class CreateSalaryAdvanceDto {
 
   @ApiProperty()
   @IsNumber()
+  @Min(0.01)
   amount: number;
 
   @ApiPropertyOptional({ default: 'EUR' })

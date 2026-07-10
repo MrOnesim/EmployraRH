@@ -1,11 +1,15 @@
-import { Controller, Get, Post, Body, Param, Patch, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { CandidateService } from './candidate.service';
 import { CreateCandidateDto } from './dto/create-candidate.dto';
 import { UpdateCandidateDto } from './dto/update-candidate.dto';
+import { UpdateCandidateStatusDto } from './dto/update-status.dto';
+import { ScheduleInterviewDto } from './dto/schedule-interview.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 
 @ApiTags('candidates')
 @Controller('candidates')
+@UseGuards(RolesGuard)
 export class CandidateController {
   constructor(private service: CandidateService) {}
 
@@ -25,31 +29,31 @@ export class CandidateController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get candidate by ID' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id/status')
   @ApiOperation({ summary: 'Update candidate status' })
-  updateStatus(@Param('id') id: string, @Body('status') status: string) {
-    return this.service.updateStatus(id, status);
+  updateStatus(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateCandidateStatusDto) {
+    return this.service.updateStatus(id, dto.status);
   }
 
   @Patch(':id/schedule-interview')
   @ApiOperation({ summary: 'Schedule interview for candidate' })
-  scheduleInterview(@Param('id') id: string, @Body('interviewDate') interviewDate: Date) {
-    return this.service.scheduleInterview(id, new Date(interviewDate));
+  scheduleInterview(@Param('id', ParseUUIDPipe) id: string, @Body() dto: ScheduleInterviewDto) {
+    return this.service.scheduleInterview(id, new Date(dto.interviewDate));
   }
 
   @Patch(':id/reject')
   @ApiOperation({ summary: 'Reject candidate' })
-  reject(@Param('id') id: string) {
+  reject(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.reject(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a candidate' })
-  update(@Param('id') id: string, @Body() dto: UpdateCandidateDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateCandidateDto) {
     return this.service.update(id, dto);
   }
 }

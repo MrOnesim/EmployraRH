@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsDateString } from 'class-validator';
+import { IsString, IsOptional, IsDateString, IsIn } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateLeaveDto {
@@ -8,6 +8,7 @@ export class CreateLeaveDto {
 
   @ApiProperty()
   @IsString()
+  @IsIn(['annual', 'sick', 'maternity', 'paternity', 'unpaid'])
   type: string;
 
   @ApiProperty()

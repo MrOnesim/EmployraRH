@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Body, Param, Patch, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { TaxDeclarationService } from './tax-declaration.service';
 import { CreateTaxDeclarationDto } from './dto/create-tax-declaration.dto';
+import { ConfirmAmountDto } from './dto/confirm-amount.dto';
 
 @ApiTags('Tax Declarations')
 @Controller('tax-declarations')
+@UseGuards(RolesGuard)
 export class TaxDeclarationController {
   constructor(private service: TaxDeclarationService) {}
 
@@ -34,31 +37,31 @@ export class TaxDeclarationController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a tax declaration by id' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Post(':id/submit')
   @ApiOperation({ summary: 'Submit a tax declaration' })
-  submit(@Param('id') id: string) {
+  submit(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.submit(id);
   }
 
   @Post(':id/confirm-amount')
   @ApiOperation({ summary: 'Confirm amount for a tax declaration' })
-  confirmAmount(@Param('id') id: string, @Body('amount') amount: number) {
-    return this.service.confirmAmount(id, amount);
+  confirmAmount(@Param('id', ParseUUIDPipe) id: string, @Body() dto: ConfirmAmountDto) {
+    return this.service.confirmAmount(id, dto.amount);
   }
 
   @Post(':id/paid')
   @ApiOperation({ summary: 'Mark a tax declaration as paid' })
-  markPaid(@Param('id') id: string) {
+  markPaid(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.markPaid(id);
   }
 
   @Get('calculate/:employeeId/:year')
   @ApiOperation({ summary: 'Calculate estimated withholding for employee' })
-  calculateWithholding(@Param('employeeId') employeeId: string, @Param('year') year: string) {
+  calculateWithholding(@Param('employeeId', ParseUUIDPipe) employeeId: string, @Param('year') year: string) {
     return this.service.calculateWithholding(employeeId, parseInt(year, 10));
   }
 }

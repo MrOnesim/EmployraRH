@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useToast } from '../context/ToastContext';
 import { 
   Search, Calendar, CheckCircle, XCircle, Clock,
   AlertCircle, Filter
@@ -7,6 +8,7 @@ import {
 
 export default function LeavesPage() {
   const { employees, leaves, approveLeave, rejectLeave } = useApp();
+  const { addToast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -324,11 +326,15 @@ export default function LeavesPage() {
               </button>
               <button
                 onClick={() => {
-                  if (actionModal.action === 'approve') {
-                    approveLeave(actionModal.leaveId, actionComment || undefined);
-                  } else {
-                    rejectLeave(actionModal.leaveId, actionComment || undefined);
-                  }
+                  try {
+                    if (actionModal.action === 'approve') {
+                      approveLeave(actionModal.leaveId, actionComment || undefined);
+                      addToast('Congé approuvé', 'success');
+                    } else {
+                      rejectLeave(actionModal.leaveId, actionComment || undefined);
+                      addToast('Congé refusé', 'info');
+                    }
+                  } catch { addToast('Erreur lors du traitement', 'error'); }
                   setActionModal(null);
                 }}
                 className={`px-4 py-2 rounded-lg text-white ${

@@ -1,7 +1,9 @@
-import { Controller, Get, Req, Post, Body, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Req, Post, Body, UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Request } from 'express';
 import * as bcrypt from 'bcryptjs';
 import { AuthService } from './auth.service';
+import { SignInDto } from './dto/sign-in.dto';
+import { SignUpDto } from './dto/sign-up.dto';
 import { Public } from '../common/decorators/public.decorator';
 
 @Controller('auth')
@@ -20,11 +22,11 @@ export class AuthController {
 
   @Public()
   @Post('sign-in')
-  async signIn(@Body() body: { email: string; password: string }) {
-    const user = await this.authService.findUserByEmail(body.email);
+  async signIn(@Body() dto: SignInDto) {
+    const user = await this.authService.findUserByEmail(dto.email);
     if (!user || !user.password) throw new UnauthorizedException('Invalid credentials');
 
-    const valid = await bcrypt.compare(body.password, user.password);
+    const valid = await bcrypt.compare(dto.password, user.password);
     if (!valid) throw new UnauthorizedException('Invalid credentials');
 
     const { password, ...safe } = user;
@@ -33,14 +35,11 @@ export class AuthController {
 
   @Public()
   @Post('sign-up')
-  async signUp(@Body() body: { email: string; name: string; password: string }) {
-    if (!body.password || body.password.length < 8) {
-      throw new UnauthorizedException('Password must be at least 8 characters');
-    }
-    const hashed = await bcrypt.hash(body.password, 12);
+  async signUp(@Body() dto: SignUpDto) {
+    const hashed = await bcrypt.hash(dto.password, 12);
     const user = await this.authService.createUser({
-      email: body.email,
-      name: body.name,
+      email: dto.email,
+      name: dto.name,
       password: hashed,
     });
     const { password, ...safe } = user;

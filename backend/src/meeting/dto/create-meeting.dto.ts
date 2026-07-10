@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNumber, IsDateString, IsArray, ValidateNested } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsDateString, IsArray, ValidateNested, IsPositive, IsEmail, IsUrl } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class CreateParticipantDto {
@@ -11,6 +11,7 @@ class CreateParticipantDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  @IsEmail({}, { each: true })
   email?: string;
 
   @ApiPropertyOptional()
@@ -35,11 +36,13 @@ export class CreateMeetingDto {
 
   @ApiProperty()
   @IsNumber()
+  @IsPositive()
   duration: number;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
+  @IsUrl()
   link?: string;
 
   @ApiPropertyOptional()

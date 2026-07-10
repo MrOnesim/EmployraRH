@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Delete, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 
 @ApiTags('Documents')
 @Controller('documents')
+@UseGuards(RolesGuard)
 export class DocumentController {
   constructor(private documentService: DocumentService) {}
 
@@ -22,7 +24,7 @@ export class DocumentController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get documents by employee' })
-  findByEmployee(@Param('employeeId') employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
     return this.documentService.findByEmployee(employeeId);
   }
 
@@ -34,7 +36,7 @@ export class DocumentController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a document' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.documentService.delete(id);
   }
 }

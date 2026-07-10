@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { WellnessResponseService } from './wellness-response.service';
 import { CreateWellnessResponseDto } from './dto/create-wellness-response.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('wellness-responses')
 @Controller('wellness-responses')
+@UseGuards(RolesGuard)
 export class WellnessResponseController {
   constructor(private service: WellnessResponseService) {}
 
@@ -25,7 +27,7 @@ export class WellnessResponseController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get wellness response by ID' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.findById(id);
   }
 }

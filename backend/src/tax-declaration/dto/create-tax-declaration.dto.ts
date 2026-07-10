@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, IsDateString, Min } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsDateString, Min, IsIn } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateTaxDeclarationDto {
@@ -17,6 +17,7 @@ export class CreateTaxDeclarationDto {
 
   @ApiProperty()
   @IsString()
+  @IsIn(['income', 'vat', 'corporate', 'payroll'])
   taxType: string;
 
   @ApiProperty()
@@ -41,6 +42,7 @@ export class CreateTaxDeclarationDto {
   @ApiPropertyOptional({ default: 'draft' })
   @IsOptional()
   @IsString()
+  @IsIn(['draft', 'submitted', 'confirmed', 'paid'])
   status?: string;
 
   @ApiPropertyOptional()

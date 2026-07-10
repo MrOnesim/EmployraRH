@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
@@ -28,20 +28,20 @@ export class EmployeeController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get employee by ID' })
-  findById(@Param('id') id: string) {
+  findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.employeeService.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update an employee' })
-  update(@Param('id') id: string, @Body() dto: UpdateEmployeeDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateEmployeeDto) {
     return this.employeeService.update(id, dto);
   }
 
   @Delete(':id')
   @Roles('SUPER_ADMIN', 'ADMIN')
   @ApiOperation({ summary: 'Delete an employee' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.employeeService.delete(id);
   }
 }

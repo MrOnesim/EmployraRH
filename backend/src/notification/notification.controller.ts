@@ -1,10 +1,13 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
+import { MarkReadDto } from './dto/mark-read.dto';
 
 @ApiTags('Notifications')
 @Controller('notifications')
+@UseGuards(RolesGuard)
 export class NotificationController {
   constructor(private service: NotificationService) {}
 
@@ -22,25 +25,25 @@ export class NotificationController {
 
   @Get('unread-count/:userId')
   @ApiOperation({ summary: 'Get unread notification count' })
-  getUnreadCount(@Param('userId') userId: string) {
+  getUnreadCount(@Param('userId', ParseUUIDPipe) userId: string) {
     return this.service.getUnreadCount(userId);
   }
 
   @Patch(':id/read')
   @ApiOperation({ summary: 'Mark notification as read' })
-  markRead(@Param('id') id: string) {
+  markRead(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.markRead(id);
   }
 
   @Post('mark-all-read')
   @ApiOperation({ summary: 'Mark all notifications as read for user' })
-  markAllRead(@Body('userId') userId: string) {
-    return this.service.markAllRead(userId);
+  markAllRead(@Body() dto: MarkReadDto) {
+    return this.service.markAllRead(dto.userId);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a notification' })
-  delete(@Param('id') id: string) {
+  delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.delete(id);
   }
 }

@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Patch, Delete, Param, Query, Body } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Query, Body, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RolesGuard } from '../common/guards/roles.guard';
 import { SecurityGuardService } from './security-guard.service';
 import { AssignSecurityGuardDto } from './dto/assign-security-guard.dto';
 import { ScanAttendanceDto } from './dto/scan-attendance.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('security-guards')
 @Controller('security-guards')
+@UseGuards(RolesGuard)
 export class SecurityGuardController {
   constructor(private service: SecurityGuardService) {}
 
@@ -23,25 +25,25 @@ export class SecurityGuardController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get security guard by employee' })
-  findByEmployee(@Param('employeeId') employeeId: string, @Query('companyId') companyId: string) {
+  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string, @Query('companyId') companyId: string) {
     return this.service.findByEmployee(employeeId, companyId);
   }
 
   @Get(':id/scan-history')
   @ApiOperation({ summary: 'Get attendance scan history for a guard' })
-  getScanHistory(@Param('id') id: string) {
+  getScanHistory(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.getScanHistory(id);
   }
 
   @Patch(':id/toggle-active')
   @ApiOperation({ summary: 'Toggle security guard active status' })
-  toggleActive(@Param('id') id: string) {
+  toggleActive(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.toggleActive(id);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Remove a security guard' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.service.remove(id);
   }
 
