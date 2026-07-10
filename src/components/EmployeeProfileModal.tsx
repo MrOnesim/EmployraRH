@@ -107,7 +107,7 @@ export default function EmployeeProfileModal({ employee, onClose }: Props) {
               <User size={16} className="text-blue-500" />
               <span className="text-sm text-gray-600 dark:text-gray-400">Rôle</span>
             </div>
-            <Badge>{employee.role === 'admin' ? 'Administrateur' : employee.role === 'rh' ? 'RH' : employee.role === 'manager' ? 'Manager' : 'Employé'}</Badge>
+            <Badge>{employee.role === 'ADMIN' ? 'Administrateur' : employee.role === 'RH' ? 'RH' : employee.role === 'MANAGER' ? 'Manager' : 'Employé'}</Badge>
           </div>
           <div className="flex items-center justify-between border-t border-gray-100 dark:border-gray-800 pt-4">
             <div className="flex items-center space-x-2">

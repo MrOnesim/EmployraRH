@@ -1,7 +1,23 @@
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { eventBus, EVENTS } from '../utils/eventBus';
 import type { Employee, Attendance, Leave, Payslip, Notification, Invitation, Document as AppDocument, CalendarEvent, Conversation, ChatMessage, Team, Post, PayrollConfig, PostComment, JobOffer, Candidate, Objective, PerformanceReview, TimelineEvent, Contract, BankAccount, BankTransaction, TaxDeclaration, Course, Enrollment, Mission, ExpenseReport, JobPost, GPSLocation, Meeting, MeetingTask, MeetingNote, ParticipantStatus, EmployeeVaultItem, RewardTransaction, RewardCatalog, Equipment, EquipmentAssignment, WellnessSurvey, WellnessResponse, SalaryAdvance, SalaryTransfer, Quiz, QuizAttempt, Certificate, SignatureRequest, SignatureTemplate } from '../types';
+import { useApp } from './AppContext';
 import { PAYROLL, PAYROLL_COUNTRIES } from '../constants';
+import * as EmployeeService from '../services/employeeService';
+import * as AttendanceService from '../services/attendanceService';
+import * as LeaveService from '../services/leaveService';
+import * as PayrollService from '../services/payrollService';
+import * as MissionService from '../services/missionService';
+import * as RecruitmentService from '../services/recruitmentService';
+import * as TrainingService from '../services/trainingService';
+import * as BankingService from '../services/bankingService';
+import * as EquipmentService from '../services/equipmentService';
+import * as WellnessService from '../services/wellnessService';
+import * as TaxService from '../services/taxService';
+import * as CalendarService from '../services/calendarService';
+import * as SignatureService from '../services/signatureService';
+import * as NotificationService from '../services/notificationService';
+import api from '../lib/axios';
 
 interface DataState {
   employees: Employee[];
@@ -147,13 +163,13 @@ interface DataState {
 const DataContext = createContext<DataState | undefined>(undefined);
 
 const mockEmployees: Employee[] = [
-  { id: '1', companyId: '1', firstName: 'Kofi', lastName: 'Mensah', email: 'admin@techafrique.com', phone: '+228 90 12 34 56', dateOfBirth: new Date('1985-06-15'), position: 'Directeur Général', department: 'Direction', photo: '', salary: 1500000, status: 'active', joinDate: new Date('2024-01-15'), role: 'admin' },
-  { id: '2', companyId: '1', firstName: 'Ama', lastName: 'Gbeko', email: 'ama@techafrique.com', phone: '+228 91 23 45 67', dateOfBirth: new Date('1990-03-20'), position: 'Responsable RH', department: 'Ressources Humaines', photo: '', salary: 800000, status: 'active', joinDate: new Date('2024-02-01'), role: 'rh' },
-  { id: '3', companyId: '1', firstName: 'Kwame', lastName: 'Adjei', email: 'kwame@techafrique.com', phone: '+228 92 34 56 78', dateOfBirth: new Date('1992-08-10'), position: 'Développeur Senior', department: 'Informatique', photo: '', salary: 750000, status: 'active', joinDate: new Date('2024-03-15'), role: 'manager' },
-  { id: '4', companyId: '1', firstName: 'Efua', lastName: 'Asante', email: 'efua@techafrique.com', phone: '+228 93 45 67 89', dateOfBirth: new Date('1988-12-05'), position: 'Comptable', department: 'Finance', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-04-01'), role: 'employee' },
-  { id: '5', companyId: '1', firstName: 'Yaw', lastName: 'Boakye', email: 'yaw@techafrique.com', phone: '+228 94 56 78 90', dateOfBirth: new Date('1995-05-22'), position: 'Designer UI/UX', department: 'Marketing', photo: '', salary: 600000, status: 'active', joinDate: new Date('2024-05-15'), role: 'employee' },
-  { id: '6', companyId: '1', firstName: 'Abla', lastName: 'Dosso', email: 'abla@techafrique.com', phone: '+228 95 67 89 01', dateOfBirth: new Date('1993-09-18'), position: 'Chargé de Marketing', department: 'Marketing', photo: '', salary: 550000, status: 'inactive', joinDate: new Date('2024-06-01'), role: 'employee' },
-  { id: '7', companyId: '1', firstName: 'Kossi', lastName: 'Amoussou', email: 'kossi@techafrique.com', phone: '+228 96 78 90 12', dateOfBirth: new Date('1991-02-28'), position: 'Développeur Full Stack', department: 'Informatique', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-07-01'), role: 'employee' },
+  { id: '1', companyId: '1', firstName: 'Kofi', lastName: 'Mensah', email: 'admin@techafrique.com', phone: '+228 90 12 34 56', dateOfBirth: new Date('1985-06-15'), position: 'Directeur Général', department: 'Direction', photo: '', salary: 1500000, status: 'active', joinDate: new Date('2024-01-15'), role: 'ADMIN' },
+  { id: '2', companyId: '1', firstName: 'Ama', lastName: 'Gbeko', email: 'ama@techafrique.com', phone: '+228 91 23 45 67', dateOfBirth: new Date('1990-03-20'), position: 'Responsable RH', department: 'Ressources Humaines', photo: '', salary: 800000, status: 'active', joinDate: new Date('2024-02-01'), role: 'RH' },
+  { id: '3', companyId: '1', firstName: 'Kwame', lastName: 'Adjei', email: 'kwame@techafrique.com', phone: '+228 92 34 56 78', dateOfBirth: new Date('1992-08-10'), position: 'Développeur Senior', department: 'Informatique', photo: '', salary: 750000, status: 'active', joinDate: new Date('2024-03-15'), role: 'MANAGER' },
+  { id: '4', companyId: '1', firstName: 'Efua', lastName: 'Asante', email: 'efua@techafrique.com', phone: '+228 93 45 67 89', dateOfBirth: new Date('1988-12-05'), position: 'Comptable', department: 'Finance', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-04-01'), role: 'EMPLOYEE' },
+  { id: '5', companyId: '1', firstName: 'Yaw', lastName: 'Boakye', email: 'yaw@techafrique.com', phone: '+228 94 56 78 90', dateOfBirth: new Date('1995-05-22'), position: 'Designer UI/UX', department: 'Marketing', photo: '', salary: 600000, status: 'active', joinDate: new Date('2024-05-15'), role: 'EMPLOYEE' },
+  { id: '6', companyId: '1', firstName: 'Abla', lastName: 'Dosso', email: 'abla@techafrique.com', phone: '+228 95 67 89 01', dateOfBirth: new Date('1993-09-18'), position: 'Chargé de Marketing', department: 'Marketing', photo: '', salary: 550000, status: 'inactive', joinDate: new Date('2024-06-01'), role: 'EMPLOYEE' },
+  { id: '7', companyId: '1', firstName: 'Kossi', lastName: 'Amoussou', email: 'kossi@techafrique.com', phone: '+228 96 78 90 12', dateOfBirth: new Date('1991-02-28'), position: 'Développeur Full Stack', department: 'Informatique', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-07-01'), role: 'EMPLOYEE' },
 ];
 
 const mockAttendance: Attendance[] = [
@@ -289,12 +305,12 @@ const mockTaxDeclarations: TaxDeclaration[] = [
 ];
 
 const mockCourses: Course[] = [
-  { id: '1', title: 'Introduction à React', description: 'Apprenez les bases de React et du développement frontend moderne', category: 'Développement', duration: 20, instructor: 'Kwame Adjei', enrolledCount: 3, lessons: [
+  { id: '1', companyId: '1', title: 'Introduction à React', description: 'Apprenez les bases de React et du développement frontend moderne', category: 'Développement', duration: 20, instructor: 'Kwame Adjei', enrolledCount: 3, lessons: [
     { id: 'l1', courseId: '1', title: 'Les fondamentaux de React', content: 'JSX, composants, props et state', duration: 4, order: 1 },
     { id: 'l2', courseId: '1', title: 'Hooks et useEffect', content: 'useState, useEffect, useContext en profondeur', duration: 6, order: 2 },
     { id: 'l3', courseId: '1', title: 'Projet pratique', content: 'Construisez une application TODO complète', duration: 10, order: 3 },
   ], createdAt: new Date('2024-06-01') },
-  { id: '2', title: 'Gestion RH et Paie', description: 'Maîtrisez les processus RH et la gestion de la paie', category: 'RH', duration: 15, instructor: 'Ama Gbeko', enrolledCount: 5, lessons: [
+  { id: '2', companyId: '1', title: 'Gestion RH et Paie', description: 'Maîtrisez les processus RH et la gestion de la paie', category: 'RH', duration: 15, instructor: 'Ama Gbeko', enrolledCount: 5, lessons: [
     { id: 'l4', courseId: '2', title: 'Droit du travail', content: 'Base légale des contrats et conventions', duration: 5, order: 1 },
     { id: 'l5', courseId: '2', title: 'Calcul de paie', content: 'Méthodes de calcul des salaires et cotisations', duration: 10, order: 2 },
   ], createdAt: new Date('2024-07-01') },
@@ -437,7 +453,10 @@ const mockSignatureTemplates: SignatureTemplate[] = [
   { id: 'stpl2', name: 'Avenant changement poste', description: 'Modèle d\'avenant pour modification de poste', documentType: 'amendment', content: 'Avenant au contrat de travail de {{employee_name}}...', placeholders: [{ key: 'employee_name', label: 'Nom employé', fieldType: 'employee_name' }, { key: 'employee_position', label: 'Nouveau poste', fieldType: 'employee_position' }, { key: 'date', label: 'Date d\'effet', fieldType: 'date' }], createdAt: new Date('2024-07-01') },
 ];
 
+const useApi = !!import.meta.env.VITE_API_BASE_URL;
+
 export function DataProvider({ children }: { children: ReactNode }) {
+  const { currentCompany } = useApp();
   const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
   const [attendance, setAttendance] = useState<Attendance[]>(mockAttendance);
   const [leaves, setLeaves] = useState<Leave[]>(mockLeaves);
@@ -479,6 +498,74 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [certificates, setCertificates] = useState<Certificate[]>(mockCertificates);
   const [signatureRequests, setSignatureRequests] = useState<SignatureRequest[]>(mockSignatureRequests);
   const [signatureTemplates, setSignatureTemplates] = useState<SignatureTemplate[]>(mockSignatureTemplates);
+
+  useEffect(() => {
+    if (!useApi || !currentCompany?.id) return;
+    const loadAllData = async () => {
+      try {
+        const companyId = currentCompany.id;
+        const [emps, att, lv, pays, docs, evts, notifs, offers, cands, objs, reviews,
+          bankAccs, txns, taxDecs, cours, enrols, miss, exp, meetings,
+          equip, eqAssign, wellnessS, wellnessR, adv, transfers, sigReqs, sigTmpls] = await Promise.all([
+          EmployeeService.getEmployees(companyId).catch(() => []),
+          AttendanceService.getAttendance(companyId).catch(() => []),
+          LeaveService.getLeaves(companyId).catch(() => []),
+          PayrollService.getPayslips(companyId).catch(() => []),
+          api.get('/documents', { params: { companyId } }).then(r => r.data).catch(() => []),
+          CalendarService.getCalendarEvents({ companyId }).catch(() => []),
+          NotificationService.getNotifications({ userId: '' }).catch(() => []),
+          RecruitmentService.getJobOffers({ companyId }).catch(() => []),
+          RecruitmentService.getCandidates({ companyId }).catch(() => []),
+          api.get('/objectives', { params: { companyId } }).then(r => r.data).catch(() => []),
+          api.get('/performance-reviews', { params: { companyId } }).then(r => r.data).catch(() => []),
+          BankingService.getBankAccounts({ companyId }).catch(() => []),
+          BankingService.getBankTransactions({ companyId }).catch(() => []),
+          TaxService.getTaxDeclarations({ companyId }).catch(() => []),
+          TrainingService.getCourses({ companyId }).catch(() => []),
+          api.get('/enrollments/company/' + companyId).then(r => r.data).catch(() => []),
+          MissionService.getMissions({ companyId }).catch(() => []),
+          api.get('/expense-reports', { params: { companyId } }).then(r => r.data).catch(() => []),
+          api.get('/meetings', { params: { companyId } }).then(r => r.data).catch(() => []),
+          EquipmentService.getEquipmentList({ companyId }).catch(() => []),
+          api.get('/equipment-assignments', { params: { companyId } }).then(r => r.data).catch(() => []),
+          WellnessService.getWellnessSurveys({ companyId }).catch(() => []),
+          api.get('/wellness-responses', { params: { companyId } }).then(r => r.data).catch(() => []),
+          BankingService.getSalaryAdvances({ companyId }).catch(() => []),
+          BankingService.getSalaryTransfers(companyId).catch(() => []),
+          SignatureService.getSignatureRequests({ companyId }).catch(() => []),
+          SignatureService.getSignatureTemplates({ companyId }).catch(() => []),
+        ]);
+        if (emps.length) setEmployees(emps);
+        if (att.length) setAttendance(att);
+        if (lv.length) setLeaves(lv);
+        if (pays.length) setPayslips(pays);
+        if (docs.length) setDocuments(docs);
+        if (evts.length) setEvents(evts);
+        if (notifs.length) setNotifications(notifs);
+        if (offers.length) setJobOffers(offers);
+        if (cands.length) setCandidates(cands);
+        if (objs.length) setObjectives(objs);
+        if (reviews.length) setPerformanceReviews(reviews);
+        if (bankAccs.length) setBankAccounts(bankAccs);
+        if (txns.length) setTransactions(txns);
+        if (taxDecs.length) setTaxDeclarations(taxDecs);
+        if (cours.length) setCourses(cours);
+        if (enrols.length) setEnrollments(enrols);
+        if (miss.length) setMissions(miss);
+        if (exp.length) setExpenses(exp);
+        if (meetings.length) setMeetings(meetings);
+        if (equip.length) setEquipment(equip);
+        if (eqAssign.length) setEquipmentAssignments(eqAssign);
+        if (wellnessS.length) setWellnessSurveys(wellnessS);
+        if (wellnessR.length) setWellnessResponses(wellnessR);
+        if (adv.length) setSalaryAdvances(adv);
+        if (transfers.length) setSalaryTransfers(transfers);
+        if (sigReqs.length) setSignatureRequests(sigReqs);
+        if (sigTmpls.length) setSignatureTemplates(sigTmpls);
+      } catch { /* keep mock data */ }
+    };
+    loadAllData();
+  }, [currentCompany?.id]);
 
   const addEmployee = (employee: Omit<Employee, 'id'>) => {
     setEmployees((prev) => [...prev, { ...employee, id: String(Date.now()) }]);

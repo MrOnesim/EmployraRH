@@ -156,8 +156,8 @@ export default function OrgChartPage() {
                                 <span className="font-medium text-gray-900 dark:text-white truncate">
                                   {emp.firstName} {emp.lastName}
                                 </span>
-                                {(emp.role === 'admin' || emp.role === 'manager') && (
-                                  emp.role === 'admin' ? (
+                                {(emp.role === 'ADMIN' || emp.role === 'MANAGER') && (
+                                  emp.role === 'ADMIN' ? (
                                     <Crown className="w-4 h-4 text-yellow-500 shrink-0" />
                                   ) : (
                                     <Star className="w-4 h-4 text-blue-500 shrink-0" />
@@ -207,9 +207,9 @@ export default function OrgChartPage() {
                               <p className="text-xs text-gray-500 dark:text-gray-400">
                                 Département: <span className="font-medium">{emp.department}</span>
                               </p>
-                              {(emp.role === 'admin' || emp.role === 'manager') && (
+                              {(emp.role === 'ADMIN' || emp.role === 'MANAGER') && (
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                  Rôle: <span className="font-medium capitalize">{emp.role === 'admin' ? 'Administrateur' : 'Manager'}</span>
+                                  Rôle: <span className="font-medium capitalize">{emp.role === 'ADMIN' ? 'Administrateur' : 'Manager'}</span>
                                 </p>
                               )}
                             </div>

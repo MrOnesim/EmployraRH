@@ -312,7 +312,7 @@ export default function WellnessPage() {
     );
   };
 
-  const adminDashboard = currentUser?.role === 'admin' && (
+  const adminDashboard = currentUser?.role === 'ADMIN' && (
     <div className="space-y-6">
       {wellnessSurveys.map((survey) => {
         const responses = getResponsesForSurvey(survey.id);
@@ -374,7 +374,7 @@ export default function WellnessPage() {
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Bien-être des employés</h1>
           <p className="text-gray-500 dark:text-gray-400">Sondages anonymes de satisfaction, stress et motivation</p>
         </div>
-        {currentUser?.role === 'admin' && (
+        {currentUser?.role === 'ADMIN' && (
           <button
             onClick={() => setShowNewSurvey(true)}
             className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
@@ -397,7 +397,7 @@ export default function WellnessPage() {
           <Heart size={18} />
           <span>Sondages</span>
         </button>
-        {currentUser?.role === 'admin' && (
+        {currentUser?.role === 'ADMIN' && (
           <button
             onClick={() => setActiveTab('dashboard')}
             className={`flex items-center space-x-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${

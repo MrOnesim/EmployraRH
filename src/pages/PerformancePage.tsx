@@ -64,7 +64,7 @@ export default function PerformancePage() {
   const [newGoal, setNewGoal] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const activeEmployees = employees.filter(e => e.status === 'active' && e.role === 'employee');
+  const activeEmployees = employees.filter(e => e.status === 'active' && e.role === 'EMPLOYEE');
 
   const filteredEmployees = activeEmployees.filter(emp => 
     emp.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||

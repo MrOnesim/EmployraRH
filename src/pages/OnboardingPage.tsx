@@ -38,7 +38,7 @@ export default function OnboardingPage() {
     }
   }, []);
 
-  if (currentUser?.role !== 'admin') {
+  if (currentUser?.role !== 'ADMIN') {
     return <div className="flex items-center justify-center h-64 text-gray-500"><p>Accès réservé aux administrateurs.</p></div>;
   }
 

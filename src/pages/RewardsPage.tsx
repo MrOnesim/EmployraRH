@@ -34,7 +34,7 @@ export default function RewardsPage() {
   const totalRedeemed = myTxns.filter((t) => t.type === 'redeemed').reduce((s, t) => s + t.points, 0);
   const balance = totalEarned - totalRedeemed;
 
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === 'ADMIN';
 
   const handleRedeem = (itemId: string) => {
     if (!currentUser) return;

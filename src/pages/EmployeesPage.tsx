@@ -36,7 +36,7 @@ export default function EmployeesPage() {
     department: '',
     salary: 0,
     status: 'active',
-    role: 'employee'
+    role: 'EMPLOYEE'
   });
 
   const departments: Department[] = [
@@ -76,13 +76,13 @@ export default function EmployeesPage() {
       salary: newEmployee.salary,
       status: 'active',
       joinDate: new Date(),
-      role: 'employee'
+      role: 'EMPLOYEE'
     });
     
     setNewEmployee({
       firstName: '', lastName: '', email: '', phone: '',
       dateOfBirth: '', position: '', department: '', salary: 0,
-      status: 'active', role: 'employee'
+      status: 'active', role: 'EMPLOYEE'
     });
     setShowAddModal(false);
   };

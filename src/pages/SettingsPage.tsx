@@ -7,7 +7,7 @@ import {
 
 export default function SettingsPage() {
   const { currentUser, currentCompany } = useApp();
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === 'ADMIN';
   const [activeTab, setActiveTab] = useState('profile');
   const [saved, setSaved] = useState(false);
 

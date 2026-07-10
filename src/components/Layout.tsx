@@ -16,7 +16,7 @@ export default function Layout() {
   const navigate = useNavigate();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === 'ADMIN';
   const unreadNotifications = notifications.filter(n => !n.read && n.userId === currentUser?.id);
 
   const handleLogout = () => {

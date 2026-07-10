@@ -1,53 +1,46 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
+import { CreateEmployeeDto } from './dto/create-employee.dto';
+import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { QueryEmployeeDto } from './dto/query-employee.dto';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
+@ApiTags('employees')
 @Controller('employees')
 @UseGuards(RolesGuard)
 export class EmployeeController {
   constructor(private employeeService: EmployeeService) {}
 
   @Post()
-  create(@Body() body: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone?: string;
-    position?: string;
-    department?: string;
-    salary?: number;
-    companyId: string;
-  }) {
-    return this.employeeService.create(body);
+  @ApiOperation({ summary: 'Create a new employee' })
+  create(@Body() dto: CreateEmployeeDto) {
+    return this.employeeService.create(dto);
   }
 
   @Get()
   @Roles('SUPER_ADMIN', 'ADMIN', 'RH')
-  findAll(@Param('companyId') companyId?: string) {
-    return this.employeeService.findAll(companyId || '');
+  @ApiOperation({ summary: 'Get all employees' })
+  findAll(@Query() query: QueryEmployeeDto) {
+    return this.employeeService.findAll(query.companyId || '');
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get employee by ID' })
   findById(@Param('id') id: string) {
     return this.employeeService.findById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: Partial<{
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-    position: string;
-    department: string;
-    salary: number;
-  }>) {
-    return this.employeeService.update(id, body);
+  @ApiOperation({ summary: 'Update an employee' })
+  update(@Param('id') id: string, @Body() dto: UpdateEmployeeDto) {
+    return this.employeeService.update(id, dto);
   }
 
   @Delete(':id')
   @Roles('SUPER_ADMIN', 'ADMIN')
+  @ApiOperation({ summary: 'Delete an employee' })
   delete(@Param('id') id: string) {
     return this.employeeService.delete(id);
   }

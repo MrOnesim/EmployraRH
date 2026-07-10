@@ -58,7 +58,7 @@ function NavGroup({ label, items }: { label: string; items: MenuItem[] }) {
 export function AppSidebar() {
   const { currentUser, currentCompany } = useApp();
   const { theme, toggleTheme } = useTheme();
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === 'ADMIN';
 
   const dashboard = isAdmin
     ? { path: '/admin', icon: Home, label: 'Tableau de bord' }

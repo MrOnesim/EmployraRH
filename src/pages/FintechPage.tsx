@@ -49,7 +49,7 @@ export default function FintechPage() {
   const [requestAmount, setRequestAmount] = useState('');
   const [requestReason, setRequestReason] = useState('');
 
-  const isAdmin = currentUser?.role === 'admin' || currentUser?.role === 'rh';
+  const isAdmin = currentUser?.role === 'ADMIN' || currentUser?.role === 'RH';
   const userAdvances = salaryAdvances.filter((a) => a.employeeId === currentUser?.id);
   const allAdvances = salaryAdvances;
 

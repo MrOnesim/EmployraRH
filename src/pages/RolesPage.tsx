@@ -7,17 +7,23 @@ import { hasPermission, type Permission } from '../utils/permissions';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 
 const ROLE_LABELS: Record<UserRole, string> = {
-  admin: 'Administrateur',
-  rh: 'Ressources Humaines',
-  manager: 'Manager',
-  employee: 'Employé',
+  SUPER_ADMIN: 'Super Admin',
+  ADMIN: 'Administrateur',
+  RH: 'RH',
+  MANAGER: 'Manager',
+  DEPARTMENT_HEAD: 'Chef de Département',
+  EMPLOYEE: 'Employé',
+  SECURITY_GUARD: 'Agent de Sécurité',
 };
 
 const ROLE_COLORS: Record<UserRole, string> = {
-  admin: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
-  rh: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-  manager: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
-  employee: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300',
+  SUPER_ADMIN: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+  ADMIN: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
+  RH: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+  MANAGER: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+  DEPARTMENT_HEAD: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300',
+  EMPLOYEE: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300',
+  SECURITY_GUARD: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
 };
 
 const ALL_PERMISSION_GROUPS: { label: string; perms: Permission[] }[] = [
@@ -61,7 +67,7 @@ export default function RolesPage() {
   const [expandedEmployee, setExpandedEmployee] = useState<string | null>(null);
   const [selectedRole, setSelectedRole] = useState<UserRole | 'all'>('all');
 
-  if (currentUser?.role !== 'admin') {
+  if (currentUser?.role !== 'ADMIN') {
     return (
       <div className="flex items-center justify-center h-64 text-gray-500 dark:text-gray-400">
         <p>Accès réservé aux administrateurs.</p>
@@ -131,7 +137,7 @@ export default function RolesPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${ROLE_COLORS[emp.role] || ROLE_COLORS.employee}`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${ROLE_COLORS[emp.role] || ROLE_COLORS.EMPLOYEE}`}>
                     {ROLE_LABELS[emp.role] || emp.role}
                   </span>
                   {isExpanded ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}

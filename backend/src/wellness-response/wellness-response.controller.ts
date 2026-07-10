@@ -1,21 +1,30 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { WellnessResponseService } from './wellness-response.service';
+import { CreateWellnessResponseDto } from './dto/create-wellness-response.dto';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
+@ApiTags('wellness-responses')
 @Controller('wellness-responses')
 export class WellnessResponseController {
   constructor(private service: WellnessResponseService) {}
 
   @Post()
-  create(@Body() body: { surveyId: string; employeeId: string; answers?: any; anonymous?: boolean }) {
-    return this.service.create(body);
+  @ApiOperation({ summary: 'Submit a wellness response' })
+  create(@Body() dto: CreateWellnessResponseDto) {
+    return this.service.submit(dto.surveyId, dto.employeeId, dto.answers, dto.anonymous);
   }
 
   @Get()
-  findBySurvey(@Query('surveyId') surveyId: string) {
-    return this.service.findBySurvey(surveyId);
+  @ApiOperation({ summary: 'Get responses by survey, employee, or company' })
+  findAll(@Query('surveyId') surveyId?: string, @Query('employeeId') employeeId?: string, @Query('companyId') companyId?: string) {
+    if (surveyId) return this.service.findBySurvey(surveyId);
+    if (employeeId) return this.service.findByEmployee(employeeId);
+    if (companyId) return this.service.findByCompany(companyId);
+    return [];
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get wellness response by ID' })
   findById(@Param('id') id: string) {
     return this.service.findById(id);
   }

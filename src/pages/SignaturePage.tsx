@@ -170,7 +170,7 @@ export default function SignaturePage() {
         </div>
       </div>
 
-      {pendingForCurrentUser.length > 0 && currentUser?.role !== 'admin' && (
+      {pendingForCurrentUser.length > 0 && currentUser?.role !== 'ADMIN' && (
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-4 flex items-center space-x-3">
           <AlertTriangle size={20} className="text-yellow-600 dark:text-yellow-400" />
           <span className="text-yellow-800 dark:text-yellow-200">Vous avez <strong>{pendingForCurrentUser.length}</strong> document(s) en attente de votre signature</span>

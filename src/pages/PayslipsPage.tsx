@@ -10,7 +10,7 @@ import {
 export default function PayslipsPage() {
   const { currentUser, employees, payslips } = useApp();
   const { addToast } = useToast();
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === 'ADMIN';
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [showPreview, setShowPreview] = useState<string | null>(null);
 

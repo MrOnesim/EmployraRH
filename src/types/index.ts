@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'rh' | 'manager' | 'employee';
+export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'RH' | 'MANAGER' | 'DEPARTMENT_HEAD' | 'EMPLOYEE' | 'SECURITY_GUARD';
 
 export interface Company {
   id: string;
@@ -109,6 +109,8 @@ export interface LeavePolicy {
 
 export interface Document {
   id: string;
+  companyId?: string;
+  employeeId?: string;
   name: string;
   type: string;
   department: string;
@@ -116,6 +118,7 @@ export interface Document {
   uploadedAt: Date;
   size: string;
   category: string;
+  url?: string;
 }
 
 export interface CalendarEvent {
@@ -179,12 +182,18 @@ export interface Post {
 }
 
 export interface PayrollConfig {
+  id: string;
+  companyId: string;
   country: string;
   countryName: string;
   bonusRate: number;
   deductionRate: number;
   currency: string;
   currencyLocale: string;
+  taxRate: number;
+  socialChargesRate: number;
+  paymentDay: number;
+  overtimeRate: number;
 }
 
 export interface JobOffer {
@@ -316,6 +325,7 @@ export interface Lesson {
 
 export interface Course {
   id: string;
+  companyId: string;
   title: string;
   description: string;
   category: string;
@@ -363,6 +373,7 @@ export interface ExpenseReport {
   description: string;
   status: 'pending' | 'approved' | 'rejected';
   approvedBy?: string;
+  receiptUrl?: string;
 }
 
 export interface JobPost {
@@ -509,6 +520,7 @@ export interface WellnessQuestion {
 
 export interface WellnessSurvey {
   id: string;
+  companyId?: string;
   title: string;
   description: string;
   questions: WellnessQuestion[];
@@ -629,6 +641,7 @@ export interface SignaturePlaceholder {
 
 export interface SignatureTemplate {
   id: string;
+  companyId?: string;
   name: string;
   description: string;
   documentType: string;
@@ -683,4 +696,23 @@ export interface QRScanLog {
   selfie?: string;
   status: 'approved' | 'rejected' | 'pending';
   rejectReason?: string;
+}
+
+export interface SecurityGuard {
+  id: string;
+  companyId: string;
+  employeeId: string;
+  employee?: Employee;
+  isActive: boolean;
+  assignedAt: Date;
+}
+
+export interface Terminal {
+  id: string;
+  companyId: string;
+  name: string;
+  deviceFingerprint: string;
+  isActive: boolean;
+  lastSeen?: Date;
+  createdAt: Date;
 }

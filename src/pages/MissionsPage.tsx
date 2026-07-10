@@ -60,7 +60,7 @@ export default function MissionsPage() {
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [expenseForm, setExpenseForm] = useState(defaultExpenseForm);
 
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === 'ADMIN';
   const getEmployeeName = (id: string) => {
     const emp = employees.find((e) => e.id === id);
     return emp ? `${emp.firstName} ${emp.lastName}` : '-';

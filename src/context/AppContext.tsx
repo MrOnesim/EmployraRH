@@ -1,10 +1,17 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { Company, Employee, Attendance, Leave, Payslip, Notification, Invitation } from '../types';
+import { Company, Employee, Attendance, Leave, Payslip, Notification, Invitation, Mission, JobOffer, Course, BankAccount, CalendarEvent, Meeting } from '../types';
 import { authClient } from '../services/authService';
 import * as EmployeeService from '../services/employeeService';
 import * as AttendanceService from '../services/attendanceService';
 import * as LeaveService from '../services/leaveService';
 import * as PayrollService from '../services/payrollService';
+import * as MissionService from '../services/missionService';
+import * as RecruitmentService from '../services/recruitmentService';
+import * as TrainingService from '../services/trainingService';
+import * as BankingService from '../services/bankingService';
+import * as CalendarService from '../services/calendarService';
+import * as NotificationService from '../services/notificationService';
+import api from '../lib/axios';
 
 interface AppState {
   isLoggedIn: boolean;
@@ -17,7 +24,13 @@ interface AppState {
   payslips: Payslip[];
   notifications: Notification[];
   invitations: Invitation[];
-  login: (email: string, password: string, type: 'company' | 'employee') => boolean;
+  missions: Mission[];
+  jobOffers: JobOffer[];
+  courses: Course[];
+  bankAccounts: BankAccount[];
+  calendarEvents: CalendarEvent[];
+  meetings: Meeting[];
+  login: (email: string, password: string, type: 'company' | 'employee') => Promise<boolean>;
   logout: () => void;
   registerCompany: (company: Omit<Company, 'id' | 'uniqueId' | 'createdAt' | 'balance'> & { password?: string }) => void;
   addEmployee: (employee: Omit<Employee, 'id'>) => void;
@@ -51,13 +64,13 @@ const mockCompany: Company = {
 };
 
 const mockEmployees: Employee[] = [
-  { id: '1', companyId: '1', firstName: 'Kofi', lastName: 'Mensah', email: 'admin@techafrique.com', phone: '+228 90 12 34 56', dateOfBirth: new Date('1985-06-15'), position: 'Directeur Général', department: 'Direction', photo: '', salary: 1500000, status: 'active', joinDate: new Date('2024-01-15'), role: 'admin' },
-  { id: '2', companyId: '1', firstName: 'Ama', lastName: 'Gbeko', email: 'ama@techafrique.com', phone: '+228 91 23 45 67', dateOfBirth: new Date('1990-03-20'), position: 'Responsable RH', department: 'Ressources Humaines', photo: '', salary: 800000, status: 'active', joinDate: new Date('2024-02-01'), role: 'rh' },
-  { id: '3', companyId: '1', firstName: 'Kwame', lastName: 'Adjei', email: 'kwame@techafrique.com', phone: '+228 92 34 56 78', dateOfBirth: new Date('1992-08-10'), position: 'Développeur Senior', department: 'Informatique', photo: '', salary: 750000, status: 'active', joinDate: new Date('2024-03-15'), role: 'manager' },
-  { id: '4', companyId: '1', firstName: 'Efua', lastName: 'Asante', email: 'efua@techafrique.com', phone: '+228 93 45 67 89', dateOfBirth: new Date('1988-12-05'), position: 'Comptable', department: 'Finance', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-04-01'), role: 'employee' },
-  { id: '5', companyId: '1', firstName: 'Yaw', lastName: 'Boakye', email: 'yaw@techafrique.com', phone: '+228 94 56 78 90', dateOfBirth: new Date('1995-05-22'), position: 'Designer UI/UX', department: 'Marketing', photo: '', salary: 600000, status: 'active', joinDate: new Date('2024-05-15'), role: 'employee' },
-  { id: '6', companyId: '1', firstName: 'Abla', lastName: 'Dosso', email: 'abla@techafrique.com', phone: '+228 95 67 89 01', dateOfBirth: new Date('1993-09-18'), position: 'Chargé de Marketing', department: 'Marketing', photo: '', salary: 550000, status: 'inactive', joinDate: new Date('2024-06-01'), role: 'employee' },
-  { id: '7', companyId: '1', firstName: 'Kossi', lastName: 'Amoussou', email: 'kossi@techafrique.com', phone: '+228 96 78 90 12', dateOfBirth: new Date('1991-02-28'), position: 'Développeur Full Stack', department: 'Informatique', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-07-01'), role: 'employee' },
+  { id: '1', companyId: '1', firstName: 'Kofi', lastName: 'Mensah', email: 'admin@techafrique.com', phone: '+228 90 12 34 56', dateOfBirth: new Date('1985-06-15'), position: 'Directeur Général', department: 'Direction', photo: '', salary: 1500000, status: 'active', joinDate: new Date('2024-01-15'),   role: 'ADMIN' },
+  { id: '2', companyId: '1', firstName: 'Ama', lastName: 'Gbeko', email: 'ama@techafrique.com', phone: '+228 91 23 45 67', dateOfBirth: new Date('1990-03-20'), position: 'Responsable RH', department: 'Ressources Humaines', photo: '', salary: 800000, status: 'active', joinDate: new Date('2024-02-01'), role: 'RH' },
+  { id: '3', companyId: '1', firstName: 'Kwame', lastName: 'Adjei', email: 'kwame@techafrique.com', phone: '+228 92 34 56 78', dateOfBirth: new Date('1992-08-10'), position: 'Développeur Senior', department: 'Informatique', photo: '', salary: 750000, status: 'active', joinDate: new Date('2024-03-15'), role: 'MANAGER' },
+  { id: '4', companyId: '1', firstName: 'Efua', lastName: 'Asante', email: 'efua@techafrique.com', phone: '+228 93 45 67 89', dateOfBirth: new Date('1988-12-05'), position: 'Comptable', department: 'Finance', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-04-01'), role: 'EMPLOYEE' },
+  { id: '5', companyId: '1', firstName: 'Yaw', lastName: 'Boakye', email: 'yaw@techafrique.com', phone: '+228 94 56 78 90', dateOfBirth: new Date('1995-05-22'), position: 'Designer UI/UX', department: 'Marketing', photo: '', salary: 600000, status: 'active', joinDate: new Date('2024-05-15'), role: 'EMPLOYEE' },
+  { id: '6', companyId: '1', firstName: 'Abla', lastName: 'Dosso', email: 'abla@techafrique.com', phone: '+228 95 67 89 01', dateOfBirth: new Date('1993-09-18'), position: 'Chargé de Marketing', department: 'Marketing', photo: '', salary: 550000, status: 'inactive', joinDate: new Date('2024-06-01'), role: 'EMPLOYEE' },
+  { id: '7', companyId: '1', firstName: 'Kossi', lastName: 'Amoussou', email: 'kossi@techafrique.com', phone: '+228 96 78 90 12', dateOfBirth: new Date('1991-02-28'), position: 'Développeur Full Stack', department: 'Informatique', photo: '', salary: 700000, status: 'active', joinDate: new Date('2024-07-01'), role: 'EMPLOYEE' },
 ];
 
 const mockAttendance: Attendance[] = [
@@ -94,16 +107,59 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [payslips, setPayslips] = useState<Payslip[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
+  const [missions, setMissions] = useState<Mission[]>([]);
+  const [jobOffers, setJobOffers] = useState<JobOffer[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
+  const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
 
-  const login = useCallback(async (email: string, password: string, _type: 'company' | 'employee'): Promise<boolean> => {
+  const loadInitialData = useCallback(async (companyId: string, userId: string) => {
+    try {
+      const [employeesData, leavesData, payslipsData, attendanceData, notificationsData,
+        missionsData, jobOffersData, coursesData, bankAccountsData, calendarEventsData, meetingsData] = await Promise.all([
+        EmployeeService.getEmployees(companyId).catch(() => []),
+        LeaveService.getLeaves(companyId).catch(() => []),
+        PayrollService.getPayslips(companyId).catch(() => []),
+        AttendanceService.getAttendance(companyId).catch(() => []),
+        NotificationService.getNotifications({ userId }).catch(() => []),
+        MissionService.getMissions({ companyId }).catch(() => []),
+        RecruitmentService.getJobOffers({ companyId }).catch(() => []),
+        TrainingService.getCourses({ companyId }).catch(() => []),
+        BankingService.getBankAccounts({ companyId }).catch(() => []),
+        CalendarService.getCalendarEvents({ companyId }).catch(() => []),
+        api.get('/meetings', { params: { companyId } }).then(r => r.data).catch(() => []),
+      ]);
+      if (employeesData.length) setEmployees(employeesData);
+      if (leavesData.length) setLeaves(leavesData);
+      if (payslipsData.length) setPayslips(payslipsData);
+      if (attendanceData.length) setAttendance(attendanceData);
+      if (notificationsData.length) setNotifications(notificationsData);
+      if (missionsData.length) setMissions(missionsData);
+      if (jobOffersData.length) setJobOffers(jobOffersData);
+      if (coursesData.length) setCourses(coursesData);
+      if (bankAccountsData.length) setBankAccounts(bankAccountsData);
+      if (calendarEventsData.length) setCalendarEvents(calendarEventsData);
+      if (meetingsData.length) setMeetings(meetingsData);
+    } catch { /* silent - keep mock data as fallback */ }
+  }, []);
+
+  const login = useCallback(async (email: string, password: string, type: 'company' | 'employee'): Promise<boolean> => {
     if (useApi) {
       try {
         const { data } = await authClient.signIn.email({ email, password });
         if (data?.user) {
           setCurrentUser(data.user as unknown as Employee);
           setIsLoggedIn(true);
-          if ('company' in data) {
-            setCurrentCompany((data as any).company as Company);
+
+          if (type === 'company') {
+            const companies = await EmployeeService.getEmployees();
+            const companyId = companies[0]?.companyId;
+            if (companyId) {
+              const { data: companyData } = await api.get(`/companies/${companyId}`);
+              setCurrentCompany(companyData);
+              await loadInitialData(companyId, data.user.id);
+            }
           }
           return true;
         }
@@ -126,7 +182,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return true;
     }
     return false;
-  }, [employees]);
+  }, [employees, loadInitialData]);
 
   const logout = useCallback(() => {
     setIsLoggedIn(false);
@@ -161,7 +217,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       id: '1', companyId: newCompany.id, firstName: companyData.ownerFirstName, lastName: companyData.ownerLastName,
       email: companyData.email, phone: companyData.phone, dateOfBirth: new Date(),
       position: 'Directeur Général', department: 'Direction', photo: companyData.logo,
-      salary: 0, status: 'active', joinDate: new Date(), role: 'admin',
+      salary: 0, status: 'active', joinDate: new Date(), role: 'ADMIN',
     };
     if (!useApi || !companyData.password) {
       setCurrentUser(adminEmployee);
@@ -204,7 +260,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const sendInvitation = useCallback(async (email: string) => {
     if (useApi) {
       try {
-        await EmployeeService.sendInvitation(email);
+        await EmployeeService.sendInvitation(email, currentCompany?.id || '');
         return;
       } catch { /* fallback */ }
     }
@@ -329,7 +385,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const rejectLeave = useCallback(async (id: string, comment?: string) => {
     if (useApi) {
       try {
-        const updated = await LeaveService.rejectLeave(id);
+        const updated = await LeaveService.rejectLeave(id, comment || '');
         setLeaves(prev => prev.map(l => l.id === id ? updated : l));
         return;
       } catch { /* fallback */ }
@@ -352,7 +408,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const generatePayslip = useCallback(async (employeeId: string) => {
     if (useApi) {
       try {
-        const created = await PayrollService.generatePayslip(employeeId);
+        const created = await PayrollService.generatePayslip(employeeId, new Date().getMonth() + 1, new Date().getFullYear());
         setPayslips(prev => [...prev, created]);
         return;
       } catch { /* fallback */ }
@@ -386,7 +442,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <AppContext.Provider value={{
       isLoggedIn, currentUser, currentCompany, companies, employees, attendance,
-      leaves, payslips, notifications, invitations, login, logout, registerCompany,
+      leaves, payslips, notifications, invitations, missions, jobOffers, courses,
+      bankAccounts, calendarEvents, meetings, login, logout, registerCompany,
       addEmployee, updateEmployee, deleteEmployee, sendInvitation, acceptInvitation,
       clockIn, startBreak, endBreak, clockOut, requestLeave, approveLeave, rejectLeave,
       processPayment, generatePayslip, markAllNotificationsRead, markNotificationRead, addNotification,

@@ -46,6 +46,7 @@ model Company {
   expenseReports     ExpenseReport[]
   securityGuards     SecurityGuard[]
   terminals          Terminal[]
+  invitations        Invitation[]
 }
 
 model User {
@@ -732,6 +733,21 @@ model TaxDeclaration {
 
   @@index([employeeId])
   @@index([companyId])
+}
+
+model Invitation {
+  id        String   @id @default(cuid())
+  email     String
+  role      RoleEnum @default(EMPLOYEE)
+  token     String   @unique
+  status    String   @default("pending") // pending | accepted | expired | cancelled
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([email])
 }
 
 model SecurityGuard {

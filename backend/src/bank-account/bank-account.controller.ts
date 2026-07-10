@@ -1,32 +1,47 @@
 import { Controller, Get, Post, Body, Param, Patch, Delete, Query } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { BankAccountService } from './bank-account.service';
+import { CreateBankAccountDto } from './dto/create-bank-account.dto';
+import { UpdateBankAccountDto } from './dto/update-bank-account.dto';
 
+@ApiTags('Bank Accounts')
 @Controller('bank-accounts')
 export class BankAccountController {
   constructor(private service: BankAccountService) {}
 
   @Post()
-  create(@Body() body: { bankName: string; accountName: string; accountNumber: string; iban?: string; swift?: string; currency?: string; isMobileMoney?: boolean; mobileProvider?: string; companyId: string }) {
-    return this.service.create(body);
+  @ApiOperation({ summary: 'Create a bank account' })
+  create(@Body() dto: CreateBankAccountDto) {
+    return this.service.create(dto);
   }
 
   @Get()
-  findAll(@Query('companyId') companyId?: string) {
-    return this.service.findAll(companyId);
+  @ApiOperation({ summary: 'List bank accounts by company' })
+  findByCompany(@Query('companyId') companyId: string) {
+    return this.service.findByCompany(companyId);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a bank account by id' })
   findById(@Param('id') id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: any) {
-    return this.service.update(id, body);
+  @ApiOperation({ summary: 'Update a bank account' })
+  update(@Param('id') id: string, @Body() dto: UpdateBankAccountDto) {
+    return this.service.update(id, dto);
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a bank account' })
   delete(@Param('id') id: string) {
     return this.service.delete(id);
+  }
+
+  @Post(':id/default')
+  @ApiOperation({ summary: 'Set a bank account as default' })
+  setDefault(@Param('id') id: string) {
+    return this.service.setDefault(id);
   }
 }

@@ -38,10 +38,13 @@ import { TaxDeclarationModule } from './tax-declaration/tax-declaration.module';
 import { SecurityGuardModule } from './security-guard/security-guard.module';
 import { QrTokenModule } from './qr-token/qr-token.module';
 import { TerminalModule } from './terminal/terminal.module';
+import { InvitationModule } from './invitation/invitation.module';
+import { HealthController } from './health.controller';
 import { AuthGuard } from './common/guards/auth.guard';
 
 @Module({
-  imports: [PrismaModule, AuthModule, CompanyModule, EmployeeModule, LeaveModule, AttendanceModule, PayslipModule, DocumentModule, MeetingModule, PayrollConfigModule, NotificationModule, CalendarEventModule, ConversationModule, BankAccountModule, BankTransactionModule, SalaryAdvanceModule, SalaryTransferModule, SignatureRequestModule, SignatureTemplateModule, CourseModule, EnrollmentModule, QuizModule, QuizAttemptModule, CertificateModule, JobOfferModule, CandidateModule, ObjectiveModule, PerformanceReviewModule, EquipmentModule, EquipmentAssignmentModule, WellnessSurveyModule, WellnessResponseModule, MissionModule, ExpenseReportModule, TaxDeclarationModule, SecurityGuardModule, QrTokenModule, TerminalModule],
+  imports: [PrismaModule, AuthModule, CompanyModule, EmployeeModule, LeaveModule, AttendanceModule, PayslipModule, DocumentModule, MeetingModule, PayrollConfigModule, NotificationModule, CalendarEventModule, ConversationModule, BankAccountModule, BankTransactionModule, SalaryAdvanceModule, SalaryTransferModule, SignatureRequestModule, SignatureTemplateModule, CourseModule, EnrollmentModule, QuizModule, QuizAttemptModule, CertificateModule, JobOfferModule, CandidateModule, ObjectiveModule, PerformanceReviewModule, EquipmentModule, EquipmentAssignmentModule, WellnessSurveyModule, WellnessResponseModule, MissionModule, ExpenseReportModule, TaxDeclarationModule, SecurityGuardModule, QrTokenModule, TerminalModule, InvitationModule],
+  controllers: [HealthController],
   providers: [
     { provide: APP_GUARD, useClass: AuthGuard },
   ],

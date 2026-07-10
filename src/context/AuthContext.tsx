@@ -49,7 +49,7 @@ const mockAdmin: Employee = {
   salary: 1500000,
   status: 'active',
   joinDate: new Date('2024-01-15'),
-  role: 'admin',
+  role: 'ADMIN',
 };
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -157,7 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       salary: 0,
       status: 'active',
       joinDate: new Date(),
-      role: 'admin',
+      role: 'ADMIN',
     };
     setCurrentUser(adminEmployee);
     setIsLoggedIn(true);

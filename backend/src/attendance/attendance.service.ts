@@ -66,7 +66,7 @@ export class AttendanceService {
       throw new ForbiddenException('Device fingerprint mismatch');
     }
 
-    const tokenResult = this.qrTokenService.validateToken(params.qrToken);
+    const tokenResult = await this.qrTokenService.validateToken(params.qrToken);
     if (!tokenResult.valid) throw new BadRequestException(tokenResult.reason);
 
     const todayStart = new Date();

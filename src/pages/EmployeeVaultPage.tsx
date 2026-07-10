@@ -56,7 +56,7 @@ export default function EmployeeVaultPage() {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ type: 'contract' as EmployeeVaultItem['type'], name: '', fileUrl: '', expiresAt: '' });
 
-  const isAdmin = currentUser?.role === 'admin';
+  const isAdmin = currentUser?.role === 'ADMIN';
   const visibleItems = vaultItems.filter(item => {
     const matchesType = typeFilter === 'all' || item.type === typeFilter;
     const matchesUser = isAdmin || item.employeeId === currentUser?.id;

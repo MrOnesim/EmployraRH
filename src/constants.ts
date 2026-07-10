@@ -1,3 +1,5 @@
+import type { PayrollConfig } from './types';
+
 export const PAYROLL = {
   BONUS_RATE: 0.1,
   DEDUCTION_RATE: 0.15,
@@ -33,24 +35,24 @@ export const DEPARTMENTS = [
   'Marketing', 'Ventes', 'Operations', 'Juridique', 'Autre',
 ] as const;
 
-export const PAYROLL_COUNTRIES = [
-  { country: 'FR', countryName: 'France', bonusRate: 0.08, deductionRate: 0.22, currency: '€', currencyLocale: 'fr-FR' },
-  { country: 'CI', countryName: "Côte d'Ivoire", bonusRate: 0.1, deductionRate: 0.07, currency: 'FCFA', currencyLocale: 'fr-FR' },
-  { country: 'SN', countryName: 'Sénégal', bonusRate: 0.1, deductionRate: 0.07, currency: 'FCFA', currencyLocale: 'fr-FR' },
-  { country: 'CM', countryName: 'Cameroun', bonusRate: 0.1, deductionRate: 0.065, currency: 'FCFA', currencyLocale: 'fr-FR' },
-  { country: 'TG', countryName: 'Togo', bonusRate: 0.1, deductionRate: 0.07, currency: 'FCFA', currencyLocale: 'fr-FR' },
-  { country: 'BF', countryName: 'Burkina Faso', bonusRate: 0.1, deductionRate: 0.07, currency: 'FCFA', currencyLocale: 'fr-FR' },
-  { country: 'BJ', countryName: 'Bénin', bonusRate: 0.1, deductionRate: 0.066, currency: 'FCFA', currencyLocale: 'fr-FR' },
-  { country: 'ML', countryName: 'Mali', bonusRate: 0.1, deductionRate: 0.07, currency: 'FCFA', currencyLocale: 'fr-FR' },
-  { country: 'NE', countryName: 'Niger', bonusRate: 0.1, deductionRate: 0.07, currency: 'FCFA', currencyLocale: 'fr-FR' },
-  { country: 'GN', countryName: 'Guinée', bonusRate: 0.1, deductionRate: 0.06, currency: 'GNF', currencyLocale: 'fr-FR' },
-  { country: 'MA', countryName: 'Maroc', bonusRate: 0.06, deductionRate: 0.18, currency: 'MAD', currencyLocale: 'fr-FR' },
-  { country: 'TN', countryName: 'Tunisie', bonusRate: 0.07, deductionRate: 0.16, currency: 'TND', currencyLocale: 'fr-FR' },
-  { country: 'KE', countryName: 'Kenya', bonusRate: 0.05, deductionRate: 0.08, currency: 'KES', currencyLocale: 'en-KE' },
-  { country: 'NG', countryName: 'Nigeria', bonusRate: 0.05, deductionRate: 0.1, currency: '₦', currencyLocale: 'en-NG' },
-  { country: 'ZA', countryName: 'Afrique du Sud', bonusRate: 0.05, deductionRate: 0.12, currency: 'R', currencyLocale: 'en-ZA' },
-  { country: 'GH', countryName: 'Ghana', bonusRate: 0.05, deductionRate: 0.08, currency: '₵', currencyLocale: 'en-GH' },
-] as const;
+export const PAYROLL_COUNTRIES: PayrollConfig[] = [
+  { id: '', companyId: '', country: 'FR', countryName: 'France', bonusRate: 0.08, deductionRate: 0.22, taxRate: 0.22, socialChargesRate: 0.08, paymentDay: 5, overtimeRate: 1.5, currency: '€', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'CI', countryName: "Côte d'Ivoire", bonusRate: 0.1, deductionRate: 0.07, taxRate: 0.07, socialChargesRate: 0.1, paymentDay: 5, overtimeRate: 1.5, currency: 'FCFA', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'SN', countryName: 'Sénégal', bonusRate: 0.1, deductionRate: 0.07, taxRate: 0.07, socialChargesRate: 0.1, paymentDay: 5, overtimeRate: 1.5, currency: 'FCFA', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'CM', countryName: 'Cameroun', bonusRate: 0.1, deductionRate: 0.065, taxRate: 0.065, socialChargesRate: 0.1, paymentDay: 5, overtimeRate: 1.5, currency: 'FCFA', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'TG', countryName: 'Togo', bonusRate: 0.1, deductionRate: 0.07, taxRate: 0.07, socialChargesRate: 0.1, paymentDay: 5, overtimeRate: 1.5, currency: 'FCFA', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'BF', countryName: 'Burkina Faso', bonusRate: 0.1, deductionRate: 0.07, taxRate: 0.07, socialChargesRate: 0.1, paymentDay: 5, overtimeRate: 1.5, currency: 'FCFA', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'BJ', countryName: 'Bénin', bonusRate: 0.1, deductionRate: 0.066, taxRate: 0.066, socialChargesRate: 0.1, paymentDay: 5, overtimeRate: 1.5, currency: 'FCFA', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'ML', countryName: 'Mali', bonusRate: 0.1, deductionRate: 0.07, taxRate: 0.07, socialChargesRate: 0.1, paymentDay: 5, overtimeRate: 1.5, currency: 'FCFA', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'NE', countryName: 'Niger', bonusRate: 0.1, deductionRate: 0.07, taxRate: 0.07, socialChargesRate: 0.1, paymentDay: 5, overtimeRate: 1.5, currency: 'FCFA', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'GN', countryName: 'Guinée', bonusRate: 0.1, deductionRate: 0.06, taxRate: 0.06, socialChargesRate: 0.1, paymentDay: 5, overtimeRate: 1.5, currency: 'GNF', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'MA', countryName: 'Maroc', bonusRate: 0.06, deductionRate: 0.18, taxRate: 0.18, socialChargesRate: 0.06, paymentDay: 5, overtimeRate: 1.5, currency: 'MAD', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'TN', countryName: 'Tunisie', bonusRate: 0.07, deductionRate: 0.16, taxRate: 0.16, socialChargesRate: 0.07, paymentDay: 5, overtimeRate: 1.5, currency: 'TND', currencyLocale: 'fr-FR' },
+  { id: '', companyId: '', country: 'KE', countryName: 'Kenya', bonusRate: 0.05, deductionRate: 0.08, taxRate: 0.08, socialChargesRate: 0.05, paymentDay: 5, overtimeRate: 1.5, currency: 'KES', currencyLocale: 'en-KE' },
+  { id: '', companyId: '', country: 'NG', countryName: 'Nigeria', bonusRate: 0.05, deductionRate: 0.1, taxRate: 0.1, socialChargesRate: 0.05, paymentDay: 5, overtimeRate: 1.5, currency: '₦', currencyLocale: 'en-NG' },
+  { id: '', companyId: '', country: 'ZA', countryName: 'Afrique du Sud', bonusRate: 0.05, deductionRate: 0.12, taxRate: 0.12, socialChargesRate: 0.05, paymentDay: 5, overtimeRate: 1.5, currency: 'R', currencyLocale: 'en-ZA' },
+  { id: '', companyId: '', country: 'GH', countryName: 'Ghana', bonusRate: 0.05, deductionRate: 0.08, taxRate: 0.08, socialChargesRate: 0.05, paymentDay: 5, overtimeRate: 1.5, currency: '₵', currencyLocale: 'en-GH' },
+];
 
 export const MONTHS = [
   'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',

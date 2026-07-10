@@ -1,37 +1,42 @@
 import api from '../lib/axios';
 import type { Employee, Invitation } from '../types';
+import { mapEmployee, mapEmployees } from '../utils/mappers';
 
-export async function getEmployees(): Promise<Employee[]> {
-  const { data } = await api.get('/employees');
-  return data;
+export async function getEmployees(companyId?: string): Promise<Employee[]> {
+  const { data } = await api.get('/employees', { params: { companyId } });
+  return mapEmployees(data);
 }
 
 export async function getEmployee(id: string): Promise<Employee> {
   const { data } = await api.get(`/employees/${id}`);
-  return data;
+  return mapEmployee(data);
 }
 
-export async function createEmployee(employee: Omit<Employee, 'id'>): Promise<Employee> {
+export async function createEmployee(employee: {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  position?: string;
+  department?: string;
+  salary?: number;
+  companyId: string;
+}): Promise<Employee> {
   const { data } = await api.post('/employees', employee);
-  return data;
-}
-
-export async function createMultipleEmployees(employees: Omit<Employee, 'id'>[]): Promise<Employee[]> {
-  const { data } = await api.post('/employees/bulk', { employees });
-  return data;
+  return mapEmployee(data);
 }
 
 export async function updateEmployee(id: string, updates: Partial<Employee>): Promise<Employee> {
   const { data } = await api.patch(`/employees/${id}`, updates);
-  return data;
+  return mapEmployee(data);
 }
 
 export async function deleteEmployee(id: string): Promise<void> {
   await api.delete(`/employees/${id}`);
 }
 
-export async function sendInvitation(email: string): Promise<Invitation> {
-  const { data } = await api.post('/invitations', { email });
+export async function sendInvitation(email: string, companyId: string): Promise<Invitation> {
+  const { data } = await api.post('/invitations', { email, companyId });
   return data;
 }
 

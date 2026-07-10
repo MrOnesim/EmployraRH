@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -23,8 +24,20 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.setGlobalPrefix('api');
+  app.enableShutdownHooks();
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Employra RH API')
+    .setDescription('API de la plateforme RH multi-pays Employra')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api/docs', app, document);
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
+  console.log(`Backend running on http://localhost:${port}/api`);
+  console.log(`Swagger docs at http://localhost:${port}/api/docs`);
 }
 bootstrap();

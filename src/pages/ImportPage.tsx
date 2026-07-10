@@ -38,7 +38,7 @@ export default function ImportPage() {
       salary: parseFloat(row['Salaire'] || row['salary'] || '0'),
       status: 'active' as const,
       joinDate: new Date(),
-      role: 'employee' as const,
+      role: 'EMPLOYEE' as const,
     })).filter((e) => e.firstName && e.lastName);
     if (emps.length === 0) {
       addToast('Aucun employé valide à importer', 'error');

@@ -71,12 +71,12 @@ function ProtectedRoute({ children, adminOnly = false, requiredPermission }: { c
     return <Navigate to="/login" replace />;
   }
   
-  if (adminOnly && currentUser?.role !== 'admin') {
+  if (adminOnly && currentUser?.role !== 'ADMIN') {
     return <Navigate to="/employee-dashboard" replace />;
   }
   
   if (requiredPermission && !hasPermission(currentUser?.role, requiredPermission)) {
-    return <Navigate to={currentUser?.role === 'admin' ? '/admin' : '/employee-dashboard'} replace />;
+    return <Navigate to={currentUser?.role === 'ADMIN' ? '/admin' : '/employee-dashboard'} replace />;
   }
   
   return <>{children}</>;

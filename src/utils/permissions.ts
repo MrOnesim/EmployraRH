@@ -58,7 +58,7 @@ export type Permission =
   | 'manage_signatures';
 
 const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
-  admin: [
+  SUPER_ADMIN: [
     'view_employees', 'manage_employees',
     'view_salary', 'manage_salary',
     'view_attendance', 'manage_attendance',
@@ -89,7 +89,38 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'view_quizzes', 'manage_quizzes',
     'view_signatures', 'manage_signatures',
   ],
-  rh: [
+  ADMIN: [
+    'view_employees', 'manage_employees',
+    'view_salary', 'manage_salary',
+    'view_attendance', 'manage_attendance',
+    'view_leaves', 'manage_leaves',
+    'view_payslips', 'manage_payslips',
+    'view_recruitment', 'manage_recruitment',
+    'view_objectives', 'manage_objectives',
+    'view_performance', 'manage_performance',
+    'view_documents', 'manage_documents',
+    'view_banking', 'manage_banking',
+    'view_tax', 'manage_tax',
+    'view_training', 'manage_training',
+    'view_missions', 'manage_missions',
+    'view_marketplace', 'manage_marketplace',
+    'view_orgchart',
+    'view_reports', 'manage_reports',
+    'view_ai_assistant',
+    'view_settings', 'manage_settings',
+    'view_teams', 'manage_teams',
+    'view_feed', 'manage_feed',
+    'view_messages',
+    'view_calendar',
+    'view_import', 'manage_import',
+    'view_vault', 'view_rewards', 'manage_rewards',
+    'view_equipment', 'manage_equipment',
+    'view_wellness', 'manage_wellness',
+    'view_fintech', 'manage_fintech',
+    'view_quizzes', 'manage_quizzes',
+    'view_signatures', 'manage_signatures',
+  ],
+  RH: [
     'view_employees', 'manage_employees',
     'view_attendance', 'manage_attendance',
     'view_leaves', 'manage_leaves',
@@ -115,7 +146,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'view_quizzes',
     'view_signatures', 'manage_signatures',
   ],
-  manager: [
+  MANAGER: [
     'view_employees',
     'view_attendance',
     'view_leaves', 'manage_leaves',
@@ -134,7 +165,38 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'view_vault', 'view_rewards', 'view_equipment', 'view_wellness',
     'view_fintech', 'view_quizzes',
   ],
-  employee: [
+  EMPLOYEE: [
+    'view_attendance',
+    'view_leaves',
+    'view_payslips',
+    'view_objectives',
+    'view_documents',
+    'view_training',
+    'view_missions',
+    'view_orgchart',
+    'view_messages',
+    'view_calendar',
+  ],
+  DEPARTMENT_HEAD: [
+    'view_employees',
+    'view_attendance',
+    'view_leaves', 'manage_leaves',
+    'view_objectives', 'manage_objectives',
+    'view_performance',
+    'view_documents',
+    'view_training',
+    'view_missions',
+    'view_marketplace',
+    'view_orgchart',
+    'view_reports',
+    'view_teams',
+    'view_feed', 'manage_feed',
+    'view_messages',
+    'view_calendar',
+    'view_vault', 'view_rewards', 'view_equipment', 'view_wellness',
+    'view_fintech', 'view_quizzes',
+  ],
+  SECURITY_GUARD: [
     'view_attendance',
     'view_leaves',
     'view_payslips',
@@ -207,10 +269,13 @@ export function canAccessMenu(userRole: UserRole | undefined, path: string): boo
 }
 
 const ROLE_HIERARCHY: Record<UserRole, number> = {
-  admin: 4,
-  rh: 3,
-  manager: 2,
-  employee: 1,
+  SUPER_ADMIN: 5,
+  ADMIN: 4,
+  RH: 3,
+  MANAGER: 3,
+  DEPARTMENT_HEAD: 2,
+  EMPLOYEE: 1,
+  SECURITY_GUARD: 1,
 };
 
 export function isRoleSufficient(userRole: UserRole | undefined, requiredRole: UserRole): boolean {
