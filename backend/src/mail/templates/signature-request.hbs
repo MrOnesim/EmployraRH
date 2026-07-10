@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <body style="font-family: Arial, sans-serif; color: #333;">
+    <h2>Document awaiting your signature</h2>
+    <p>Hello,</p>
+    <p><strong>{{initiatedByName}}</strong> has requested your signature on the following document:</p>
+    <ul>
+      <li><strong>Document:</strong> {{documentName}}</li>
+      <li><strong>Type:</strong> {{documentType}}</li>
+      {{#if message}}<li><strong>Message:</strong> {{message}}</li>{{/if}}
+    </ul>
+    <p><a href="{{link}}">Review and sign the document</a></p>
+    <p>This is an automated message from the Employee &amp; Payroll platform.</p>
+  </body>
+</html>

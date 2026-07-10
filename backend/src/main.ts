@@ -3,7 +3,18 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import helmet from 'helmet';
 import type { Request, Response, NextFunction } from 'express';
+import * as Sentry from '@sentry/nestjs';
 import { AppModule } from './app.module';
+
+const sentryDsn = process.env.SENTRY_DSN;
+
+Sentry.init({
+  dsn: sentryDsn,
+  environment: process.env.NODE_ENV,
+  tracesSampleRate: 0.1,
+  enabled: !!sentryDsn,
+  integrations: [Sentry.nestIntegration()],
+});
 import { validateEnvironment } from './common/security/env.validation';
 import {
   CSRF_COOKIE_NAME,
@@ -32,13 +43,13 @@ async function bootstrap() {
     credentials: true,
   });
 
-  app.use(helmet({
-    contentSecurityPolicy: false,
-    crossOriginResourcePolicy: { policy: 'cross-origin' },
-    hsts: isProduction
-      ? { maxAge: 31536000, includeSubDomains: true, preload: true }
-      : false,
-  }));
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      hsts: isProduction ? { maxAge: 31536000, includeSubDomains: true, preload: true } : false,
+    }),
+  );
 
   app.use((req: Request, res: Response, next: NextFunction) => {
     ensureCsrfCookie(req, res);
@@ -66,9 +77,15 @@ async function bootstrap() {
     next();
   });
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }),
+  );
   app.setGlobalPrefix('api');
   app.enableShutdownHooks();
+
+  if (sentryDsn) {
+    Sentry.setupExpressErrorHandler(expressApp);
+  }
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Employra RH API')

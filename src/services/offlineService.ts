@@ -15,16 +15,6 @@ interface SyncAction {
   status: string;
 }
 
-async function isOnline(): Promise<boolean> {
-  if (!navigator.onLine) return false;
-  try {
-    const resp = await fetch(`${api.defaults.baseURL}/health`, { method: 'HEAD', signal: AbortSignal.timeout(3000) });
-    return resp.ok;
-  } catch {
-    return false;
-  }
-}
-
 export const offlineApi = {
   async get<T>(cacheKey: string, url: string, params?: Record<string, unknown>): Promise<T> {
     try {
@@ -37,23 +27,27 @@ export const offlineApi = {
     } catch (err: any) {
       if (!navigator.onLine || err?.message === 'offline') {
         const cached = await offlineDB.get(cacheKey);
-        if (cached) return cached.data as T;
+        if (cached) return (cached as any).data as T;
       }
       throw err;
     }
   },
 
-  async mut<T>(method: 'post' | 'put' | 'patch' | 'delete', url: string, data?: unknown): Promise<T> {
+  async mut<T>(
+    method: 'post' | 'put' | 'patch' | 'delete',
+    url: string,
+    data?: unknown,
+  ): Promise<T> {
     try {
       if (navigator.onLine) {
-        const { data: response } = await api[method](url, data);
+        const { data: response } = await api[method](url, data as any);
         return response;
       }
       throw new Error('offline');
     } catch (err: any) {
       if (!navigator.onLine || err?.message === 'offline') {
         await offlineDB.addToSyncQueue({ method, url, data });
-        throw new Error('Action queued for sync when back online');
+        throw new Error('Action queued for sync when back online', { cause: err });
       }
       throw err;
     }
@@ -81,7 +75,11 @@ export const offlineApi = {
     let failed = 0;
     for (const item of queue) {
       try {
-        await api[item.action.method](item.action.url, item.action.data, { params: item.action.params } as any);
+        await api[item.action.method](
+          item.action.url,
+          item.action.data as any,
+          { params: item.action.params } as any,
+        );
         synced++;
       } catch {
         failed++;

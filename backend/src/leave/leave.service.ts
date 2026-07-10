@@ -1,13 +1,26 @@
-import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
+  Optional,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
+import { RoleEnum } from '@prisma/client';
 
 const DEFAULT_ANNUAL_DAYS = 25;
 
 const LEAVE_TYPES = ['annual', 'sick', 'personal', 'maternity', 'paternity'] as const;
 
+const MANAGER_ROLES: RoleEnum[] = ['SUPER_ADMIN', 'ADMIN', 'RH', 'MANAGER', 'DEPARTMENT_HEAD'];
+
 @Injectable()
 export class LeaveService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Optional() private mailService: MailService,
+  ) {}
 
   private async calculateBusinessDays(startDate: Date, endDate: Date): Promise<number> {
     let count = 0;
@@ -20,7 +33,12 @@ export class LeaveService {
     return count;
   }
 
-  private async checkOverlap(employeeId: string, startDate: Date, endDate: Date, excludeId?: string) {
+  private async checkOverlap(
+    employeeId: string,
+    startDate: Date,
+    endDate: Date,
+    excludeId?: string,
+  ) {
     const where: any = {
       employeeId,
       status: { in: ['pending', 'approved'] },
@@ -34,9 +52,14 @@ export class LeaveService {
     }
   }
 
-  private async validateLeaveInput(data: { employeeId: string; type: string; startDate: Date; endDate: Date }, excludeId?: string) {
+  private async validateLeaveInput(
+    data: { employeeId: string; type: string; startDate: Date; endDate: Date },
+    excludeId?: string,
+  ) {
     if (!LEAVE_TYPES.includes(data.type as any)) {
-      throw new BadRequestException(`Invalid leave type. Must be one of: ${LEAVE_TYPES.join(', ')}`);
+      throw new BadRequestException(
+        `Invalid leave type. Must be one of: ${LEAVE_TYPES.join(', ')}`,
+      );
     }
 
     if (data.startDate >= data.endDate) {
@@ -62,7 +85,9 @@ export class LeaveService {
       const balance = await this.getRemainingAnnualDays(data.employeeId);
       const duration = await this.calculateBusinessDays(data.startDate, data.endDate);
       if (duration > balance) {
-        throw new BadRequestException(`Insufficient annual leave balance. ${balance} days remaining, ${duration} days requested`);
+        throw new BadRequestException(
+          `Insufficient annual leave balance. ${balance} days remaining, ${duration} days requested`,
+        );
       }
     }
   }
@@ -93,9 +118,15 @@ export class LeaveService {
     return balances;
   }
 
-  async create(data: { employeeId: string; type: string; startDate: Date; endDate: Date; reason?: string }) {
+  async create(data: {
+    employeeId: string;
+    type: string;
+    startDate: Date;
+    endDate: Date;
+    reason?: string;
+  }) {
     await this.validateLeaveInput(data);
-    return this.prisma.leave.create({
+    const leave = await this.prisma.leave.create({
       data: {
         employeeId: data.employeeId,
         type: data.type,
@@ -105,6 +136,8 @@ export class LeaveService {
         status: 'pending',
       },
     });
+    await this.notifyLeaveRequested(leave);
+    return leave;
   }
 
   async findAll(companyId: string) {
@@ -136,10 +169,12 @@ export class LeaveService {
     if (leave.status !== 'pending') {
       throw new BadRequestException('Only pending leaves can be approved');
     }
-    return this.prisma.leave.update({
+    const updated = await this.prisma.leave.update({
       where: { id },
       data: { status: 'approved' },
     });
+    await this.notifyLeaveDecision(updated, true);
+    return updated;
   }
 
   async reject(id: string, comment: string) {
@@ -148,10 +183,12 @@ export class LeaveService {
     if (leave.status !== 'pending') {
       throw new BadRequestException('Only pending leaves can be rejected');
     }
-    return this.prisma.leave.update({
+    const updated = await this.prisma.leave.update({
       where: { id },
       data: { status: 'rejected', comment },
     });
+    await this.notifyLeaveDecision(updated, false);
+    return updated;
   }
 
   async update(id: string, data: { status?: string; comment?: string }) {
@@ -161,5 +198,70 @@ export class LeaveService {
       throw new BadRequestException('Only pending leaves can be updated');
     }
     return this.prisma.leave.update({ where: { id }, data });
+  }
+
+  private formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }
+
+  private async notifyLeaveRequested(leave: any) {
+    if (!this.mailService) return;
+    try {
+      const employee = await this.prisma.employee.findUnique({
+        where: { id: leave.employeeId },
+        include: { company: true },
+      });
+      if (!employee) return;
+      const managers = (await this.prisma.member.findMany({
+        where: { companyId: employee.companyId, role: { in: MANAGER_ROLES } },
+        include: { user: true },
+      })) as any[];
+      const link = `${process.env.FRONTEND_URL || ''}/leaves/${leave.id}`;
+      for (const manager of managers) {
+        if (manager.user?.email) {
+          await this.mailService.sendMail({
+            to: manager.user.email,
+            subject: `New leave request from ${employee.firstName} ${employee.lastName}`,
+            template: 'leave-requested',
+            context: {
+              employeeName: `${employee.firstName} ${employee.lastName}`,
+              type: leave.type,
+              startDate: this.formatDate(leave.startDate),
+              endDate: this.formatDate(leave.endDate),
+              reason: leave.reason || '',
+              link,
+            },
+          });
+        }
+      }
+    } catch {
+      return;
+    }
+  }
+
+  private async notifyLeaveDecision(leave: any, approved: boolean) {
+    if (!this.mailService) return;
+    try {
+      const employee = await this.prisma.employee.findUnique({ where: { id: leave.employeeId } });
+      if (!employee?.email) return;
+      const link = `${process.env.FRONTEND_URL || ''}/leaves/${leave.id}`;
+      await this.mailService.sendMail({
+        to: employee.email,
+        subject: `Your leave request has been ${approved ? 'approved' : 'rejected'}`,
+        template: 'leave-decision',
+        context: {
+          employeeName: `${employee.firstName} ${employee.lastName}`,
+          status: approved ? 'approved' : 'rejected',
+          reason: leave.comment || '',
+          link,
+        },
+      });
+    } catch {
+      return;
+    }
   }
 }

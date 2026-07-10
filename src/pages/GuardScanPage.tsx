@@ -1,8 +1,21 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import { Shield, CheckCircle, XCircle, Scan, UserCheck, Terminal, Smartphone, Fingerprint, Key } from 'lucide-react';
-import { scanAttendanceWithToken, registerTerminal, getTerminals, getGuards } from '../services/securityGuardService';
+import {
+  Shield,
+  CheckCircle,
+  XCircle,
+  Scan,
+  UserCheck,
+  Terminal,
+  Smartphone,
+  Key,
+} from 'lucide-react';
+import {
+  scanAttendanceWithToken,
+  registerTerminal,
+  getTerminals,
+  getGuards,
+} from '../services/securityGuardService';
 
 async function generateDeviceFingerprint(): Promise<string> {
   const raw = navigator.userAgent + navigator.language + navigator.platform;
@@ -10,7 +23,7 @@ async function generateDeviceFingerprint(): Promise<string> {
   const data = encoder.encode(raw);
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
   return `DF-${hashHex.slice(0, 16).toUpperCase()}`;
 }
 
@@ -22,15 +35,16 @@ const SCAN_METHODS = [
 
 export default function GuardScanPage() {
   const { currentUser, currentCompany } = useApp();
-  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const [qrToken, setQrToken] = useState('');
   const [scanning, setScanning] = useState(false);
   const [terminalId, setTerminalId] = useState<string | null>(null);
   const [terminalError, setTerminalError] = useState(false);
-  const [result, setResult] = useState<{ status: 'idle' | 'success' | 'error'; message?: string }>({ status: 'idle' });
+  const [result, setResult] = useState<{ status: 'idle' | 'success' | 'error'; message?: string }>({
+    status: 'idle',
+  });
   const [cooldown, setCooldown] = useState(0);
-  const [scanMethod, setScanMethod] = useState<typeof SCAN_METHODS[number]['value']>('qr');
+  const [scanMethod, setScanMethod] = useState<(typeof SCAN_METHODS)[number]['value']>('qr');
   const [deviceFingerprint, setDeviceFingerprint] = useState<string>('');
 
   useEffect(() => {
@@ -40,16 +54,16 @@ export default function GuardScanPage() {
   useEffect(() => {
     if (!currentCompany || !deviceFingerprint) return;
     getTerminals(currentCompany.id)
-      .then(terminals => {
+      .then((terminals) => {
         const existing = terminals.find((t: any) => t.deviceFingerprint === deviceFingerprint);
         if (existing) {
           setTerminalId(existing.id);
         } else {
           return registerTerminal(
-            `Terminal ${currentUser?.name || currentUser?.firstName || 'Guard'}`,
+            `Terminal ${currentUser?.firstName || currentUser?.lastName || 'Guard'}`,
             deviceFingerprint,
             currentCompany.id,
-          ).then(term => setTerminalId(term.id));
+          ).then((term) => setTerminalId(term.id));
         }
       })
       .catch(() => setTerminalError(true));
@@ -59,10 +73,12 @@ export default function GuardScanPage() {
     let timer: ReturnType<typeof setInterval>;
     if (cooldown > 0) {
       timer = setInterval(() => {
-        setCooldown(prev => Math.max(0, prev - 1));
+        setCooldown((prev) => Math.max(0, prev - 1));
       }, 1000);
     }
-    return () => { if (timer) clearInterval(timer); };
+    return () => {
+      if (timer) clearInterval(timer);
+    };
   }, [cooldown]);
 
   const handleScan = useCallback(async () => {
@@ -73,7 +89,7 @@ export default function GuardScanPage() {
       const guard = await getGuards(currentCompany.id);
       const myGuard = guard.find((g: any) => g.employee.userId === currentUser?.id);
       if (!myGuard) {
-        setResult({ status: 'error', message: 'Vous n\'êtes pas autorisé comme agent de sécurité' });
+        setResult({ status: 'error', message: "Vous n'êtes pas autorisé comme agent de sécurité" });
         return;
       }
       const checkedIn = await scanAttendanceWithToken({
@@ -108,7 +124,9 @@ export default function GuardScanPage() {
         <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-8 text-center max-w-md">
           <XCircle size={40} className="text-red-400 mx-auto mb-4" />
           <h2 className="text-lg font-bold text-white mb-2">Erreur de terminal</h2>
-          <p className="text-sm text-red-400/80">Impossible d'enregistrer le terminal. Vérifiez votre connexion.</p>
+          <p className="text-sm text-red-400/80">
+            Impossible d'enregistrer le terminal. Vérifiez votre connexion.
+          </p>
         </div>
       </div>
     );
@@ -123,12 +141,16 @@ export default function GuardScanPage() {
               <Shield size={32} className="text-white" />
             </div>
             <h1 className="text-2xl font-black text-white">Scan Agent de Sécurité</h1>
-            <p className="text-sm text-white/60 mt-1">Scannez le badge employé pour enregistrer le pointage</p>
+            <p className="text-sm text-white/60 mt-1">
+              Scannez le badge employé pour enregistrer le pointage
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-white/80 mb-2">Token QR Code</label>
+              <label className="block text-sm font-semibold text-white/80 mb-2">
+                Token QR Code
+              </label>
               <input
                 ref={inputRef}
                 type="text"
@@ -141,9 +163,11 @@ export default function GuardScanPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-white/80 mb-2">Méthode de scan</label>
+              <label className="block text-sm font-semibold text-white/80 mb-2">
+                Méthode de scan
+              </label>
               <div className="grid grid-cols-3 gap-2">
-                {SCAN_METHODS.map(m => {
+                {SCAN_METHODS.map((m) => {
                   const Icon = m.icon;
                   return (
                     <button
@@ -174,24 +198,36 @@ export default function GuardScanPage() {
               ) : (
                 <Scan size={18} />
               )}
-              {scanning ? 'Scan en cours...' : cooldown > 0 ? `Attendez ${cooldown}s...` : 'Valider le pointage'}
+              {scanning
+                ? 'Scan en cours...'
+                : cooldown > 0
+                  ? `Attendez ${cooldown}s...`
+                  : 'Valider le pointage'}
             </button>
           </form>
 
           {result.status !== 'idle' && (
-            <div className={`mt-6 p-4 rounded-xl flex items-start gap-3 ${
-              result.status === 'success' ? 'bg-emerald-500/10 border border-emerald-500/20' : 'bg-red-500/10 border border-red-500/20'
-            }`}>
+            <div
+              className={`mt-6 p-4 rounded-xl flex items-start gap-3 ${
+                result.status === 'success'
+                  ? 'bg-emerald-500/10 border border-emerald-500/20'
+                  : 'bg-red-500/10 border border-red-500/20'
+              }`}
+            >
               {result.status === 'success' ? (
                 <CheckCircle size={20} className="text-emerald-400 shrink-0 mt-0.5" />
               ) : (
                 <XCircle size={20} className="text-red-400 shrink-0 mt-0.5" />
               )}
               <div>
-                <p className={`text-sm font-semibold ${result.status === 'success' ? 'text-emerald-400' : 'text-red-400'}`}>
+                <p
+                  className={`text-sm font-semibold ${result.status === 'success' ? 'text-emerald-400' : 'text-red-400'}`}
+                >
                   {result.status === 'success' ? 'Pointage validé' : 'Erreur'}
                 </p>
-                <p className={`text-xs mt-0.5 ${result.status === 'success' ? 'text-emerald-400/80' : 'text-red-400/80'}`}>
+                <p
+                  className={`text-xs mt-0.5 ${result.status === 'success' ? 'text-emerald-400/80' : 'text-red-400/80'}`}
+                >
                   {result.message}
                 </p>
               </div>

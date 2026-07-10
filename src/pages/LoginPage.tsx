@@ -12,11 +12,11 @@ export default function LoginPage() {
   const { login } = useApp();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    
-    const success = login(email, password, loginType);
+
+    const success = await login(email, password, loginType);
     if (success) {
       if (loginType === 'company') {
         navigate('/admin');
@@ -50,7 +50,7 @@ export default function LoginPage() {
               type="button"
               onClick={() => setLoginType('company')}
               className={`flex-1 flex items-center justify-center space-x-2 py-2 px-4 rounded-md transition-all ${
-                 loginType === 'company'
+                loginType === 'company'
                   ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
               }`}
@@ -73,9 +73,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-4 text-sm">
-              {error}
-            </div>
+            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-4 text-sm">{error}</div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -84,7 +82,10 @@ export default function LoginPage() {
                 Adresse email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <Mail
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
                 <input
                   type="email"
                   value={email}
@@ -101,7 +102,10 @@ export default function LoginPage() {
                 Mot de passe
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <Lock
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                  size={20}
+                />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
@@ -122,10 +126,16 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center space-x-2">
-                <input type="checkbox" className="w-4 h-4 text-blue-600 rounded border-gray-300 dark:border-gray-600 focus:ring-blue-500" />
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 text-blue-600 rounded border-gray-300 dark:border-gray-600 focus:ring-blue-500"
+                />
                 <span className="text-sm text-gray-600 dark:text-gray-400">Se souvenir de moi</span>
               </label>
-              <button type="button" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+              <button
+                type="button"
+                className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              >
                 Mot de passe oublié ?
               </button>
             </div>
@@ -141,7 +151,10 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-gray-500 dark:text-gray-400 text-sm">
               Pas encore de compte ?{' '}
-              <Link to="/register-company" className="text-blue-600 font-medium hover:text-blue-700">
+              <Link
+                to="/register-company"
+                className="text-blue-600 font-medium hover:text-blue-700"
+              >
                 Créer une entreprise
               </Link>
             </p>
@@ -150,17 +163,25 @@ export default function LoginPage() {
 
         {/* Demo Credentials */}
         <div className="mt-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-xl p-4">
-          <p className="text-sm text-gray-600 dark:text-gray-300 font-medium mb-2">Comptes de démonstration :</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300 font-medium mb-2">
+            Comptes de démonstration :
+          </p>
           <div className="space-y-2 text-sm">
             <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
               <span>Admin :</span>
-              <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">admin@techafrique.com</code>
+              <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">
+                admin@techafrique.com
+              </code>
             </div>
             <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
               <span>Employé :</span>
-              <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">ama@techafrique.com</code>
+              <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">
+                ama@techafrique.com
+              </code>
             </div>
-            <p className="text-gray-400 dark:text-gray-500 text-xs">Mot de passe : n'importe lequel</p>
+            <p className="text-gray-400 dark:text-gray-500 text-xs">
+              Mot de passe : n'importe lequel
+            </p>
           </div>
         </div>
       </div>

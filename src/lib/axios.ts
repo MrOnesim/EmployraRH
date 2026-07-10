@@ -32,7 +32,7 @@ async function getCsrfToken(): Promise<string> {
           throw new Error('Impossible de récupérer le token CSRF');
         }
 
-        const data = await response.json() as { csrfToken?: string };
+        const data = (await response.json()) as { csrfToken?: string };
         if (!data.csrfToken) {
           throw new Error('Réponse CSRF invalide');
         }
@@ -79,11 +79,15 @@ api.interceptors.response.use(
       if (method === 'get' && config.url) {
         const cacheKey = `api:${config.url}:${JSON.stringify(config.params || {})}`;
         const cached = await offlineDB.get(cacheKey);
-        if (cached) return Promise.resolve({ data: cached.data } as any);
+        if (cached) return Promise.resolve({ data: (cached as any).data } as any);
       }
       if (method && ['post', 'put', 'patch', 'delete'].includes(method)) {
         await offlineDB.addToSyncQueue({ method, url: config.url, data: config.data });
-        return Promise.reject(new Error('Action enregistrée hors ligne. Synchronisation automatique dès que la connexion sera rétablie.'));
+        return Promise.reject(
+          new Error(
+            'Action enregistrée hors ligne. Synchronisation automatique dès que la connexion sera rétablie.',
+          ),
+        );
       }
     }
     return Promise.reject(error);
@@ -93,11 +97,16 @@ api.interceptors.response.use(
 export function startOfflineSync() {
   const sync = async () => {
     if (!navigator.onLine) return;
-    const queue = await offlineDB.getSyncQueue() as any[];
+    const queue = (await offlineDB.getSyncQueue()) as any[];
     for (const item of queue) {
       try {
-        await api[item.action.method as 'post' | 'put' | 'patch' | 'delete'](item.action.url, item.action.data);
-      } catch { /* skip failed sync items */ }
+        await api[item.action.method as 'post' | 'put' | 'patch' | 'delete'](
+          item.action.url,
+          item.action.data,
+        );
+      } catch {
+        /* skip failed sync items */
+      }
     }
     if (queue.length > 0) {
       offlineDB.clearSyncQueue();

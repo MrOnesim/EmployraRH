@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <body style="font-family: Arial, sans-serif; color: #333;">
+    <h2>New leave request</h2>
+    <p>Hello,</p>
+    <p><strong>{{employeeName}}</strong> has requested a leave:</p>
+    <ul>
+      <li><strong>Type:</strong> {{type}}</li>
+      <li><strong>From:</strong> {{startDate}}</li>
+      <li><strong>To:</strong> {{endDate}}</li>
+      {{#if reason}}<li><strong>Reason:</strong> {{reason}}</li>{{/if}}
+    </ul>
+    <p><a href="{{link}}">Review the request</a></p>
+    <p>This is an automated message from the Employee &amp; Payroll platform.</p>
+  </body>
+</html>
