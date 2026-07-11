@@ -37,7 +37,7 @@ export default function PayslipsPage() {
       exportPayslipPDF(
         p,
         emp,
-        currentUser?.companyId === '1' ? 'TechAfrique Solutions' : 'Entreprise',
+        currentUser?.companyId === '1' ? 'GlobalTech Solutions' : 'Entreprise',
       );
       addToast('Bulletin téléchargé', 'success');
     }

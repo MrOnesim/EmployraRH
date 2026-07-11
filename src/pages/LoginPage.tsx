@@ -199,13 +199,13 @@ export default function LoginPage() {
             <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
               <span>Admin :</span>
               <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">
-                admin@techafrique.com
+                admin@globaltech.com
               </code>
             </div>
             <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
               <span>Employé :</span>
               <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">
-                ama@techafrique.com
+                ama@globaltech.com
               </code>
             </div>
             <p className="text-gray-400 dark:text-gray-500 text-xs">

@@ -4,7 +4,7 @@ import TaxPage from '../pages/TaxPage';
 
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
-    currentCompany: { id: '1', name: 'TechAfrique' },
+    currentCompany: { id: '1', name: 'GlobalTech' },
   }),
 }));
 
@@ -24,9 +24,7 @@ vi.mock('../context/DataContext', () => ({
         submittedAt: new Date('2025-01-10'),
       },
     ],
-    employees: [
-      { id: '1', firstName: 'Kofi', lastName: 'Mensah', salary: 1500000 },
-    ],
+    employees: [{ id: '1', firstName: 'Kofi', lastName: 'Mensah', salary: 1500000 }],
     addTaxDeclaration: vi.fn(),
   }),
 }));

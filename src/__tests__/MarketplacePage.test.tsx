@@ -4,7 +4,7 @@ import MarketplacePage from '../pages/MarketplacePage';
 
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
-    currentCompany: { id: '1', name: 'TechAfrique Solutions' },
+    currentCompany: { id: '1', name: 'GlobalTech Solutions' },
   }),
 }));
 
@@ -14,11 +14,11 @@ vi.mock('../context/DataContext', () => ({
       {
         id: '1',
         title: 'Développeur Full Stack',
-        company: 'TechAfrique Solutions',
+        company: 'GlobalTech Solutions',
         companyId: '1',
         description: 'Développement applications web',
         requirements: 'React, Node.js',
-        location: 'Lomé, Togo',
+        location: 'Paris, France',
         type: 'CDI' as const,
         salary: '800K - 1.2M FCFA',
         category: 'Informatique',

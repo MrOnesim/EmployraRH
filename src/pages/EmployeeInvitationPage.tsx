@@ -24,7 +24,7 @@ export default function EmployeeInvitationPage() {
 
   // Mock company data for the invitation
   const company = {
-    name: 'TechAfrique Solutions',
+    name: 'GlobalTech Solutions',
     logo: '',
     message: 'Nous sommes ravis de vous accueillir dans notre équipe !',
   };

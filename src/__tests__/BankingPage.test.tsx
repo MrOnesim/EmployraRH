@@ -4,7 +4,7 @@ import BankingPage from '../pages/BankingPage';
 
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
-    currentCompany: { id: '1', name: 'TechAfrique' },
+    currentCompany: { id: '1', name: 'GlobalTech' },
   }),
 }));
 
@@ -14,7 +14,7 @@ vi.mock('../context/DataContext', () => ({
       {
         id: '1',
         companyId: '1',
-        bankName: 'Ecobank Togo',
+        bankName: 'Global Bank',
         accountName: 'Compte Principal',
         accountNumber: 'TG1234567890',
         iban: 'TG53 ECOB 0001 2345 6789 0',
@@ -55,7 +55,7 @@ describe('BankingPage', () => {
 
   it('renders bank account list when data is provided', () => {
     render(<BankingPage />);
-    expect(screen.getByText('Ecobank Togo')).toBeInTheDocument();
+    expect(screen.getByText('Global Bank')).toBeInTheDocument();
     expect(screen.getByText('Compte Principal')).toBeInTheDocument();
   });
 
