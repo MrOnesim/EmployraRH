@@ -6,18 +6,23 @@ import { CheckCircle, XCircle, Camera, MapPin, Shield, Loader2, ShieldAlert } fr
 import type { QRCodeType } from '../types';
 
 const QR_TYPE_KEYWORDS: Record<string, QRCodeType> = {
-  'ARRIVEE': 'arrival',
-  'ARRIVAL': 'arrival',
-  'PAUSE': 'lunch_start',
-  'DEJEUNER': 'lunch_start',
-  'LUNCH': 'lunch_start',
-  'RETOUR': 'lunch_end',
-  'REPRISE': 'lunch_end',
-  'DEPART': 'departure',
-  'DEPARTURE': 'departure',
+  ARRIVEE: 'arrival',
+  ARRIVAL: 'arrival',
+  PAUSE: 'lunch_start',
+  DEJEUNER: 'lunch_start',
+  LUNCH: 'lunch_start',
+  RETOUR: 'lunch_end',
+  REPRISE: 'lunch_end',
+  DEPART: 'departure',
+  DEPARTURE: 'departure',
 };
 
-function decodeQRData(code: string): { type: QRCodeType } | null {
+function decodeQRData(
+  code: string,
+  sessions: { type: QRCodeType; code: string }[],
+): { type: QRCodeType } | null {
+  const session = sessions.find((s) => s.code === code);
+  if (session) return { type: session.type };
   const parts = code.split('-');
   if (parts.length < 2) return null;
   const suffix = parts[1];
@@ -31,16 +36,19 @@ function decodeQRData(code: string): { type: QRCodeType } | null {
 
 export default function QRScanPage() {
   const { currentUser } = useApp();
-  const { validateScan, recordScan } = useQRCode();
+  const { sessions, validateScan, recordScan } = useQRCode();
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const rafRef = useRef<number>(0);
   const [scanning, setScanning] = useState(false);
-  const [result, setResult] = useState<{ status: 'idle' | 'success' | 'error' | 'csp'; message?: string }>({ status: 'idle' });
+  const [result, setResult] = useState<{
+    status: 'idle' | 'success' | 'error' | 'csp';
+    message?: string;
+  }>({ status: 'idle' });
   const [gpsStatus, setGpsStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle');
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
-
+  const [manualCode, setManualCode] = useState('');
 
   const getPosition = useCallback((): Promise<{ lat: number; lng: number }> => {
     return new Promise((resolve, reject) => {
@@ -48,7 +56,7 @@ export default function QRScanPage() {
       navigator.geolocation.getCurrentPosition(
         (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
         (err) => reject(err),
-        { timeout: 10000, enableHighAccuracy: true }
+        { timeout: 10000, enableHighAccuracy: true },
       );
     });
   }, []);
@@ -56,37 +64,40 @@ export default function QRScanPage() {
   const stopCamera = useCallback(() => {
     cancelAnimationFrame(rafRef.current);
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
     }
   }, []);
 
-  const handleScan = useCallback(async (decodedText: string) => {
-    stopCamera();
-    setScanning(false);
+  const handleScan = useCallback(
+    async (decodedText: string) => {
+      stopCamera();
+      setScanning(false);
 
-    const decoded = decodeQRData(decodedText);
-    if (!decoded) {
-      setResult({ status: 'error', message: 'QR Code invalide' });
-      return;
-    }
+      const decoded = decodeQRData(decodedText, sessions);
+      if (!decoded) {
+        setResult({ status: 'error', message: 'QR Code invalide' });
+        return;
+      }
 
-    const validation = validateScan(decodedText, decoded.type, coords?.lat, coords?.lng);
-    if (!validation.valid) {
-      setResult({ status: 'error', message: validation.reason });
-      return;
-    }
+      const validation = validateScan(decodedText, decoded.type, coords?.lat, coords?.lng);
+      if (!validation.valid) {
+        setResult({ status: 'error', message: validation.reason });
+        return;
+      }
 
-    const sessionId = `${new Date().toISOString().split('T')[0]}-${decoded.type}`;
-    if (currentUser) {
-      recordScan(currentUser.id, sessionId, decoded.type, coords?.lat, coords?.lng);
-    }
+      const sessionId = `${new Date().toISOString().split('T')[0]}-${decoded.type}`;
+      if (currentUser) {
+        recordScan(currentUser.id, sessionId, decoded.type, coords?.lat, coords?.lng);
+      }
 
-    setResult({ status: 'success', message: 'Pointage enregistré ✓' });
-    setTimeout(() => navigate('/employee-dashboard'), 2000);
-  }, [coords, currentUser, navigate, validateScan, recordScan, stopCamera]);
+      setResult({ status: 'success', message: 'Pointage enregistré ✓' });
+      setTimeout(() => navigate('/employee-dashboard'), 2000);
+    },
+    [coords, currentUser, navigate, sessions, validateScan, recordScan, stopCamera],
+  );
 
-  const scanFrame = useCallback(async () => {
+  const scanFrame = async () => {
     if (!videoRef.current || !('BarcodeDetector' in window)) return;
     const detector = new (window as any).BarcodeDetector({ formats: ['qr_code'] });
     try {
@@ -95,15 +106,20 @@ export default function QRScanPage() {
         handleScan(barcodes[0].rawValue);
         return;
       }
-    } catch {}
+    } catch {
+      /* noop */
+    }
     rafRef.current = requestAnimationFrame(scanFrame);
-  }, [handleScan]);
+  };
 
-  const startScanner = useCallback(async () => {
+  const startScanner = async () => {
     setResult({ status: 'idle' });
 
     if (!('BarcodeDetector' in window)) {
-      setResult({ status: 'csp', message: 'Votre navigateur ne supporte pas le scan natif. Utilisez Chrome ou Edge récent.' });
+      setResult({
+        status: 'csp',
+        message: 'Votre navigateur ne supporte pas le scan natif. Utilisez Chrome ou Edge récent.',
+      });
       return;
     }
 
@@ -119,7 +135,7 @@ export default function QRScanPage() {
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: 640, height: 480 }
+        video: { facingMode: 'environment', width: 640, height: 480 },
       });
       streamRef.current = stream;
       if (videoRef.current) {
@@ -129,9 +145,9 @@ export default function QRScanPage() {
       }
     } catch (err) {
       setScanning(false);
-      setResult({ status: 'error', message: 'Impossible d\'accéder à la caméra' });
+      setResult({ status: 'error', message: "Impossible d'accéder à la caméra" });
     }
-  }, [getPosition, scanFrame]);
+  };
 
   useEffect(() => {
     return () => stopCamera();
@@ -149,7 +165,7 @@ export default function QRScanPage() {
         </div>
 
         {result.status === 'idle' && !scanning && (
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 text-center">
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white/20 text-center">
             <Shield size={48} className="mx-auto text-blue-300 mb-4" />
             <p className="text-gray-300 mb-6">
               Pointez votre téléphone vers le QR Code affiché à l'entrée
@@ -160,26 +176,52 @@ export default function QRScanPage() {
             >
               Scanner maintenant
             </button>
+
+            <div className="mt-6 pt-6 border-t border-white/10">
+              <p className="text-sm text-gray-400 mb-3">Ou saisissez le code manuellement :</p>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (manualCode.trim()) handleScan(manualCode.trim());
+                }}
+                className="flex gap-2"
+              >
+                <input
+                  type="text"
+                  value={manualCode}
+                  onChange={(e) => setManualCode(e.target.value)}
+                  placeholder="EP-XXXXXXXX"
+                  className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-500 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  type="submit"
+                  disabled={!manualCode.trim()}
+                  className="px-4 py-3 bg-blue-600 text-white rounded-xl font-medium text-sm hover:bg-blue-700 disabled:opacity-50 transition-all"
+                >
+                  Valider
+                </button>
+              </form>
+            </div>
           </div>
         )}
 
         {scanning && (
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
-            <video
-              ref={videoRef}
-              className="w-full rounded-xl"
-              playsInline
-              muted
-            />
+            <video ref={videoRef} className="w-full rounded-xl" playsInline muted />
             <div className="flex items-center justify-center gap-2 mt-4">
-              {gpsStatus === 'loading' && <Loader2 size={16} className="animate-spin text-blue-300" />}
+              {gpsStatus === 'loading' && (
+                <Loader2 size={16} className="animate-spin text-blue-300" />
+              )}
               {gpsStatus === 'ok' && <MapPin size={16} className="text-green-400" />}
               {gpsStatus === 'error' && <MapPin size={16} className="text-yellow-400" />}
               <span className="text-sm text-gray-400">
-                {gpsStatus === 'loading' ? 'Vérification GPS...' :
-                 gpsStatus === 'ok' ? 'Position validée' :
-                 gpsStatus === 'error' ? 'GPS indisponible (scan non-géolocalisé)' :
-                 'En attente...'}
+                {gpsStatus === 'loading'
+                  ? 'Vérification GPS...'
+                  : gpsStatus === 'ok'
+                    ? 'Position validée'
+                    : gpsStatus === 'error'
+                      ? 'GPS indisponible (scan non-géolocalisé)'
+                      : 'En attente...'}
               </span>
             </div>
           </div>
