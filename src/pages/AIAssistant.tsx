@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { 
-  Send, Bot, User, TrendingUp, Users, Clock, 
-  DollarSign, AlertTriangle, BarChart3
+import {
+  Send,
+  Bot,
+  User,
+  TrendingUp,
+  Users,
+  Clock,
+  DollarSign,
+  AlertTriangle,
+  BarChart3,
 } from 'lucide-react';
 
 interface Message {
@@ -17,71 +24,93 @@ export default function AIAssistant() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Bonjour ! Je suis votre assistant RH intelligent. Comment puis-je vous aider aujourd\'hui ? Vous pouvez me poser des questions sur vos employés, présences, salaires ou congés.',
+      content:
+        "Bonjour ! Je suis votre assistant RH intelligent. Comment puis-je vous aider aujourd'hui ? Vous pouvez me poser des questions sur vos employés, présences, salaires ou congés.",
       sender: 'ai',
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    },
   ]);
   const [inputValue, setInputValue] = useState('');
 
   const quickQuestions = [
-    { icon: Users, text: 'Qui est absent aujourd\'hui ?', color: 'bg-red-100 text-red-600' },
-    { icon: DollarSign, text: 'Combien l\'entreprise a-t-elle dépensé en salaires ce mois-ci ?', color: 'bg-green-100 text-green-600' },
-    { icon: Clock, text: 'Quel employé a réalisé le plus d\'heures supplémentaires ?', color: 'bg-blue-100 text-blue-600' },
-    { icon: TrendingUp, text: 'Quel est le taux de présence moyen ?', color: 'bg-purple-100 text-purple-600' },
-    { icon: AlertTriangle, text: 'Y a-t-il des congés en attente ?', color: 'bg-yellow-100 text-yellow-600' },
-    { icon: BarChart3, text: 'Résumé du mois', color: 'bg-indigo-100 text-indigo-600' }
+    { icon: Users, text: "Qui est absent aujourd'hui ?", color: 'bg-red-100 text-red-600' },
+    {
+      icon: DollarSign,
+      text: "Combien l'entreprise a-t-elle dépensé en salaires ce mois-ci ?",
+      color: 'bg-green-100 text-green-600',
+    },
+    {
+      icon: Clock,
+      text: "Quel employé a réalisé le plus d'heures supplémentaires ?",
+      color: 'bg-blue-100 text-blue-600',
+    },
+    {
+      icon: TrendingUp,
+      text: 'Quel est le taux de présence moyen ?',
+      color: 'bg-purple-100 text-purple-600',
+    },
+    {
+      icon: AlertTriangle,
+      text: 'Y a-t-il des congés en attente ?',
+      color: 'bg-yellow-100 text-yellow-600',
+    },
+    { icon: BarChart3, text: 'Résumé du mois', color: 'bg-indigo-100 text-indigo-600' },
   ];
 
   const processQuestion = (question: string): string => {
     const lowerQuestion = question.toLowerCase();
-    
+
     // Question about absent employees
     if (lowerQuestion.includes('absent') || lowerQuestion.includes('absence')) {
       const today = new Date();
-      const absentEmployees = employees.filter(e => 
-        e.status === 'active' && 
-        !attendance.some(a => 
-          a.employeeId === e.id && 
-          new Date(a.date).toDateString() === today.toDateString()
-        )
+      const absentEmployees = employees.filter(
+        (e) =>
+          e.status === 'active' &&
+          !attendance.some(
+            (a) =>
+              a.employeeId === e.id && new Date(a.date).toDateString() === today.toDateString(),
+          ),
       );
-      
+
       if (absentEmployees.length === 0) {
-        return 'Aucun employé n\'est absent aujourd\'hui. Tous les employés actifs sont présents ! 🎉';
+        return "Aucun employé n'est absent aujourd'hui. Tous les employés actifs sont présents ! 🎉";
       }
-      
-      const names = absentEmployees.map(e => `${e.firstName} ${e.lastName}`).join(', ');
-      return `Il y a ${absentEmployees.length} employé(s) absent(s) aujourd\'hui : ${names}. Voulez-vous que je vous montre plus de détails ?`;
+
+      const names = absentEmployees.map((e) => `${e.firstName} ${e.lastName}`).join(', ');
+      return `Il y a ${absentEmployees.length} employé(s) absent(s) aujourd'hui : ${names}. Voulez-vous que je vous montre plus de détails ?`;
     }
 
     // Question about salary expenses
     if (lowerQuestion.includes('salaire') || lowerQuestion.includes('dépens')) {
       const totalSalary = employees
-        .filter(e => e.status === 'active')
+        .filter((e) => e.status === 'active')
         .reduce((sum, e) => sum + e.salary, 0);
-      
-      return `Ce mois-ci, la dépense totale en salaires est de ${totalSalary.toLocaleString()} FCFA pour ${employees.filter(e => e.status === 'active').length} employés actifs. La masse salariale moyenne par employé est de ${(totalSalary / employees.filter(e => e.status === 'active').length).toLocaleString()} FCFA.`;
+
+      return `Ce mois-ci, la dépense totale en salaires est de ${totalSalary.toLocaleString()} FCFA pour ${employees.filter((e) => e.status === 'active').length} employés actifs. La masse salariale moyenne par employé est de ${(totalSalary / employees.filter((e) => e.status === 'active').length).toLocaleString()} FCFA.`;
     }
 
     // Question about overtime
-    if (lowerQuestion.includes('heure supplémentaire') || lowerQuestion.includes('heure sup') || lowerQuestion.includes('overtime')) {
+    if (
+      lowerQuestion.includes('heure supplémentaire') ||
+      lowerQuestion.includes('heure sup') ||
+      lowerQuestion.includes('overtime')
+    ) {
       const employeeOvertime: { name: string; hours: number }[] = [];
-      
-      employees.forEach(emp => {
-        const empAttendance = attendance.filter(a => a.employeeId === emp.id);
+
+      employees.forEach((emp) => {
+        const empAttendance = attendance.filter((a) => a.employeeId === emp.id);
         const totalOvertime = empAttendance.reduce((sum, a) => sum + a.overtime, 0);
         if (totalOvertime > 0) {
           employeeOvertime.push({ name: `${emp.firstName} ${emp.lastName}`, hours: totalOvertime });
         }
       });
-      
+
       employeeOvertime.sort((a, b) => b.hours - a.hours);
-      
+
       if (employeeOvertime.length === 0) {
-        return 'Aucune heure supplémentaire n\'a été enregistrée récemment.';
+        return "Aucune heure supplémentaire n'a été enregistrée récemment.";
       }
-      
+
       const top = employeeOvertime[0];
       return `${top.name} a réalisé le plus d'heures supplémentaires avec ${top.hours}h au total. Voici le classement :\n${employeeOvertime.map((e, i) => `${i + 1}. ${e.name} : ${e.hours}h`).join('\n')}`;
     }
@@ -89,40 +118,49 @@ export default function AIAssistant() {
     // Question about attendance rate
     if (lowerQuestion.includes('taux de présence') || lowerQuestion.includes('présence moyenne')) {
       const today = new Date();
-      const activeEmployees = employees.filter(e => e.status === 'active').length;
-      const presentToday = attendance.filter(a => 
-        new Date(a.date).toDateString() === today.toDateString() && 
-        (a.status === 'present' || a.status === 'late')
+      const activeEmployees = employees.filter((e) => e.status === 'active').length;
+      const presentToday = attendance.filter(
+        (a) =>
+          new Date(a.date).toDateString() === today.toDateString() &&
+          (a.status === 'present' || a.status === 'late'),
       ).length;
-      
+
       const rate = activeEmployees > 0 ? ((presentToday / activeEmployees) * 100).toFixed(1) : '0';
       const rateNum = parseFloat(rate);
-      return `Le taux de présence aujourd'hui est de ${rate}% (${presentToday}/${activeEmployees} employés). ${rateNum >= 90 ? 'Excellent ! 👏' : rateNum >= 75 ? 'Correct.' : 'Il y a place à l\'amélioration.'}`;
+      return `Le taux de présence aujourd'hui est de ${rate}% (${presentToday}/${activeEmployees} employés). ${rateNum >= 90 ? 'Excellent ! 👏' : rateNum >= 75 ? 'Correct.' : "Il y a place à l'amélioration."}`;
     }
 
     // Question about pending leaves
     if (lowerQuestion.includes('congé') || lowerQuestion.includes('demande')) {
-      const pendingLeaves = leaves.filter(l => l.status === 'pending');
-      
+      const pendingLeaves = leaves.filter((l) => l.status === 'pending');
+
       if (pendingLeaves.length === 0) {
-        return 'Aucune demande de congé n\'est en attente de validation. Tout est à jour ! ✅';
+        return "Aucune demande de congé n'est en attente de validation. Tout est à jour ! ✅";
       }
-      
-      const details = pendingLeaves.map(l => {
-        const emp = employees.find(e => e.id === l.employeeId);
-        return `- ${emp?.firstName} ${emp?.lastName} : ${l.type} du ${new Date(l.startDate).toLocaleDateString('fr-FR')} au ${new Date(l.endDate).toLocaleDateString('fr-FR')}`;
-      }).join('\n');
-      
+
+      const details = pendingLeaves
+        .map((l) => {
+          const emp = employees.find((e) => e.id === l.employeeId);
+          return `- ${emp?.firstName} ${emp?.lastName} : ${l.type} du ${new Date(l.startDate).toLocaleDateString('fr-FR')} au ${new Date(l.endDate).toLocaleDateString('fr-FR')}`;
+        })
+        .join('\n');
+
       return `Il y a ${pendingLeaves.length} demande(s) de congé en attente :\n${details}\n\nVoulez-vous que je vous aide à les traiter ?`;
     }
 
     // Summary of the month
-    if (lowerQuestion.includes('résumé') || lowerQuestion.includes('mois') || lowerQuestion.includes('synthèse')) {
-      const activeEmp = employees.filter(e => e.status === 'active').length;
-      const totalSalary = employees.filter(e => e.status === 'active').reduce((sum, e) => sum + e.salary, 0);
-      const pendingLeaves = leaves.filter(l => l.status === 'pending').length;
+    if (
+      lowerQuestion.includes('résumé') ||
+      lowerQuestion.includes('mois') ||
+      lowerQuestion.includes('synthèse')
+    ) {
+      const activeEmp = employees.filter((e) => e.status === 'active').length;
+      const totalSalary = employees
+        .filter((e) => e.status === 'active')
+        .reduce((sum, e) => sum + e.salary, 0);
+      const pendingLeaves = leaves.filter((l) => l.status === 'pending').length;
       const totalPayslips = payslips.length;
-      
+
       return `📊 Résumé du mois :
 
 👥 Employés : ${activeEmp} actifs
@@ -144,7 +182,7 @@ Souhaitez-vous des détails sur un point spécifique ?`;
       id: String(messages.length + 1),
       content: inputValue,
       sender: 'user',
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     setMessages([...messages, userMessage]);
@@ -156,9 +194,9 @@ Souhaitez-vous des détails sur un point spécifique ?`;
         id: String(messages.length + 2),
         content: processQuestion(inputValue),
         sender: 'ai',
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, aiResponse]);
+      setMessages((prev) => [...prev, aiResponse]);
     }, 500);
   };
 
@@ -184,22 +222,29 @@ Souhaitez-vous des détails sur un point spécifique ?`;
             key={message.id}
             className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
           >
-            <div className={`flex items-start space-x-2 max-w-[80%] ${
-              message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
-            }`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                message.sender === 'user' ? 'bg-blue-100' : 'bg-green-100'
-              }`}>
-                {message.sender === 'user' 
-                  ? <User size={16} className="text-blue-600" />
-                  : <Bot size={16} className="text-green-600" />
-                }
+            <div
+              className={`flex items-start space-x-2 max-w-[80%] ${
+                message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
+              }`}
+            >
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  message.sender === 'user' ? 'bg-blue-100' : 'bg-green-100'
+                }`}
+              >
+                {message.sender === 'user' ? (
+                  <User size={16} className="text-blue-600" />
+                ) : (
+                  <Bot size={16} className="text-green-600" />
+                )}
               </div>
-              <div className={`rounded-2xl px-4 py-3 ${
-                message.sender === 'user' 
-                  ? 'bg-blue-600 text-white rounded-tr-none'
-                  : 'bg-gray-100 text-gray-800 rounded-tl-none'
-              }`}>
+              <div
+                className={`rounded-2xl px-4 py-3 ${
+                  message.sender === 'user'
+                    ? 'bg-blue-600 text-white rounded-tr-none'
+                    : 'bg-gray-100 text-gray-800 rounded-tl-none'
+                }`}
+              >
                 <p className="whitespace-pre-line">{message.content}</p>
               </div>
             </div>

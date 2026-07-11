@@ -24,13 +24,13 @@ export default function QRDisplayPage() {
     } finally {
       setLoading(false);
     }
-  }, [currentUser?.id, currentCompany?.id]);
+  }, [currentUser, currentCompany]);
 
   useEffect(() => {
     fetchToken();
     const interval = setInterval(fetchToken, 30_000);
     const countdown = setInterval(() => {
-      setExpiresIn(prev => Math.max(0, prev - 1));
+      setExpiresIn((prev) => Math.max(0, prev - 1));
     }, 1000);
     return () => {
       clearInterval(interval);
@@ -77,8 +77,7 @@ export default function QRDisplayPage() {
               <div className="flex items-center justify-center gap-2 text-sm text-white/60 mb-4">
                 <Clock size={14} />
                 <span>
-                  Expire dans{' '}
-                  <span className="font-mono font-bold text-white">{expiresIn}s</span>
+                  Expire dans <span className="font-mono font-bold text-white">{expiresIn}s</span>
                 </span>
               </div>
 
