@@ -13,10 +13,7 @@ export class AuthMiddleware implements NestMiddleware, OnModuleInit {
     this.handler = toNodeHandler(this.betterAuthService.auth);
   }
 
-  use(req: Request, res: Response, next: () => void) {
-    this.handler(req as any, res as any).catch((err) => {
-      console.error('[AuthMiddleware] better-auth error:', err);
-      if (!res.headersSent) res.status(500).json({ message: 'Internal server error' });
-    });
+  use(req: Request, res: Response) {
+    this.handler(req as any, res as any);
   }
 }

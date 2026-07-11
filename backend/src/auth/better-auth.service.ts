@@ -15,12 +15,6 @@ export class BetterAuthService implements OnModuleInit {
   onModuleInit() {
     this.auth = betterAuth({
       database: prismaAdapter(this.prisma, { provider: 'postgresql' }),
-      baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
-      secret: process.env.BETTER_AUTH_SECRET || 'change-me-in-production',
-      emailAndPassword: {
-        enabled: true,
-        requireEmailVerification: false,
-      },
       plugins: [bearer(), admin()],
       socialProviders: {
         google: {

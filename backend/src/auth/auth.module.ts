@@ -18,9 +18,9 @@ export class AuthModule implements NestModule {
     consumer
       .apply(AuthRateLimitMiddleware, AuthMiddleware)
       .forRoutes(
-        { path: 'auth/*', method: RequestMethod.ALL },
-        { path: 'auth/callback/*', method: RequestMethod.ALL },
-        { path: 'auth/verify/*', method: RequestMethod.ALL },
+        { path: 'api/auth/*', method: RequestMethod.ALL },
+        { path: 'api/auth/callback/*', method: RequestMethod.ALL },
+        { path: 'api/auth/verify/*', method: RequestMethod.ALL },
       );
   }
 }

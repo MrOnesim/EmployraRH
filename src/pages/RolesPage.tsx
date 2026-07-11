@@ -42,7 +42,7 @@ const ALL_PERMISSION_GROUPS: { label: string; perms: Permission[] }[] = [
   { label: 'Missions', perms: ['view_missions', 'manage_missions'] },
   { label: 'Marketplace', perms: ['view_marketplace', 'manage_marketplace'] },
   { label: 'Équipes', perms: ['view_teams', 'manage_teams'] },
-  { label: 'Fil d\'actualité', perms: ['view_feed', 'manage_feed'] },
+  { label: "Fil d'actualité", perms: ['view_feed', 'manage_feed'] },
   { label: 'Import', perms: ['view_import', 'manage_import'] },
   { label: 'Récompenses', perms: ['view_rewards', 'manage_rewards'] },
   { label: 'Équipements', perms: ['view_equipment', 'manage_equipment'] },
@@ -75,11 +75,15 @@ export default function RolesPage() {
     );
   }
 
-  const filtered = employees.filter(e => {
+  const filtered = employees.filter((e) => {
     if (selectedRole !== 'all' && e.role !== selectedRole) return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      return `${e.firstName} ${e.lastName}`.toLowerCase().includes(q) || e.email.toLowerCase().includes(q) || e.position.toLowerCase().includes(q);
+      return (
+        `${e.firstName} ${e.lastName}`.toLowerCase().includes(q) ||
+        e.email.toLowerCase().includes(q) ||
+        e.position.toLowerCase().includes(q)
+      );
     }
     return true;
   });
@@ -91,10 +95,14 @@ export default function RolesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Gestion des rôles & permissions</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Attribuez des rôles aux employés et gérez leurs accès</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Gestion des rôles & permissions
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
+            Attribuez des rôles aux employés et gérez leurs accès
+          </p>
         </div>
       </div>
 
@@ -102,68 +110,95 @@ export default function RolesPage() {
         <div className="relative flex-1">
           <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
-            type="text" placeholder="Rechercher un employé..."
-            value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+            type="text"
+            placeholder="Rechercher un employé..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
           />
         </div>
         <select
-          value={selectedRole} onChange={e => setSelectedRole(e.target.value as UserRole | 'all')}
+          value={selectedRole}
+          onChange={(e) => setSelectedRole(e.target.value as UserRole | 'all')}
           className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
         >
           <option value="all">Tous les rôles</option>
-          {(Object.keys(ROLE_LABELS) as UserRole[]).map(r => (
-            <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+          {(Object.keys(ROLE_LABELS) as UserRole[]).map((r) => (
+            <option key={r} value={r}>
+              {ROLE_LABELS[r]}
+            </option>
           ))}
         </select>
       </div>
 
       <div className="space-y-3">
-        {filtered.map(emp => {
+        {filtered.map((emp) => {
           const isExpanded = expandedEmployee === emp.id;
           return (
-            <div key={emp.id} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div
+              key={emp.id}
+              className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+            >
               <div
                 className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-750"
                 onClick={() => setExpandedEmployee(isExpanded ? null : emp.id)}
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                    <span className="text-blue-600 dark:text-blue-300 font-medium">{emp.firstName[0]}{emp.lastName[0]}</span>
+                    <span className="text-blue-600 dark:text-blue-300 font-medium">
+                      {emp.firstName[0]}
+                      {emp.lastName[0]}
+                    </span>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-800 dark:text-gray-200">{emp.firstName} {emp.lastName}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{emp.position} · {emp.department}</p>
+                    <p className="font-medium text-gray-800 dark:text-gray-200">
+                      {emp.firstName} {emp.lastName}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {emp.position} · {emp.department}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${ROLE_COLORS[emp.role] || ROLE_COLORS.EMPLOYEE}`}>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${ROLE_COLORS[emp.role] || ROLE_COLORS.EMPLOYEE}`}
+                  >
                     {ROLE_LABELS[emp.role] || emp.role}
                   </span>
-                  {isExpanded ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
+                  {isExpanded ? (
+                    <ChevronUp size={18} className="text-gray-400" />
+                  ) : (
+                    <ChevronDown size={18} className="text-gray-400" />
+                  )}
                 </div>
               </div>
 
               {isExpanded && (
                 <div className="border-t border-gray-100 dark:border-gray-700 p-4">
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Changer le rôle</label>
+                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+                      Changer le rôle
+                    </label>
                     <select
                       value={emp.role}
-                      onChange={e => handleRoleChange(emp.id, e.target.value as UserRole)}
+                      onChange={(e) => handleRoleChange(emp.id, e.target.value as UserRole)}
                       className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
                     >
-                      {(Object.keys(ROLE_LABELS) as UserRole[]).map(r => (
-                        <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+                      {(Object.keys(ROLE_LABELS) as UserRole[]).map((r) => (
+                        <option key={r} value={r}>
+                          {ROLE_LABELS[r]}
+                        </option>
                       ))}
                     </select>
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">Permissions</h4>
+                    <h4 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-3">
+                      Permissions
+                    </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-                      {ALL_PERMISSION_GROUPS.map(group => {
-                        const hasAll = group.perms.every(p => hasPermission(emp.role, p));
+                      {ALL_PERMISSION_GROUPS.map((group) => {
+                        const hasAll = group.perms.every((p) => hasPermission(emp.role, p));
                         return (
                           <div
                             key={group.label}
@@ -173,7 +208,9 @@ export default function RolesPage() {
                                 : 'bg-gray-50 dark:bg-gray-900/20 text-gray-500 dark:text-gray-400'
                             }`}
                           >
-                            <div className={`w-2 h-2 rounded-full ${hasAll ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                            <div
+                              className={`w-2 h-2 rounded-full ${hasAll ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+                            />
                             <span>{group.label}</span>
                           </div>
                         );
