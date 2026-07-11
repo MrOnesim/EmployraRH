@@ -58,12 +58,12 @@ async function bootstrap() {
       return next();
     }
 
-    if (!matchesAllowedOrigin(req)) {
-      return res.status(403).json({ message: 'Untrusted request origin' });
-    }
-
     if (req.path.startsWith('/api/auth/')) {
       return next();
+    }
+
+    if (!matchesAllowedOrigin(req)) {
+      return res.status(403).json({ message: 'Untrusted request origin' });
     }
 
     const cookies = parseCookieHeader(req.headers.cookie);

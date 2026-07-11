@@ -267,8 +267,12 @@ model Session {
   id        String   @id
   userId    String
   expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
   data      Json?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
 }
@@ -278,6 +282,7 @@ model Account {
   userId            String
   providerId        String
   providerAccountId String
+  password          String?
   accessToken       String?
   refreshToken      String?
   expiresAt         DateTime?
