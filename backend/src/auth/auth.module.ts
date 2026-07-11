@@ -5,9 +5,10 @@ import { AuthMiddleware } from './auth.middleware';
 import { BetterAuthService } from './better-auth.service';
 import { AuthRateLimitMiddleware } from './auth-rate-limit.middleware';
 import { MailModule } from '../mail/mail.module';
+import { GdprModule } from '../gdpr/gdpr.module';
 
 @Module({
-  imports: [MailModule],
+  imports: [MailModule, GdprModule],
   controllers: [AuthController],
   providers: [AuthService, BetterAuthService],
   exports: [AuthService, BetterAuthService],

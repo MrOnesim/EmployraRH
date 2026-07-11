@@ -64,7 +64,8 @@ export class TaxDeclarationService {
 
   async submit(id: string) {
     const decl = await this.findById(id);
-    if (decl.status !== 'draft') throw new BadRequestException('Only draft declarations can be submitted');
+    if (decl.status !== 'draft')
+      throw new BadRequestException('Only draft declarations can be submitted');
     return this.prisma.taxDeclaration.update({ where: { id }, data: { status: 'submitted' } });
   }
 
@@ -75,8 +76,12 @@ export class TaxDeclarationService {
 
   async markPaid(id: string) {
     const decl = await this.findById(id);
-    if (decl.status !== 'submitted') throw new BadRequestException('Only submitted declarations can be marked paid');
-    return this.prisma.taxDeclaration.update({ where: { id }, data: { status: 'paid', paidAt: new Date() } });
+    if (decl.status !== 'submitted')
+      throw new BadRequestException('Only submitted declarations can be marked paid');
+    return this.prisma.taxDeclaration.update({
+      where: { id },
+      data: { status: 'paid', paidAt: new Date() },
+    });
   }
 
   async calculateWithholding(employeeId: string, year: number) {
@@ -84,13 +89,13 @@ export class TaxDeclarationService {
     if (!employee) throw new NotFoundException('Employee not found');
     const salary = employee.salary || 0;
     const annualSalary = salary * 12;
-    let estimatedTax = 0;
+    let estimatedTax: number;
     if (annualSalary <= 10000) {
       estimatedTax = 0;
     } else if (annualSalary <= 25000) {
       estimatedTax = (annualSalary - 10000) * 0.11;
     } else if (annualSalary <= 50000) {
-      estimatedTax = 1500 + (annualSalary - 25000) * 0.30;
+      estimatedTax = 1500 + (annualSalary - 25000) * 0.3;
     } else {
       estimatedTax = 9000 + (annualSalary - 50000) * 0.45;
     }

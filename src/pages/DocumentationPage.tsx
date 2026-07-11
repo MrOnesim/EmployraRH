@@ -1,26 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { BookOpen, Search, FileText, Video, HelpCircle, ArrowRight, Camera } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PublicNav from '../components/PublicNav';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 const sections = [
   {
     title: 'Guides de démarrage',
     icon: BookOpen,
     color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30',
-    items: ['Créer votre compte entreprise', 'Inviter vos employés', 'Configurer la paie', 'Premier pointage QR'],
+    items: [
+      'Créer votre compte entreprise',
+      'Inviter vos employés',
+      'Configurer la paie',
+      'Premier pointage QR',
+    ],
   },
   {
     title: 'Modules fonctionnels',
     icon: FileText,
     color: 'text-purple-600 bg-purple-100 dark:bg-purple-900/30',
-    items: ['Gestion des présences', 'Congés et absences', 'Bulletins de paie', 'Performance & objectifs'],
+    items: [
+      'Gestion des présences',
+      'Congés et absences',
+      'Bulletins de paie',
+      'Performance & objectifs',
+    ],
   },
   {
     title: 'Tutoriels vidéo',
     icon: Video,
     color: 'text-red-600 bg-red-100 dark:bg-red-900/30',
-    items: ['Vue d\'ensemble (5 min)', 'Configuration avancée', 'Export PDF', 'API & intégrations'],
+    items: ["Vue d'ensemble (5 min)", 'Configuration avancée', 'Export PDF', 'API & intégrations'],
   },
   {
     title: 'FAQ & Support',
@@ -39,7 +50,12 @@ function ScreenshotViewer() {
         <div className="text-center text-gray-400 dark:text-gray-500">
           <Camera size={48} className="mx-auto mb-4" />
           <p className="text-lg font-medium text-gray-500 dark:text-gray-400">Capture d'écran</p>
-          <p className="text-sm mt-2">Placez votre image dans <code className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded">public/images/screenshots/hero-section.png</code></p>
+          <p className="text-sm mt-2">
+            Placez votre image dans{' '}
+            <code className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-0.5 rounded">
+              public/images/screenshots/hero-section.png
+            </code>
+          </p>
         </div>
       </div>
     );
@@ -62,15 +78,23 @@ function ScreenshotViewer() {
 }
 
 export default function DocumentationPage() {
-  useEffect(() => {
-    const meta = document.querySelector('meta[name="description"]');
-    const og = document.querySelector('meta[property="og:description"]');
-    const title = document.title;
-    document.title = 'Documentation - EmployraRH';
-    if (meta) meta.setAttribute('content', 'Documentation complète EmployraRH : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.');
-    if (og) og.setAttribute('content', 'Documentation complète EmployraRH : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.');
-    return () => { document.title = title; };
-  }, []);
+  const [search, setSearch] = useState('');
+  usePageMeta({
+    title: 'Documentation EmployéPro Africa — Guides, tutoriels & API',
+    description:
+      'Documentation complète EmployéPro Africa : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.',
+  });
+
+  const filteredSections = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) return sections;
+    return sections
+      .map((section) => ({
+        ...section,
+        items: section.items.filter((item) => item.toLowerCase().includes(query)),
+      }))
+      .filter((section) => section.items.length > 0);
+  }, [search]);
 
   return (
     <div className="min-h-screen pt-16 bg-gray-50 dark:bg-gray-950">
@@ -81,13 +105,17 @@ export default function DocumentationPage() {
           <BookOpen size={48} className="mx-auto mb-6 text-blue-200" />
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Documentation</h1>
           <p className="text-lg text-blue-100/90 max-w-2xl mx-auto">
-            Tout ce qu'il faut savoir pour maîtriser EmployraRH : guides, tutoriels, API et bonnes pratiques.
+            Tout ce qu'il faut savoir pour maîtriser EmployraRH : guides, tutoriels, API et bonnes
+            pratiques.
           </p>
           <div className="relative max-w-lg mx-auto mt-8">
             <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-blue-300" />
             <input
               type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Rechercher dans la documentation..."
+              aria-label="Rechercher dans la documentation"
               className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder-blue-200/60 focus:outline-none focus:ring-2 focus:ring-white/30 backdrop-blur-sm"
             />
           </div>
@@ -106,28 +134,49 @@ export default function DocumentationPage() {
 
       {/* Cards */}
       <section className="max-w-6xl mx-auto px-4 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {sections.map((section) => (
-            <div key={section.title} className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`p-3 rounded-xl ${section.color}`}>
-                  <section.icon size={24} />
+        {filteredSections.length === 0 ? (
+          <div className="text-center py-20 text-gray-500 dark:text-gray-400">
+            <Search size={40} className="mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+            <p className="text-lg font-medium">Aucun résultat pour « {search} »</p>
+            <p className="text-sm mt-2">Essayez un autre mot-clé ou consultez la FAQ.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredSections.map((section) => (
+              <div
+                key={section.title}
+                className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`p-3 rounded-xl ${section.color}`}>
+                    <section.icon size={24} />
+                  </div>
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                    {section.title}
+                  </h2>
                 </div>
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{section.title}</h2>
+                <ul className="space-y-2">
+                  {section.items.map((item) => (
+                    <li key={item}>
+                      <Link
+                        to="/faq"
+                        className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group"
+                      >
+                        <span className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100">
+                          {item}
+                        </span>
+                        <ArrowRight
+                          size={14}
+                          className="text-gray-300 group-hover:text-blue-500 transition-colors"
+                        />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-2">
-                {section.items.map((item) => (
-                  <li key={item}>
-                    <Link to="/faq" className="flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group">
-                      <span className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100">{item}</span>
-                      <ArrowRight size={14} className="text-gray-300 group-hover:text-blue-500 transition-colors" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

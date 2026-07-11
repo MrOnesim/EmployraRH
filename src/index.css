@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --color-sidebar: hsl(0 0% 98%);
@@ -9,25 +9,25 @@
   --color-sidebar-accent-foreground: hsl(240 6% 10%);
   --color-sidebar-border: hsl(220 13% 91%);
   --color-sidebar-ring: hsl(217 91% 60%);
-  --color-background: #FFFFFF;
+  --color-background: #ffffff;
   --color-foreground: hsl(240 10% 4%);
-  --color-primary: #2563EB;
-  --color-primary-hover: #1D4ED8;
-  --color-primary-foreground: #FFFFFF;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-foreground: #ffffff;
   --color-muted: hsl(240 5% 96%);
   --color-muted-foreground: hsl(240 4% 46%);
-  --color-popover: #FFFFFF;
+  --color-popover: #ffffff;
   --color-popover-foreground: hsl(240 10% 4%);
   --color-accent: hsl(240 5% 96%);
   --color-accent-foreground: hsl(240 6% 10%);
   --color-border: hsl(240 6% 90%);
   --color-input: hsl(240 6% 90%);
-  --color-ring: #2563EB;
-  --color-info: #0369A1;
-  --color-info-light: #0891B2;
-  --color-success: #10B981;
-  --color-success-light: #14B8A6;
-  --color-surface: #F3F4F6;
+  --color-ring: #2563eb;
+  --color-info: #0369a1;
+  --color-info-light: #0891b2;
+  --color-success: #10b981;
+  --color-success-light: #14b8a6;
+  --color-surface: #f3f4f6;
   --radius: 0.5rem;
 }
 
@@ -40,9 +40,9 @@
   --color-sidebar-ring: hsl(217 91% 60%);
   --color-background: hsl(240 10% 4%);
   --color-foreground: hsl(0 0% 98%);
-  --color-primary: #3B82F6;
-  --color-primary-hover: #60A5FA;
-  --color-primary-foreground: #FFFFFF;
+  --color-primary: #3b82f6;
+  --color-primary-hover: #60a5fa;
+  --color-primary-foreground: #ffffff;
   --color-muted: hsl(240 4% 16%);
   --color-muted-foreground: hsl(240 5% 65%);
   --color-popover: hsl(240 10% 4%);
@@ -51,12 +51,12 @@
   --color-accent-foreground: hsl(0 0% 98%);
   --color-border: hsl(240 4% 16%);
   --color-input: hsl(240 4% 16%);
-  --color-ring: #3B82F6;
-  --color-info: #38BDF8;
-  --color-info-light: #22D3EE;
-  --color-success: #34D399;
-  --color-success-light: #2DD4BF;
-  --color-surface: #1F2937;
+  --color-ring: #3b82f6;
+  --color-info: #38bdf8;
+  --color-info-light: #22d3ee;
+  --color-success: #34d399;
+  --color-success-light: #2dd4bf;
+  --color-surface: #1f2937;
 }
 
 body {
@@ -64,21 +64,29 @@ body {
 }
 
 html {
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .bg-dot-pattern {
-  background-image: radial-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 .dark .bg-dot-pattern {
-  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
 }
 
 @keyframes toast-in {
-  from { opacity: 0; transform: translateY(1rem); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-toast-in {
@@ -86,8 +94,12 @@ html {
 }
 
 @keyframes slide {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-slide {
@@ -102,9 +114,16 @@ html {
   .animate-spin {
     animation: none !important;
   }
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ring, #2563eb);
+  outline-offset: 2px;
 }

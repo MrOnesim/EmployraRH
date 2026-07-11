@@ -3,6 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { GdprModule } from './gdpr/gdpr.module';
 import { CompanyModule } from './company/company.module';
 import { EmployeeModule } from './employee/employee.module';
 import { LeaveModule } from './leave/leave.module';
@@ -40,17 +41,60 @@ import { SecurityGuardModule } from './security-guard/security-guard.module';
 import { QrTokenModule } from './qr-token/qr-token.module';
 import { TerminalModule } from './terminal/terminal.module';
 import { InvitationModule } from './invitation/invitation.module';
+import { AppCacheModule } from './cache/cache.module';
 import { HealthController } from './health.controller';
 import { AuthGuard } from './common/guards/auth.guard';
 import { ThrottlerBehindProxyGuard } from './common/throttler-behind-proxy.guard';
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 100,
-    }]),
-    PrismaModule, AuthModule, CompanyModule, EmployeeModule, LeaveModule, AttendanceModule, PayslipModule, DocumentModule, MeetingModule, PayrollConfigModule, NotificationModule, CalendarEventModule, ConversationModule, BankAccountModule, BankTransactionModule, SalaryAdvanceModule, SalaryTransferModule, SignatureRequestModule, SignatureTemplateModule, CourseModule, EnrollmentModule, QuizModule, QuizAttemptModule, CertificateModule, JobOfferModule, CandidateModule, ObjectiveModule, PerformanceReviewModule, EquipmentModule, EquipmentAssignmentModule, WellnessSurveyModule, WellnessResponseModule, MissionModule, ExpenseReportModule, TaxDeclarationModule, SecurityGuardModule, QrTokenModule, TerminalModule, InvitationModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
+    PrismaModule,
+    AppCacheModule,
+    AuthModule,
+    GdprModule,
+    CompanyModule,
+    EmployeeModule,
+    LeaveModule,
+    AttendanceModule,
+    PayslipModule,
+    DocumentModule,
+    MeetingModule,
+    PayrollConfigModule,
+    NotificationModule,
+    CalendarEventModule,
+    ConversationModule,
+    BankAccountModule,
+    BankTransactionModule,
+    SalaryAdvanceModule,
+    SalaryTransferModule,
+    SignatureRequestModule,
+    SignatureTemplateModule,
+    CourseModule,
+    EnrollmentModule,
+    QuizModule,
+    QuizAttemptModule,
+    CertificateModule,
+    JobOfferModule,
+    CandidateModule,
+    ObjectiveModule,
+    PerformanceReviewModule,
+    EquipmentModule,
+    EquipmentAssignmentModule,
+    WellnessSurveyModule,
+    WellnessResponseModule,
+    MissionModule,
+    ExpenseReportModule,
+    TaxDeclarationModule,
+    SecurityGuardModule,
+    QrTokenModule,
+    TerminalModule,
+    InvitationModule,
   ],
   controllers: [HealthController],
   providers: [

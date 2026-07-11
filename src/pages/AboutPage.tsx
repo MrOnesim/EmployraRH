@@ -1,58 +1,260 @@
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Users, Shield, Clock, Heart, Target, ArrowRight, MapPin,
-  CheckCircle, CreditCard, Building2, BookOpen, HeadphonesIcon,
-  BarChart3, Briefcase, DollarSign, FileText, MessageSquare,
-  Gift, Monitor, Zap, Globe, Lock, TrendingUp, Award, Sparkles
+  Users,
+  Shield,
+  Clock,
+  Heart,
+  Target,
+  ArrowRight,
+  MapPin,
+  CheckCircle,
+  CreditCard,
+  Building2,
+  BookOpen,
+  HeadphonesIcon,
+  BarChart3,
+  Briefcase,
+  DollarSign,
+  FileText,
+  MessageSquare,
+  Gift,
+  Monitor,
+  Zap,
+  Globe,
+  Lock,
+  TrendingUp,
+  Award,
+  Sparkles,
 } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
 import PublicNav from '../components/PublicNav';
 import FooterSection from '../components/landing/FooterSection';
 import CountUp from '../components/ui/CountUp';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const team = [
-  { name: 'Amadou Diallo',    initials: 'AD', avatar: 'https://i.pravatar.cc/150?u=amadou@employrarh.com', role: 'CEO & Co-fondateur',     bio: 'Ex-directeur RH chez Orange, expert en transformation RH', location: 'Sénégal',  from: 'from-blue-500',   to: 'to-indigo-600' },
-  { name: 'Marie Dubois',     initials: 'MD', avatar: 'https://i.pravatar.cc/150?u=marie@employrarh.com', role: 'CTO & Co-fondatrice',    bio: '15 ans d\'expérience en SaaS, ex-Tech Lead Microsoft',     location: 'France',    from: 'from-purple-500', to: 'to-pink-600' },
-  { name: 'Carlos Rodriguez', initials: 'CR', avatar: 'https://i.pravatar.cc/150?u=carlos@employrarh.com', role: 'VP Produit',             bio: 'Expert UX & Data Science, ex-Meta',                       location: 'Pérou',     from: 'from-rose-500',   to: 'to-orange-500' },
-  { name: 'Aisha Mohammed',   initials: 'AM', avatar: 'https://i.pravatar.cc/150?u=aisha@employrarh.com', role: "VP d'Ingénierie",        bio: 'Ex-Google, leader tech spécialiste infrastructure',        location: 'Nigeria',   from: 'from-emerald-500',to: 'to-teal-600' },
-  { name: 'Jean-Pierre Kamga',initials: 'JK', avatar: 'https://i.pravatar.cc/150?u=jp@employrarh.com',    role: 'Directeur Financier',    bio: 'Expert en fintech et paiements africains',                 location: 'Cameroun', from: 'from-amber-500',  to: 'to-yellow-500' },
-  { name: 'Fatima El Amrani', initials: 'FE', avatar: 'https://i.pravatar.cc/150?u=fatima@employrarh.com', role: 'VP Marketing',           bio: 'Growth & expansion Afrique, ex-Jumia',                    location: 'Maroc',     from: 'from-sky-500',    to: 'to-blue-600' },
+  {
+    name: 'Amadou Diallo',
+    initials: 'AD',
+    avatar: 'https://i.pravatar.cc/150?u=amadou@employrarh.com',
+    role: 'CEO & Co-fondateur',
+    bio: 'Ex-directeur RH chez Orange, expert en transformation RH',
+    location: 'Sénégal',
+    from: 'from-blue-500',
+    to: 'to-indigo-600',
+  },
+  {
+    name: 'Marie Dubois',
+    initials: 'MD',
+    avatar: 'https://i.pravatar.cc/150?u=marie@employrarh.com',
+    role: 'CTO & Co-fondatrice',
+    bio: "15 ans d'expérience en SaaS, ex-Tech Lead Microsoft",
+    location: 'France',
+    from: 'from-purple-500',
+    to: 'to-pink-600',
+  },
+  {
+    name: 'Carlos Rodriguez',
+    initials: 'CR',
+    avatar: 'https://i.pravatar.cc/150?u=carlos@employrarh.com',
+    role: 'VP Produit',
+    bio: 'Expert UX & Data Science, ex-Meta',
+    location: 'Pérou',
+    from: 'from-rose-500',
+    to: 'to-orange-500',
+  },
+  {
+    name: 'Aisha Mohammed',
+    initials: 'AM',
+    avatar: 'https://i.pravatar.cc/150?u=aisha@employrarh.com',
+    role: "VP d'Ingénierie",
+    bio: 'Ex-Google, leader tech spécialiste infrastructure',
+    location: 'Nigeria',
+    from: 'from-emerald-500',
+    to: 'to-teal-600',
+  },
+  {
+    name: 'Jean-Pierre Kamga',
+    initials: 'JK',
+    avatar: 'https://i.pravatar.cc/150?u=jp@employrarh.com',
+    role: 'Directeur Financier',
+    bio: 'Expert en fintech et paiements africains',
+    location: 'Cameroun',
+    from: 'from-amber-500',
+    to: 'to-yellow-500',
+  },
+  {
+    name: 'Fatima El Amrani',
+    initials: 'FE',
+    avatar: 'https://i.pravatar.cc/150?u=fatima@employrarh.com',
+    role: 'VP Marketing',
+    bio: 'Growth & expansion Afrique, ex-Jumia',
+    location: 'Maroc',
+    from: 'from-sky-500',
+    to: 'to-blue-600',
+  },
 ];
 
 const modules = [
-  { icon: Users,         title: 'Gestion RH',       desc: 'Employés, équipes, organigramme, import CSV',          color: 'from-blue-500 to-blue-600' },
-  { icon: DollarSign,   title: 'Paie multi-pays',   desc: 'Salaire, fiches de paie, banque, fiscalité',           color: 'from-emerald-500 to-green-600' },
-  { icon: Clock,        title: 'Temps & Présences', desc: 'Pointage, congés, calendrier, planning',               color: 'from-orange-500 to-amber-600' },
-  { icon: Briefcase,    title: 'Recrutement',       desc: 'Offres, candidatures, pipeline de recrutement',        color: 'from-purple-500 to-violet-600' },
-  { icon: BarChart3,    title: 'Performance',       desc: 'Objectifs, évaluations, suivi des compétences',        color: 'from-rose-500 to-pink-600' },
-  { icon: FileText,     title: 'Documents',         desc: 'Gestion documentaire, signatures, coffre-fort',        color: 'from-sky-500 to-cyan-600' },
-  { icon: MessageSquare,title: 'Communication',     desc: "Messagerie, réunions, fil d'actualité social",         color: 'from-indigo-500 to-blue-600' },
-  { icon: BookOpen,     title: 'Formation',         desc: 'Catalogue, quiz, certificats, parcours',               color: 'from-teal-500 to-emerald-600' },
-  { icon: Gift,         title: 'Récompenses',       desc: "Points, badges, catalogue d'avantages",               color: 'from-pink-500 to-rose-600' },
-  { icon: Monitor,      title: 'Matériel',          desc: 'Inventaire, affectations, maintenance',                color: 'from-gray-600 to-slate-700' },
-  { icon: Heart,        title: 'Bien-être',         desc: 'Sondages anonymes, analyse de climat social',          color: 'from-red-500 to-rose-600' },
-  { icon: Zap,          title: 'Assistant IA',      desc: 'NLP, analyses prédictives, recommandations',           color: 'from-violet-500 to-purple-600' },
+  {
+    icon: Users,
+    title: 'Gestion RH',
+    desc: 'Employés, équipes, organigramme, import CSV',
+    color: 'from-blue-500 to-blue-600',
+  },
+  {
+    icon: DollarSign,
+    title: 'Paie multi-pays',
+    desc: 'Salaire, fiches de paie, banque, fiscalité',
+    color: 'from-emerald-500 to-green-600',
+  },
+  {
+    icon: Clock,
+    title: 'Temps & Présences',
+    desc: 'Pointage, congés, calendrier, planning',
+    color: 'from-orange-500 to-amber-600',
+  },
+  {
+    icon: Briefcase,
+    title: 'Recrutement',
+    desc: 'Offres, candidatures, pipeline de recrutement',
+    color: 'from-purple-500 to-violet-600',
+  },
+  {
+    icon: BarChart3,
+    title: 'Performance',
+    desc: 'Objectifs, évaluations, suivi des compétences',
+    color: 'from-rose-500 to-pink-600',
+  },
+  {
+    icon: FileText,
+    title: 'Documents',
+    desc: 'Gestion documentaire, signatures, coffre-fort',
+    color: 'from-sky-500 to-cyan-600',
+  },
+  {
+    icon: MessageSquare,
+    title: 'Communication',
+    desc: "Messagerie, réunions, fil d'actualité social",
+    color: 'from-indigo-500 to-blue-600',
+  },
+  {
+    icon: BookOpen,
+    title: 'Formation',
+    desc: 'Catalogue, quiz, certificats, parcours',
+    color: 'from-teal-500 to-emerald-600',
+  },
+  {
+    icon: Gift,
+    title: 'Récompenses',
+    desc: "Points, badges, catalogue d'avantages",
+    color: 'from-pink-500 to-rose-600',
+  },
+  {
+    icon: Monitor,
+    title: 'Matériel',
+    desc: 'Inventaire, affectations, maintenance',
+    color: 'from-gray-600 to-slate-700',
+  },
+  {
+    icon: Heart,
+    title: 'Bien-être',
+    desc: 'Sondages anonymes, analyse de climat social',
+    color: 'from-red-500 to-rose-600',
+  },
+  {
+    icon: Zap,
+    title: 'Assistant IA',
+    desc: 'NLP, analyses prédictives, recommandations',
+    color: 'from-violet-500 to-purple-600',
+  },
 ];
 
 const paymentMethods = [
-  { name: 'Carte bancaire',    desc: 'Visa, Mastercard, American Express',                          regions: 'Monde',   icon: CreditCard, color: 'from-blue-600 to-indigo-600' },
-  { name: 'Mobile Money',      desc: 'Orange Money, MTN, M-Pesa, Airtel, Moov, Wave',              regions: 'Afrique', icon: Globe,      color: 'from-orange-500 to-amber-600' },
-  { name: 'Virement bancaire', desc: 'SEPA, SWIFT, virement local',                                regions: 'Monde',   icon: Building2,  color: 'from-emerald-500 to-teal-600' },
-  { name: 'Flutterwave',       desc: 'Paiement via Flutterwave (50+ pays africains)',               regions: 'Afrique', icon: TrendingUp, color: 'from-rose-500 to-pink-600' },
-  { name: 'PayPal',            desc: 'Standard et Business',                                       regions: 'Monde',   icon: Shield,     color: 'from-blue-500 to-sky-600' },
-  { name: 'Bitcoin / USDT',    desc: 'Crypto et stablecoins via partenaires certifiés',             regions: 'Monde',   icon: Lock,       color: 'from-yellow-500 to-amber-600' },
+  {
+    name: 'Carte bancaire',
+    desc: 'Visa, Mastercard, American Express',
+    regions: 'Monde',
+    icon: CreditCard,
+    color: 'from-blue-600 to-indigo-600',
+  },
+  {
+    name: 'Mobile Money',
+    desc: 'Orange Money, MTN, M-Pesa, Airtel, Moov, Wave',
+    regions: 'Afrique',
+    icon: Globe,
+    color: 'from-orange-500 to-amber-600',
+  },
+  {
+    name: 'Virement bancaire',
+    desc: 'SEPA, SWIFT, virement local',
+    regions: 'Monde',
+    icon: Building2,
+    color: 'from-emerald-500 to-teal-600',
+  },
+  {
+    name: 'Flutterwave',
+    desc: 'Paiement via Flutterwave (50+ pays africains)',
+    regions: 'Afrique',
+    icon: TrendingUp,
+    color: 'from-rose-500 to-pink-600',
+  },
+  {
+    name: 'PayPal',
+    desc: 'Standard et Business',
+    regions: 'Monde',
+    icon: Shield,
+    color: 'from-blue-500 to-sky-600',
+  },
+  {
+    name: 'Bitcoin / USDT',
+    desc: 'Crypto et stablecoins via partenaires certifiés',
+    regions: 'Monde',
+    icon: Lock,
+    color: 'from-yellow-500 to-amber-600',
+  },
 ];
 
 const steps = [
-  { step: 1, title: 'Créez votre compte',      desc: 'Inscrivez-vous en 2 minutes. Aucune carte bancaire requise pour l\'essai.', detail: 'Informations entreprise, politiques RH, cycle de paie.' },
-  { step: 2, title: 'Importez vos données',    desc: 'Importez vos employés via CSV ou manuellement.', detail: 'Colonnes auto-détectées, validation temps réel, mapping intelligent.' },
-  { step: 3, title: 'Configurez la paie',      desc: 'Grilles salariales, taux de cotisation, règles de calcul par pays.', detail: 'Barème progressif, heures sup, primes, congés payés, avantages en nature.' },
-  { step: 4, title: 'Démarrez la gestion RH',  desc: 'Présences, congés, documents, performances, recrutement.', detail: 'Dashboard centralisé, notifications auto, workflow de validation intégré.' },
-  { step: 5, title: 'Générez les bulletins',   desc: 'Fiches de paie conformes à la législation de chaque pays.', detail: 'Export PDF, archivage automatique, intégration bancaire.' },
-  { step: 6, title: 'Pilotez avec l\'IA',      desc: 'Analysez les tendances, anticipez les départs.', detail: 'Assistant IA 24/7, alertes intelligentes, rapports personnalisés.' },
+  {
+    step: 1,
+    title: 'Créez votre compte',
+    desc: "Inscrivez-vous en 2 minutes. Aucune carte bancaire requise pour l'essai.",
+    detail: 'Informations entreprise, politiques RH, cycle de paie.',
+  },
+  {
+    step: 2,
+    title: 'Importez vos données',
+    desc: 'Importez vos employés via CSV ou manuellement.',
+    detail: 'Colonnes auto-détectées, validation temps réel, mapping intelligent.',
+  },
+  {
+    step: 3,
+    title: 'Configurez la paie',
+    desc: 'Grilles salariales, taux de cotisation, règles de calcul par pays.',
+    detail: 'Barème progressif, heures sup, primes, congés payés, avantages en nature.',
+  },
+  {
+    step: 4,
+    title: 'Démarrez la gestion RH',
+    desc: 'Présences, congés, documents, performances, recrutement.',
+    detail: 'Dashboard centralisé, notifications auto, workflow de validation intégré.',
+  },
+  {
+    step: 5,
+    title: 'Générez les bulletins',
+    desc: 'Fiches de paie conformes à la législation de chaque pays.',
+    detail: 'Export PDF, archivage automatique, intégration bancaire.',
+  },
+  {
+    step: 6,
+    title: "Pilotez avec l'IA",
+    desc: 'Analysez les tendances, anticipez les départs.',
+    detail: 'Assistant IA 24/7, alertes intelligentes, rapports personnalisés.',
+  },
 ];
 
 const securityItems = [
@@ -67,17 +269,25 @@ const securityItems = [
 ];
 
 const partners = [
-  { name: 'Flutterwave',      desc: 'Paiements africains',  color: 'from-red-500 to-orange-500' },
-  { name: 'Orange Finances',  desc: 'Mobile Money',         color: 'from-orange-500 to-amber-500' },
-  { name: 'Sage',             desc: 'Comptabilité',         color: 'from-green-500 to-emerald-500' },
-  { name: 'QuickBooks',       desc: 'Synchro comptable',    color: 'from-blue-500 to-cyan-500' },
-  { name: 'Microsoft 365',    desc: 'Productivité',         color: 'from-indigo-500 to-blue-500' },
-  { name: 'Slack',            desc: 'Notifications RH',     color: 'from-purple-500 to-pink-500' },
+  { name: 'Flutterwave', desc: 'Paiements africains', color: 'from-red-500 to-orange-500' },
+  { name: 'Orange Finances', desc: 'Mobile Money', color: 'from-orange-500 to-amber-500' },
+  { name: 'Sage', desc: 'Comptabilité', color: 'from-green-500 to-emerald-500' },
+  { name: 'QuickBooks', desc: 'Synchro comptable', color: 'from-blue-500 to-cyan-500' },
+  { name: 'Microsoft 365', desc: 'Productivité', color: 'from-indigo-500 to-blue-500' },
+  { name: 'Slack', desc: 'Notifications RH', color: 'from-purple-500 to-pink-500' },
 ];
 
 // ─── Animation helpers ────────────────────────────────────────────────────────
 
-function FadeUp({ children, delay = 0, className = '' }: { children: React.ReactNode; delay?: number; className?: string }) {
+function FadeUp({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
   return (
@@ -104,6 +314,11 @@ function SectionLabel({ icon: Icon, text }: { icon: React.ElementType; text: str
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AboutPage() {
+  usePageMeta({
+    title: 'À propos — EmployéPro Africa, la RH africaine réinventée',
+    description:
+      'EmployéPro Africa est une solution RH & paie cloud conçue pour les entreprises africaines : conformité, présence, paie et IA.',
+  });
   return (
     <div className="min-h-screen bg-white">
       <PublicNav />
@@ -113,10 +328,19 @@ export default function AboutPage() {
         {/* Animated glow blobs */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-[-80px] left-[-80px] w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-[-100px] right-[-60px] w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }} />
+          <div
+            className="absolute bottom-[-100px] right-[-60px] w-[400px] h-[400px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse"
+            style={{ animationDelay: '1.5s' }}
+          />
           {/* Grid lines */}
-          <div className="absolute inset-0 opacity-10"
-            style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.05) 1px,transparent 1px)', backgroundSize: '60px 60px' }} />
+          <div
+            className="absolute inset-0 opacity-10"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(255,255,255,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.05) 1px,transparent 1px)',
+              backgroundSize: '60px 60px',
+            }}
+          />
         </div>
 
         <div className="relative max-w-5xl mx-auto px-6 text-center">
@@ -135,7 +359,8 @@ export default function AboutPage() {
             transition={{ duration: 0.65, delay: 0.1 }}
             className="text-5xl md:text-7xl font-black text-white leading-tight mb-6"
           >
-            Simplifier les RH,<br />
+            Simplifier les RH,
+            <br />
             <span className="bg-gradient-to-r from-blue-300 to-indigo-300 bg-clip-text text-transparent">
               partout dans le monde
             </span>
@@ -181,10 +406,10 @@ export default function AboutPage() {
         >
           <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 grid grid-cols-2 md:grid-cols-4 gap-6 shadow-2xl">
             {[
-              { value: 2020, suffix: '',  label: 'Année de création' },
-              { value: 60,   suffix: '+', label: 'Pays supportés' },
-              { value: 10000,suffix: '+', label: 'Entreprises clientes' },
-              { value: 50,   suffix: 'M+',label: 'Salaires / mois' },
+              { value: 2020, suffix: '', label: 'Année de création' },
+              { value: 60, suffix: '+', label: 'Pays supportés' },
+              { value: 10000, suffix: '+', label: 'Entreprises clientes' },
+              { value: 50, suffix: 'M+', label: 'Salaires / mois' },
             ].map((s, i) => (
               <div key={i} className="text-center">
                 <div className="text-3xl font-black text-white">
@@ -203,7 +428,8 @@ export default function AboutPage() {
           <SectionLabel icon={BookOpen} text="Notre histoire" />
           <h2 className="text-4xl font-black text-gray-900 mb-4">De l'idée à la réalité</h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Une frustration partagée, une vision commune, et une équipe déterminée à changer la donne.
+            Une frustration partagée, une vision commune, et une équipe déterminée à changer la
+            donne.
           </p>
         </FadeUp>
 
@@ -222,26 +448,32 @@ export default function AboutPage() {
               color: 'bg-indigo-500',
               year: '2020',
               title: 'La fondation',
-              text: 'Amadou Diallo (ex-Orange) et Marie Dubois (ex-Microsoft) s\'associent pour bâtir une plateforme SaaS accessible partout, fonctionnant hors ligne, compatible avec les moyens de paiement locaux.',
+              text: "Amadou Diallo (ex-Orange) et Marie Dubois (ex-Microsoft) s'associent pour bâtir une plateforme SaaS accessible partout, fonctionnant hors ligne, compatible avec les moyens de paiement locaux.",
             },
             {
               icon: Globe,
               color: 'bg-emerald-500',
-              year: 'Aujourd\'hui',
-              title: 'L\'impact',
-              text: 'Plus de 10 000 entreprises font confiance à EmployraRH. Nous traitons 50M+ de salaires par mois. Notre équipe de 120+ collaborateurs répartis sur 4 continents continue d\'innover.',
+              year: "Aujourd'hui",
+              title: "L'impact",
+              text: "Plus de 10 000 entreprises font confiance à EmployraRH. Nous traitons 50M+ de salaires par mois. Notre équipe de 120+ collaborateurs répartis sur 4 continents continue d'innover.",
             },
           ].map((item, i) => (
             <FadeUp key={i} delay={i * 0.12}>
               <div className="flex gap-6 items-start">
                 <div className="flex flex-col items-center">
-                  <div className={`w-12 h-12 ${item.color} rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0`}>
+                  <div
+                    className={`w-12 h-12 ${item.color} rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0`}
+                  >
                     <item.icon size={22} className="text-white" />
                   </div>
-                  {i < 2 && <div className="w-0.5 flex-1 bg-gradient-to-b from-gray-200 to-transparent mt-3 h-10" />}
+                  {i < 2 && (
+                    <div className="w-0.5 flex-1 bg-gradient-to-b from-gray-200 to-transparent mt-3 h-10" />
+                  )}
                 </div>
                 <div className="pb-8">
-                  <span className="text-xs font-black uppercase tracking-widest text-blue-500 mb-1 block">{item.year}</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-blue-500 mb-1 block">
+                    {item.year}
+                  </span>
                   <h3 className="text-xl font-black text-gray-800 mb-2">{item.title}</h3>
                   <p className="text-gray-500 leading-relaxed">{item.text}</p>
                 </div>
@@ -256,8 +488,12 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto px-6">
           <FadeUp className="text-center mb-16">
             <SectionLabel icon={TrendingUp} text="Comment ça marche" />
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Démarrez en moins de 10 minutes</h2>
-            <p className="text-gray-500 text-lg max-w-2xl mx-auto">Notre onboarding guidé vous accompagne à chaque étape du lancement.</p>
+            <h2 className="text-4xl font-black text-gray-900 mb-4">
+              Démarrez en moins de 10 minutes
+            </h2>
+            <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+              Notre onboarding guidé vous accompagne à chaque étape du lancement.
+            </p>
           </FadeUp>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -296,7 +532,9 @@ export default function AboutPage() {
                 whileHover={{ y: -5, boxShadow: '0 16px 24px -6px rgba(0,0,0,0.08)' }}
                 className="group bg-white rounded-2xl p-5 border border-gray-100 hover:border-blue-200 transition-all cursor-default"
               >
-                <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${m.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                <div
+                  className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${m.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}
+                >
                   <m.icon size={20} className="text-white" />
                 </div>
                 <h3 className="font-bold text-gray-800 mb-1 text-sm">{m.title}</h3>
@@ -316,7 +554,8 @@ export default function AboutPage() {
             </div>
             <h2 className="text-4xl font-black text-white mb-4">Payez comme vous voulez</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Paiements internationaux et africains pour que vous puissiez régler depuis n'importe où.
+              Paiements internationaux et africains pour que vous puissiez régler depuis n'importe
+              où.
             </p>
           </FadeUp>
 
@@ -328,7 +567,9 @@ export default function AboutPage() {
                   className="bg-white/5 backdrop-blur-sm rounded-2xl p-5 border border-white/10 transition-all"
                 >
                   <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 flex-shrink-0 rounded-2xl bg-gradient-to-br ${pm.color} flex items-center justify-center shadow-lg`}>
+                    <div
+                      className={`w-12 h-12 flex-shrink-0 rounded-2xl bg-gradient-to-br ${pm.color} flex items-center justify-center shadow-lg`}
+                    >
                       <pm.icon size={20} className="text-white" />
                     </div>
                     <div>
@@ -358,7 +599,9 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <FadeUp>
             <SectionLabel icon={Lock} text="Sécurité & Conformité" />
-            <h2 className="text-4xl font-black text-gray-900 mb-8">Vos données en sécurité absolue</h2>
+            <h2 className="text-4xl font-black text-gray-900 mb-8">
+              Vos données en sécurité absolue
+            </h2>
             <div className="space-y-3">
               {securityItems.map((item, i) => (
                 <motion.div
@@ -381,10 +624,10 @@ export default function AboutPage() {
               <h3 className="font-black text-gray-800 text-xl mb-6">Disponibilité garantie</h3>
               <div className="grid grid-cols-2 gap-4 mb-6">
                 {[
-                  { label: 'Uptime',   value: '99.9%', color: 'text-emerald-600' },
-                  { label: 'Support',  value: '24/7',  color: 'text-blue-600' },
-                  { label: 'Latence',  value: '<200ms', color: 'text-indigo-600' },
-                  { label: 'SLA',      value: 'Garanti', color: 'text-purple-600' },
+                  { label: 'Uptime', value: '99.9%', color: 'text-emerald-600' },
+                  { label: 'Support', value: '24/7', color: 'text-blue-600' },
+                  { label: 'Latence', value: '<200ms', color: 'text-indigo-600' },
+                  { label: 'SLA', value: 'Garanti', color: 'text-purple-600' },
                 ].map((s, i) => (
                   <motion.div
                     key={i}
@@ -397,8 +640,8 @@ export default function AboutPage() {
                 ))}
               </div>
               <p className="text-gray-500 text-sm leading-relaxed">
-                Infrastructure cloud répartie sur plusieurs datacenters garantissant une disponibilité
-                continue, même en cas de panne régionale.
+                Infrastructure cloud répartie sur plusieurs datacenters garantissant une
+                disponibilité continue, même en cas de panne régionale.
               </p>
             </div>
           </FadeUp>
@@ -411,21 +654,43 @@ export default function AboutPage() {
           <FadeUp className="text-center mb-14">
             <SectionLabel icon={HeadphonesIcon} text="Support" />
             <h2 className="text-4xl font-black text-gray-900 mb-4">Nous sommes là pour vous</h2>
-            <p className="text-gray-500 text-lg max-w-2xl mx-auto">Un accompagnement humain à chaque étape, de l'onboarding à la croissance.</p>
+            <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+              Un accompagnement humain à chaque étape, de l'onboarding à la croissance.
+            </p>
           </FadeUp>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: HeadphonesIcon, color: 'from-blue-500 to-indigo-600',   bg: 'bg-blue-50',   title: 'Support prioritaire',      desc: 'Réponse sous 24h (gratuit) ou sous 1h (Premium). Chat en direct, email et téléphone.' },
-              { icon: BookOpen,       color: 'from-emerald-500 to-teal-600',  bg: 'bg-emerald-50', title: 'Base de connaissances',   desc: 'Tutoriels vidéo, documentation, FAQ, webinaires hebdomadaires et forum communautaire.' },
-              { icon: Building2,      color: 'from-purple-500 to-violet-600', bg: 'bg-purple-50',  title: 'Onboarding dédié',        desc: 'Un Account Manager dédié pour vous accompagner dans la migration et prise en main.' },
+              {
+                icon: HeadphonesIcon,
+                color: 'from-blue-500 to-indigo-600',
+                bg: 'bg-blue-50',
+                title: 'Support prioritaire',
+                desc: 'Réponse sous 24h (gratuit) ou sous 1h (Premium). Chat en direct, email et téléphone.',
+              },
+              {
+                icon: BookOpen,
+                color: 'from-emerald-500 to-teal-600',
+                bg: 'bg-emerald-50',
+                title: 'Base de connaissances',
+                desc: 'Tutoriels vidéo, documentation, FAQ, webinaires hebdomadaires et forum communautaire.',
+              },
+              {
+                icon: Building2,
+                color: 'from-purple-500 to-violet-600',
+                bg: 'bg-purple-50',
+                title: 'Onboarding dédié',
+                desc: 'Un Account Manager dédié pour vous accompagner dans la migration et prise en main.',
+              },
             ].map((card, i) => (
               <FadeUp key={i} delay={i * 0.1}>
                 <motion.div
                   whileHover={{ y: -6, boxShadow: '0 20px 30px -8px rgba(0,0,0,0.08)' }}
                   className="bg-white rounded-3xl p-7 border border-gray-100 text-center group transition-all"
                 >
-                  <div className={`w-16 h-16 rounded-3xl bg-gradient-to-br ${card.color} flex items-center justify-center mx-auto mb-5 shadow-xl group-hover:scale-110 transition-transform`}>
+                  <div
+                    className={`w-16 h-16 rounded-3xl bg-gradient-to-br ${card.color} flex items-center justify-center mx-auto mb-5 shadow-xl group-hover:scale-110 transition-transform`}
+                  >
                     <card.icon size={28} className="text-white" />
                   </div>
                   <h3 className="font-black text-gray-800 text-lg mb-3">{card.title}</h3>
@@ -454,7 +719,9 @@ export default function AboutPage() {
                 whileHover={{ y: -5, scale: 1.04 }}
                 className="bg-gray-50 rounded-2xl p-5 border border-gray-100 text-center group hover:border-blue-200 hover:bg-blue-50/40 transition-all cursor-default"
               >
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center mx-auto mb-3 shadow-md group-hover:scale-110 transition-transform`}>
+                <div
+                  className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center mx-auto mb-3 shadow-md group-hover:scale-110 transition-transform`}
+                >
                   <Building2 size={20} className="text-white" />
                 </div>
                 <p className="font-bold text-gray-800 text-xs">{p.name}</p>
@@ -470,8 +737,12 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto px-6">
           <FadeUp className="text-center mb-14">
             <SectionLabel icon={Users} text="L'équipe" />
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Des passionnés du monde entier</h2>
-            <p className="text-gray-500 text-lg max-w-2xl mx-auto">Une équipe multiculturelle unie par une mission commune : démocratiser les RH.</p>
+            <h2 className="text-4xl font-black text-gray-900 mb-4">
+              Des passionnés du monde entier
+            </h2>
+            <p className="text-gray-500 text-lg max-w-2xl mx-auto">
+              Une équipe multiculturelle unie par une mission commune : démocratiser les RH.
+            </p>
           </FadeUp>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -481,8 +752,15 @@ export default function AboutPage() {
                   whileHover={{ y: -6, boxShadow: '0 20px 30px -8px rgba(0,0,0,0.08)' }}
                   className="bg-white rounded-3xl p-7 border border-gray-100 hover:border-blue-200 text-center group transition-all"
                 >
-                  <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${member.from} ${member.to} flex items-center justify-center mx-auto mb-4 shadow-xl group-hover:scale-110 transition-transform overflow-hidden`}>
-                    <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" loading="lazy" />
+                  <div
+                    className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${member.from} ${member.to} flex items-center justify-center mx-auto mb-4 shadow-xl group-hover:scale-110 transition-transform overflow-hidden`}
+                  >
+                    <img
+                      src={member.avatar}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
                   </div>
                   <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400 font-medium mb-2">
                     <MapPin size={12} /> {member.location}
@@ -507,9 +785,12 @@ export default function AboutPage() {
           <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/25 rounded-full px-5 py-2 text-sm font-semibold text-white mb-8">
             <Sparkles size={14} /> Sans engagement · Annulation à tout moment
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-5">Prêt à transformer vos RH ?</h2>
+          <h2 className="text-4xl md:text-5xl font-black text-white mb-5">
+            Prêt à transformer vos RH ?
+          </h2>
           <p className="text-xl text-blue-200 mb-10 leading-relaxed">
-            Rejoignez plus de 10 000 entreprises qui font confiance à EmployraRH.<br />
+            Rejoignez plus de 10 000 entreprises qui font confiance à EmployraRH.
+            <br />
             Essayez gratuitement pendant 14 jours, sans carte bancaire.
           </p>
           <div className="flex flex-wrap justify-center gap-4">

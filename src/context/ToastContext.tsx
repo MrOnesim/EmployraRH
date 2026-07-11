@@ -49,12 +49,18 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           return (
             <div
               key={toast.id}
+              role={toast.type === 'error' ? 'alert' : 'status'}
+              aria-live={toast.type === 'error' ? 'assertive' : 'polite'}
               className={`pointer-events-auto flex items-center space-x-3 px-4 py-3 rounded-xl shadow-lg animate-toast-in ${styleMap[toast.type]}`}
             >
-              <Icon size={20} />
+              <Icon size={20} aria-hidden="true" />
               <span className="text-sm font-medium">{toast.message}</span>
-              <button onClick={() => removeToast(toast.id)} className="ml-2 opacity-70 hover:opacity-100">
-                <X size={16} />
+              <button
+                onClick={() => removeToast(toast.id)}
+                className="ml-2 opacity-70 hover:opacity-100"
+                aria-label="Fermer la notification"
+              >
+                <X size={16} aria-hidden="true" />
               </button>
             </div>
           );

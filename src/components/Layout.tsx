@@ -1,10 +1,6 @@
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import {
-  SidebarProvider,
-  SidebarTrigger,
-  SidebarInset,
-} from './ui/sidebar';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from './ui/sidebar';
 import { AppSidebar } from './app-sidebar';
 import { Bell, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
@@ -17,7 +13,7 @@ export default function Layout() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const isAdmin = currentUser?.role === 'ADMIN';
-  const unreadNotifications = notifications.filter(n => !n.read && n.userId === currentUser?.id);
+  const unreadNotifications = notifications.filter((n) => !n.read && n.userId === currentUser?.id);
 
   const handleLogout = () => {
     logout();
@@ -33,6 +29,12 @@ export default function Layout() {
 
   return (
     <SidebarProvider>
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+      >
+        Aller au contenu
+      </a>
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4">
@@ -48,6 +50,8 @@ export default function Layout() {
                 size="icon"
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
                 aria-label="Notifications"
+                aria-expanded={notificationsOpen}
+                aria-haspopup="true"
               >
                 <Bell size={18} />
                 {unreadNotifications.length > 0 && (
@@ -63,11 +67,13 @@ export default function Layout() {
                     <h3 className="font-semibold text-sm">Notifications</h3>
                   </div>
                   <div className="max-h-80 overflow-y-auto">
-                    {notifications.filter(n => n.userId === currentUser?.id).length === 0 ? (
-                      <p className="p-4 text-sm text-muted-foreground text-center">Aucune notification</p>
+                    {notifications.filter((n) => n.userId === currentUser?.id).length === 0 ? (
+                      <p className="p-4 text-sm text-muted-foreground text-center">
+                        Aucune notification
+                      </p>
                     ) : (
                       notifications
-                        .filter(n => n.userId === currentUser?.id)
+                        .filter((n) => n.userId === currentUser?.id)
                         .slice(0, 5)
                         .map((n) => (
                           <div
@@ -109,9 +115,13 @@ export default function Layout() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+        <div
+          id="main"
+          tabIndex={-1}
+          className="flex-1 overflow-y-auto p-4 lg:p-6 focus:outline-none"
+        >
           <Outlet />
-        </main>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

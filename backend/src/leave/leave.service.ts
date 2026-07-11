@@ -4,7 +4,9 @@ import {
   BadRequestException,
   ConflictException,
   Optional,
+  Inject,
 } from '@nestjs/common';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '../prisma/prisma.service';
 import { MailService } from '../mail/mail.service';
 import { RoleEnum } from '@prisma/client';
@@ -20,6 +22,7 @@ export class LeaveService {
   constructor(
     private prisma: PrismaService,
     @Optional() private mailService: MailService,
+    @Optional() @Inject(CACHE_MANAGER) private cache?: Cache,
   ) {}
 
   private async calculateBusinessDays(startDate: Date, endDate: Date): Promise<number> {
@@ -104,6 +107,12 @@ export class LeaveService {
   }
 
   async getBalance(employeeId: string) {
+    const key = `leave:balance:${employeeId}`;
+    if (this.cache) {
+      const cached = await this.cache.get(key).catch(() => null);
+      if (cached) return cached;
+    }
+
     const employee = await this.prisma.employee.findUnique({ where: { id: employeeId } });
     if (!employee) throw new NotFoundException('Employee not found');
 
@@ -115,6 +124,8 @@ export class LeaveService {
         balances[type] = null;
       }
     }
+
+    if (this.cache) await this.cache.set(key, balances).catch(() => {});
     return balances;
   }
 
@@ -136,15 +147,23 @@ export class LeaveService {
         status: 'pending',
       },
     });
+    await this.bustLeaveCaches(data.employeeId);
     await this.notifyLeaveRequested(leave);
     return leave;
   }
 
   async findAll(companyId: string) {
-    return this.prisma.leave.findMany({
+    const key = `leave:list:${companyId}`;
+    if (this.cache) {
+      const cached = await this.cache.get(key).catch(() => null);
+      if (cached) return cached;
+    }
+    const data = await this.prisma.leave.findMany({
       where: { employee: { companyId } },
       include: { employee: true },
     });
+    if (this.cache) await this.cache.set(key, data).catch(() => {});
+    return data;
   }
 
   async findById(id: string) {
@@ -157,10 +176,17 @@ export class LeaveService {
   }
 
   async findByEmployee(employeeId: string) {
-    return this.prisma.leave.findMany({
+    const key = `leave:hist:${employeeId}`;
+    if (this.cache) {
+      const cached = await this.cache.get(key).catch(() => null);
+      if (cached) return cached;
+    }
+    const data = await this.prisma.leave.findMany({
       where: { employeeId },
       include: { employee: true },
     });
+    if (this.cache) await this.cache.set(key, data).catch(() => {});
+    return data;
   }
 
   async approve(id: string) {
@@ -173,6 +199,7 @@ export class LeaveService {
       where: { id },
       data: { status: 'approved' },
     });
+    await this.bustLeaveCaches(leave.employeeId);
     await this.notifyLeaveDecision(updated, true);
     return updated;
   }
@@ -187,6 +214,7 @@ export class LeaveService {
       where: { id },
       data: { status: 'rejected', comment },
     });
+    await this.bustLeaveCaches(leave.employeeId);
     await this.notifyLeaveDecision(updated, false);
     return updated;
   }
@@ -197,7 +225,9 @@ export class LeaveService {
     if (leave.status !== 'pending') {
       throw new BadRequestException('Only pending leaves can be updated');
     }
-    return this.prisma.leave.update({ where: { id }, data });
+    const updated = await this.prisma.leave.update({ where: { id }, data });
+    await this.bustLeaveCaches(leave.employeeId);
+    return updated;
   }
 
   private formatDate(date: Date): string {
@@ -263,5 +293,11 @@ export class LeaveService {
     } catch {
       return;
     }
+  }
+
+  private async bustLeaveCaches(employeeId: string) {
+    if (!this.cache) return;
+    await this.cache.del(`leave:balance:${employeeId}`).catch(() => {});
+    await this.cache.del(`leave:hist:${employeeId}`).catch(() => {});
   }
 }

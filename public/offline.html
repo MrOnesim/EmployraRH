@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EmployéPro — Hors ligne</title>
+    <meta name="theme-color" content="#2563eb" />
+    <style>
+      :root {
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          Roboto,
+          sans-serif;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8fafc;
+        color: #0f172a;
+        padding: 1.5rem;
+        box-sizing: border-box;
+      }
+      .card {
+        max-width: 28rem;
+        text-align: center;
+        background: #ffffff;
+        border-radius: 1rem;
+        padding: 2.5rem 2rem;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      }
+      .logo {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 1.25rem;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #2563eb;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1.5rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin: 0 0 0.5rem;
+      }
+      p {
+        color: #475569;
+        line-height: 1.6;
+        margin: 0 0 1.5rem;
+      }
+      button {
+        appearance: none;
+        border: none;
+        background: #2563eb;
+        color: #ffffff;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        cursor: pointer;
+      }
+      button:active {
+        transform: translateY(1px);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <div class="logo">EP</div>
+      <h1>Vous êtes hors ligne</h1>
+      <p>
+        Cette page n'est pas disponible sans connexion. Vérifiez votre réseau et réessayez. Les
+        données sensibles ne sont jamais stockées en cache.
+      </p>
+      <button type="button" onclick="location.reload()">Réessayer</button>
+    </main>
+  </body>
+</html>

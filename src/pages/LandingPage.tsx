@@ -15,6 +15,7 @@ import FAQSection from '../components/landing/FAQSection';
 import CTASection from '../components/landing/CTASection';
 import FooterSection from '../components/landing/FooterSection';
 import ScrollSpy from '../components/landing/ScrollSpy';
+import { usePageMeta } from '../hooks/usePageMeta';
 
 function FloatingCTA() {
   const [visible, setVisible] = useState(false);
@@ -42,7 +43,10 @@ function FloatingCTA() {
             Essai gratuit
             <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
           </Link>
-          <button className="bg-green-500 text-white w-12 h-12 rounded-full shadow-lg hover:bg-green-600 transition-all active:scale-95 flex items-center justify-center" aria-label="Chat en direct">
+          <button
+            className="bg-green-500 text-white w-12 h-12 rounded-full shadow-lg hover:bg-green-600 transition-all active:scale-95 flex items-center justify-center"
+            aria-label="Chat en direct"
+          >
             <MessageCircle size={20} />
           </button>
         </motion.div>
@@ -52,6 +56,11 @@ function FloatingCTA() {
 }
 
 export default function LandingPage() {
+  usePageMeta({
+    title: 'EmployéPro Africa — La plateforme RH & paie des PME africaines',
+    description:
+      "Gérez employés, paie, présence, congés et conformité sociale dans une seule solution cloud pensée pour l'Afrique francophone.",
+  });
   return (
     <div className="pt-16">
       <PublicNav />

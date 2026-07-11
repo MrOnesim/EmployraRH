@@ -62,6 +62,8 @@ model User {
   members       Member[]
   employees     Employee[]
   refreshTokens RefreshToken[]
+
+  deletedAt DateTime?
 }
 
 model RefreshToken {
@@ -806,4 +808,16 @@ model Terminal {
 
   @@index([companyId])
   @@index([deviceFingerprint])
+}
+
+model GdprAccessLog {
+  id           String   @id @default(cuid())
+  actorId      String
+  targetUserId String
+  action       String
+  createdAt    DateTime @default(now())
+
+  @@index([actorId])
+  @@index([targetUserId])
+  @@index([createdAt])
 }

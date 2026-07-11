@@ -1,9 +1,20 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+  Optional,
+  Inject,
+} from '@nestjs/common';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class PayslipService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Optional() @Inject(CACHE_MANAGER) private cache?: Cache,
+  ) {}
 
   async generate(employeeId: string, month: number, year: number) {
     const employee = await this.prisma.employee.findUnique({
@@ -15,7 +26,8 @@ export class PayslipService {
     const existing = await this.prisma.payslip.findUnique({
       where: { employeeId_month_year: { employeeId, month, year } },
     });
-    if (existing) throw new ConflictException('Payslip already exists for this employee, month, and year');
+    if (existing)
+      throw new ConflictException('Payslip already exists for this employee, month, and year');
 
     const config = await this.prisma.payrollConfig.findUnique({
       where: { companyId: employee.companyId },
@@ -26,26 +38,44 @@ export class PayslipService {
     const grossSalary = employee.salary ?? 0;
     const netSalary = grossSalary * (1 - config.taxRate - config.socialChargesRate);
 
-    if (netSalary < 0) throw new BadRequestException('Net salary cannot be negative; check tax/social rates');
+    if (netSalary < 0)
+      throw new BadRequestException('Net salary cannot be negative; check tax/social rates');
 
-    return this.prisma.payslip.create({
+    const created = await this.prisma.payslip.create({
       data: { employeeId, month, year, grossSalary, netSalary },
     });
+
+    await this.bustCaches(employeeId, employee.companyId);
+    return created;
   }
 
   async findByCompany(companyId: string) {
-    return this.prisma.payslip.findMany({
+    const key = `payslip:company:${companyId}`;
+    if (this.cache) {
+      const cached = await this.cache.get(key).catch(() => null);
+      if (cached) return cached;
+    }
+    const data = await this.prisma.payslip.findMany({
       where: { employee: { companyId } },
       include: { employee: true },
       orderBy: [{ year: 'desc' }, { month: 'desc' }],
     });
+    if (this.cache) await this.cache.set(key, data).catch(() => {});
+    return data;
   }
 
   async findByEmployee(employeeId: string) {
-    return this.prisma.payslip.findMany({
+    const key = `payslip:hist:${employeeId}`;
+    if (this.cache) {
+      const cached = await this.cache.get(key).catch(() => null);
+      if (cached) return cached;
+    }
+    const data = await this.prisma.payslip.findMany({
       where: { employeeId },
       orderBy: [{ year: 'desc' }, { month: 'desc' }],
     });
+    if (this.cache) await this.cache.set(key, data).catch(() => {});
+    return data;
   }
 
   async findByEmployeeAndPeriod(employeeId: string, month: number, year: number) {
@@ -58,8 +88,17 @@ export class PayslipService {
   }
 
   async findById(id: string) {
-    const payslip = await this.prisma.payslip.findUnique({ where: { id }, include: { employee: true } });
+    const payslip = await this.prisma.payslip.findUnique({
+      where: { id },
+      include: { employee: true },
+    });
     if (!payslip) throw new NotFoundException('Payslip not found');
     return payslip;
+  }
+
+  private async bustCaches(employeeId: string, companyId?: string) {
+    if (!this.cache) return;
+    await this.cache.del(`payslip:hist:${employeeId}`).catch(() => {});
+    if (companyId) await this.cache.del(`payslip:company:${companyId}`).catch(() => {});
   }
 }

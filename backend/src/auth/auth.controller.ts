@@ -1,7 +1,18 @@
-import { Body, Controller, Get, Post, Req, Res, UnauthorizedException } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
+import { GdprService } from '../gdpr/gdpr.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
 import { Public } from '../common/decorators/public.decorator';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ensureCsrfCookie } from '../common/security/request-security';
@@ -9,7 +20,10 @@ import { ensureCsrfCookie } from '../common/security/request-security';
 @ApiTags('auth')
 @Controller('security')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private gdprService: GdprService,
+  ) {}
 
   @Public()
   @Get('csrf')
@@ -47,5 +61,28 @@ export class AuthController {
 
     await this.authService.revokeAllUserSessions(user.id);
     return { success: true };
+  }
+
+  @Get('export-my-data')
+  @ApiOperation({
+    summary: 'RGPD: export portatif des données personnelles de l’utilisateur courant',
+  })
+  async exportMyData(@Req() req: Request) {
+    const user = (req as any).user;
+    if (!user?.id) throw new UnauthorizedException();
+
+    await this.gdprService.logAccess(user.id, user.id, 'EXPORT_MY_DATA');
+    return this.gdprService.exportUserData(user.id);
+  }
+
+  @Delete('delete-my-account')
+  @ApiOperation({
+    summary: 'RGPD: droit à l’effacement — supprime le compte de l’utilisateur courant',
+  })
+  async deleteMyAccount(@Req() req: Request, @Body() dto: DeleteAccountDto) {
+    const user = (req as any).user;
+    if (!user?.id) throw new UnauthorizedException();
+
+    return this.gdprService.eraseOwnAccount(user.id, dto.password);
   }
 }
