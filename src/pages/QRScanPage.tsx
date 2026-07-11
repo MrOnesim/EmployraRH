@@ -166,19 +166,34 @@ export default function QRScanPage() {
 
         {result.status === 'idle' && !scanning && (
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-white/20 text-center">
-            <Shield size={48} className="mx-auto text-blue-300 mb-4" />
-            <p className="text-gray-300 mb-6">
-              Pointez votre téléphone vers le QR Code affiché à l'entrée
-            </p>
-            <button
-              onClick={startScanner}
-              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-blue-600 hover:to-blue-700 active:scale-[0.98] transition-all shadow-lg shadow-blue-900/50"
-            >
-              Scanner maintenant
-            </button>
+            {'BarcodeDetector' in window ? (
+              <>
+                <Shield size={48} className="mx-auto text-blue-300 mb-4" />
+                <p className="text-gray-300 mb-6">
+                  Pointez votre téléphone vers le QR Code affiché à l'entrée
+                </p>
+                <button
+                  onClick={startScanner}
+                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-blue-600 hover:to-blue-700 active:scale-[0.98] transition-all shadow-lg shadow-blue-900/50"
+                >
+                  Scanner maintenant
+                </button>
+              </>
+            ) : (
+              <div className="mb-6">
+                <Camera size={40} className="mx-auto text-yellow-400 mb-3" />
+                <p className="text-yellow-300 font-medium mb-1">Scan non disponible</p>
+                <p className="text-gray-400 text-sm">
+                  Votre navigateur ne supporte pas le scan natif. Utilisez Chrome ou Edge, ou
+                  saisissez le code manuellement.
+                </p>
+              </div>
+            )}
 
-            <div className="mt-6 pt-6 border-t border-white/10">
-              <p className="text-sm text-gray-400 mb-3">Ou saisissez le code manuellement :</p>
+            <div
+              className={'BarcodeDetector' in window ? 'mt-6 pt-6 border-t border-white/10' : ''}
+            >
+              <p className="text-sm text-gray-400 mb-3">Saisissez le code du QR Code :</p>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -236,7 +251,7 @@ export default function QRScanPage() {
         )}
 
         {result.status === 'csp' && (
-          <div className="bg-yellow-500/20 backdrop-blur-sm rounded-2xl p-8 border border-yellow-500/30 text-center">
+          <div className="bg-yellow-500/20 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-yellow-500/30 text-center">
             <ShieldAlert size={64} className="mx-auto text-yellow-400 mb-4" />
             <h2 className="text-xl font-bold text-white mb-2">Blocage de sécurité</h2>
             <p className="text-yellow-200 mb-4">{result.message}</p>
@@ -245,6 +260,31 @@ export default function QRScanPage() {
               <li>• Utilisez Chrome, Edge ou Firefox récent</li>
               <li>• Contactez votre administrateur réseau</li>
             </ul>
+            <div className="mb-6 pt-4 border-t border-yellow-500/20">
+              <p className="text-sm text-yellow-200/70 mb-3">Ou saisissez le code manuellement :</p>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (manualCode.trim()) handleScan(manualCode.trim());
+                }}
+                className="flex gap-2"
+              >
+                <input
+                  type="text"
+                  value={manualCode}
+                  onChange={(e) => setManualCode(e.target.value)}
+                  placeholder="EP-XXXXXXXX"
+                  className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-yellow-500/30 text-white placeholder-gray-500 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                />
+                <button
+                  type="submit"
+                  disabled={!manualCode.trim()}
+                  className="px-4 py-3 bg-yellow-600 text-white rounded-xl font-medium text-sm hover:bg-yellow-700 disabled:opacity-50 transition-all"
+                >
+                  Valider
+                </button>
+              </form>
+            </div>
             <button
               onClick={() => setResult({ status: 'idle' })}
               className="bg-white/10 text-white px-6 py-3 rounded-xl font-medium hover:bg-white/20 transition-colors border border-white/20"
