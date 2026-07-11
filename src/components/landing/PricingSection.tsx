@@ -218,7 +218,7 @@ export default function PricingSection() {
                 bad: "Limité à l'Europe, absence IA",
               },
               {
-                name: 'EmployraRH Africa',
+                name: 'EmployraRH',
                 price: 'À partir de 0€',
                 features: [true, true, true, true, true, true, true, true],
                 bad: null,

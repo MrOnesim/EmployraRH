@@ -2,10 +2,7 @@ import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useToast } from '../context/ToastContext';
 import { exportPayslipPDF } from '../utils/pdfExport';
-import { 
-  FileText, Download, Printer, Calendar, DollarSign,
-  Eye
-} from 'lucide-react';
+import { FileText, Download, Printer, Calendar, DollarSign, Eye } from 'lucide-react';
 
 export default function PayslipsPage() {
   const { currentUser, employees, payslips } = useApp();
@@ -15,21 +12,33 @@ export default function PayslipsPage() {
   const [showPreview, setShowPreview] = useState<string | null>(null);
 
   const months = [
-    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'Août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre',
   ];
 
-  const myPayslips = isAdmin 
-    ? payslips 
-    : payslips.filter(p => p.employeeId === currentUser?.id);
+  const myPayslips = isAdmin ? payslips : payslips.filter((p) => p.employeeId === currentUser?.id);
 
-  const filteredPayslips = myPayslips.filter(p => p.year === selectedYear);
+  const filteredPayslips = myPayslips.filter((p) => p.year === selectedYear);
 
   const handleDownload = (payslipId: string) => {
-    const p = payslips.find(ps => ps.id === payslipId);
-    const emp = employees.find(e => e.id === p?.employeeId);
+    const p = payslips.find((ps) => ps.id === payslipId);
+    const emp = employees.find((e) => e.id === p?.employeeId);
     if (p && emp) {
-      exportPayslipPDF(p, emp, currentUser?.companyId === '1' ? 'TechAfrique Solutions' : 'Entreprise');
+      exportPayslipPDF(
+        p,
+        emp,
+        currentUser?.companyId === '1' ? 'TechAfrique Solutions' : 'Entreprise',
+      );
       addToast('Bulletin téléchargé', 'success');
     }
   };
@@ -39,11 +48,11 @@ export default function PayslipsPage() {
   };
 
   const getPayslipById = (id: string) => {
-    return payslips.find(p => p.id === id);
+    return payslips.find((p) => p.id === id);
   };
 
   const getEmployeeById = (id: string) => {
-    return employees.find(e => e.id === id);
+    return employees.find((e) => e.id === id);
   };
 
   return (
@@ -53,7 +62,9 @@ export default function PayslipsPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Bulletins de paie</h1>
           <p className="text-gray-500">
-            {isAdmin ? 'Gérez les bulletins de paie de vos employés' : 'Consultez vos bulletins de paie'}
+            {isAdmin
+              ? 'Gérez les bulletins de paie de vos employés'
+              : 'Consultez vos bulletins de paie'}
           </p>
         </div>
         <div className="flex space-x-3">
@@ -104,7 +115,7 @@ export default function PayslipsPage() {
             <div>
               <p className="text-gray-500 text-sm">Dernier bulletin</p>
               <p className="text-lg font-bold text-gray-800">
-                {filteredPayslips.length > 0 
+                {filteredPayslips.length > 0
                   ? `${months[filteredPayslips[filteredPayslips.length - 1].month - 1]} ${filteredPayslips[filteredPayslips.length - 1].year}`
                   : 'Aucun'}
               </p>
@@ -140,7 +151,8 @@ export default function PayslipsPage() {
                         <div className="flex items-center space-x-3">
                           <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                             <span className="text-blue-600 font-medium">
-                              {employee?.firstName.charAt(0)}{employee?.lastName.charAt(0)}
+                              {employee?.firstName.charAt(0)}
+                              {employee?.lastName.charAt(0)}
                             </span>
                           </div>
                           <div>
@@ -200,7 +212,7 @@ export default function PayslipsPage() {
             </tbody>
           </table>
         </div>
-        
+
         {filteredPayslips.length === 0 && (
           <div className="text-center py-12">
             <FileText className="mx-auto text-gray-300 mb-4" size={48} />
@@ -210,106 +222,131 @@ export default function PayslipsPage() {
       </div>
 
       {/* Payslip Preview Modal */}
-      {showPreview && (() => {
-        const payslip = getPayslipById(showPreview);
-        const employee = payslip ? getEmployeeById(payslip.employeeId) : null;
-        
-        if (!payslip || !employee) return null;
+      {showPreview &&
+        (() => {
+          const payslip = getPayslipById(showPreview);
+          const employee = payslip ? getEmployeeById(payslip.employeeId) : null;
 
-        return (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">Bulletin de paie</h2>
-                <button onClick={() => setShowPreview(null)} className="text-gray-400 hover:text-gray-600">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
-              </div>
+          if (!payslip || !employee) return null;
 
-              {/* Payslip Content */}
-              <div className="border border-gray-200 rounded-lg p-6">
-                {/* Header */}
-                <div className="text-center border-b border-gray-200 pb-4 mb-4">
-                  <h3 className="text-lg font-bold text-blue-600">EmployraRH Africa</h3>
-                  <p className="text-sm text-gray-500">Bulletin de paie</p>
+          return (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold text-gray-800">Bulletin de paie</h2>
+                  <button
+                    onClick={() => setShowPreview(null)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
                 </div>
 
-                {/* Employee Info */}
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div>
-                    <p className="text-sm text-gray-500">Nom complet</p>
-                    <p className="font-medium">{employee.firstName} {employee.lastName}</p>
+                {/* Payslip Content */}
+                <div className="border border-gray-200 rounded-lg p-6">
+                  {/* Header */}
+                  <div className="text-center border-b border-gray-200 pb-4 mb-4">
+                    <h3 className="text-lg font-bold text-blue-600">EmployraRH</h3>
+                    <p className="text-sm text-gray-500">Bulletin de paie</p>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Poste</p>
-                    <p className="font-medium">{employee.position}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Département</p>
-                    <p className="font-medium">{employee.department}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Période</p>
-                    <p className="font-medium">{months[payslip.month - 1]} {payslip.year}</p>
-                  </div>
-                </div>
 
-                {/* Salary Details */}
-                <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                  <h4 className="font-semibold mb-3">Détails du salaire</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Salaire de base</span>
-                      <span className="font-medium">{payslip.basicSalary.toLocaleString()} FCFA</span>
+                  {/* Employee Info */}
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                      <p className="text-sm text-gray-500">Nom complet</p>
+                      <p className="font-medium">
+                        {employee.firstName} {employee.lastName}
+                      </p>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Primes et bonus</span>
-                      <span className="font-medium text-green-600">+{payslip.bonuses.toLocaleString()} FCFA</span>
+                    <div>
+                      <p className="text-sm text-gray-500">Poste</p>
+                      <p className="font-medium">{employee.position}</p>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Déductions (CNSS, IR, etc.)</span>
-                      <span className="font-medium text-red-600">-{payslip.deductions.toLocaleString()} FCFA</span>
+                    <div>
+                      <p className="text-sm text-gray-500">Département</p>
+                      <p className="font-medium">{employee.department}</p>
                     </div>
-                    <div className="border-t border-gray-300 pt-2 mt-2">
+                    <div>
+                      <p className="text-sm text-gray-500">Période</p>
+                      <p className="font-medium">
+                        {months[payslip.month - 1]} {payslip.year}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Salary Details */}
+                  <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                    <h4 className="font-semibold mb-3">Détails du salaire</h4>
+                    <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="font-semibold">Net à payer</span>
-                        <span className="font-bold text-lg text-blue-600">{payslip.netSalary.toLocaleString()} FCFA</span>
+                        <span className="text-gray-600">Salaire de base</span>
+                        <span className="font-medium">
+                          {payslip.basicSalary.toLocaleString()} FCFA
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Primes et bonus</span>
+                        <span className="font-medium text-green-600">
+                          +{payslip.bonuses.toLocaleString()} FCFA
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Déductions (CNSS, IR, etc.)</span>
+                        <span className="font-medium text-red-600">
+                          -{payslip.deductions.toLocaleString()} FCFA
+                        </span>
+                      </div>
+                      <div className="border-t border-gray-300 pt-2 mt-2">
+                        <div className="flex justify-between">
+                          <span className="font-semibold">Net à payer</span>
+                          <span className="font-bold text-lg text-blue-600">
+                            {payslip.netSalary.toLocaleString()} FCFA
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Footer */}
+                  <div className="text-center text-sm text-gray-500">
+                    <p>
+                      Document généré le {new Date(payslip.generatedAt).toLocaleDateString('fr-FR')}
+                    </p>
+                    <p className="mt-1">EmployraRH - Plateforme de gestion RH</p>
+                  </div>
                 </div>
 
-                {/* Footer */}
-                <div className="text-center text-sm text-gray-500">
-                  <p>Document généré le {new Date(payslip.generatedAt).toLocaleDateString('fr-FR')}</p>
-                  <p className="mt-1">EmployraRH Africa - Plateforme de gestion RH</p>
+                {/* Actions */}
+                <div className="flex space-x-3 mt-6">
+                  <button
+                    onClick={() => handleDownload(payslip.id)}
+                    className="flex-1 flex items-center justify-center space-x-2 bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors"
+                  >
+                    <Download size={18} />
+                    <span>Télécharger PDF</span>
+                  </button>
+                  <button
+                    onClick={() => handlePrint(payslip.id)}
+                    className="flex-1 flex items-center justify-center space-x-2 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  >
+                    <Printer size={18} />
+                    <span>Imprimer</span>
+                  </button>
                 </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex space-x-3 mt-6">
-                <button
-                  onClick={() => handleDownload(payslip.id)}
-                  className="flex-1 flex items-center justify-center space-x-2 bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors"
-                >
-                  <Download size={18} />
-                  <span>Télécharger PDF</span>
-                </button>
-                <button
-                  onClick={() => handlePrint(payslip.id)}
-                  className="flex-1 flex items-center justify-center space-x-2 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-                >
-                  <Printer size={18} />
-                  <span>Imprimer</span>
-                </button>
               </div>
             </div>
-          </div>
-        );
-      })()}
+          );
+        })()}
     </div>
   );
 }

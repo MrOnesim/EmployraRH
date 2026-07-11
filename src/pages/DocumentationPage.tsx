@@ -80,9 +80,9 @@ function ScreenshotViewer() {
 export default function DocumentationPage() {
   const [search, setSearch] = useState('');
   usePageMeta({
-    title: 'Documentation EmployéPro Africa — Guides, tutoriels & API',
+    title: 'Documentation EmployraRH — Guides, tutoriels & API',
     description:
-      'Documentation complète EmployéPro Africa : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.',
+      'Documentation complète EmployraRH : guides de démarrage, modules fonctionnels, tutoriels vidéo, FAQ et support.',
   });
 
   const filteredSections = useMemo(() => {

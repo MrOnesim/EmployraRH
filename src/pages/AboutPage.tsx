@@ -81,7 +81,7 @@ const team = [
     initials: 'JK',
     avatar: 'https://i.pravatar.cc/150?u=jp@employrarh.com',
     role: 'Directeur Financier',
-    bio: 'Expert en fintech et paiements africains',
+    bio: 'Expert en fintech et paiements internationaux',
     location: 'Cameroun',
     from: 'from-amber-500',
     to: 'to-yellow-500',
@@ -91,7 +91,7 @@ const team = [
     initials: 'FE',
     avatar: 'https://i.pravatar.cc/150?u=fatima@employrarh.com',
     role: 'VP Marketing',
-    bio: 'Growth & expansion Afrique, ex-Jumia',
+    bio: 'Growth & expansion internationale, ex-Jumia',
     location: 'Maroc',
     from: 'from-sky-500',
     to: 'to-blue-600',
@@ -184,7 +184,7 @@ const paymentMethods = [
   {
     name: 'Mobile Money',
     desc: 'Orange Money, MTN, M-Pesa, Airtel, Moov, Wave',
-    regions: 'Afrique',
+    regions: 'International',
     icon: Globe,
     color: 'from-orange-500 to-amber-600',
   },
@@ -197,8 +197,8 @@ const paymentMethods = [
   },
   {
     name: 'Flutterwave',
-    desc: 'Paiement via Flutterwave (50+ pays africains)',
-    regions: 'Afrique',
+    desc: 'Paiement via Flutterwave (paiements internationaux)',
+    regions: 'International',
     icon: TrendingUp,
     color: 'from-rose-500 to-pink-600',
   },
@@ -260,8 +260,8 @@ const steps = [
 const securityItems = [
   'Chiffrement AES-256 au repos et TLS 1.3 en transit',
   'Authentification multi-facteurs (2FA)',
-  'Conforme RGPD, OHADA, CEMAC, UEMOA',
-  'Hébergement OVHcloud (Europe) & AWS (Afrique)',
+  'Conforme RGPD et aux réglementations locales',
+  'Hébergement OVHcloud & AWS (cloud mondial)',
   'Backup quotidien avec PRA garanti',
   'Audit de sécurité trimestriel indépendant',
   'Certification ISO 27001 en cours',
@@ -269,7 +269,7 @@ const securityItems = [
 ];
 
 const partners = [
-  { name: 'Flutterwave', desc: 'Paiements africains', color: 'from-red-500 to-orange-500' },
+  { name: 'Flutterwave', desc: 'Paiements internationaux', color: 'from-red-500 to-orange-500' },
   { name: 'Orange Finances', desc: 'Mobile Money', color: 'from-orange-500 to-amber-500' },
   { name: 'Sage', desc: 'Comptabilité', color: 'from-green-500 to-emerald-500' },
   { name: 'QuickBooks', desc: 'Synchro comptable', color: 'from-blue-500 to-cyan-500' },
@@ -315,9 +315,9 @@ function SectionLabel({ icon: Icon, text }: { icon: React.ElementType; text: str
 
 export default function AboutPage() {
   usePageMeta({
-    title: 'À propos — EmployéPro Africa, la RH réinventée pour le monde',
+    title: 'À propos — EmployraRH, la RH réinventée pour le monde',
     description:
-      'EmployéPro Africa est une solution RH & paie cloud conçue pour les entreprises de tous les pays : conformité, présence, paie et IA.',
+      'EmployraRH est une solution RH & paie cloud conçue pour les entreprises de tous les pays : conformité, présence, paie et IA.',
   });
   return (
     <div className="min-h-screen bg-white">

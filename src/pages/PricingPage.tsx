@@ -195,9 +195,9 @@ function FeatureCard({ feature, index }: { feature: (typeof features)[0]; index:
 export default function PricingPage() {
   const [billing, setBilling] = useState<'monthly' | 'annual'>('monthly');
   usePageMeta({
-    title: 'Tarifs EmployéPro Africa — Des forfaits adaptés à chaque PME',
+    title: 'Tarifs EmployraRH — Des forfaits adaptés à chaque PME',
     description:
-      "Découvrez les offres Starter, Pro, Business et Enterprise d'EmployéPro Africa. Multi-devises, sans engagement, avec essai gratuit.",
+      "Découvrez les offres Starter, Pro, Business et Enterprise d'EmployraRH. Multi-devises, sans engagement, avec essai gratuit.",
   });
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-16 bg-dot-pattern">

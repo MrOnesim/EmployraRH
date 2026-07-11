@@ -11,7 +11,7 @@ const rows = [
   { label: 'Pas de facturation par employé', us: true, them: false },
   { label: 'Support 24/7 prioritaire', us: true, them: 'partiel' },
   { label: 'API & Intégrations', us: true, them: false },
-  { label: 'Data center Europe / Afrique', us: true, them: false },
+  { label: 'Data center Europe / International', us: true, them: false },
 ];
 
 export default function WhyUsSection() {

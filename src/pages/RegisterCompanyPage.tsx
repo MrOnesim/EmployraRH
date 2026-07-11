@@ -20,7 +20,7 @@ export default function RegisterCompanyPage() {
     address: '',
     website: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +50,7 @@ export default function RegisterCompanyPage() {
         employeeCount: parseInt(formData.employeeCount) || 0,
         address: formData.address,
         website: formData.website,
-        password: formData.password
+        password: formData.password,
       });
       navigate('/admin');
     }
@@ -61,25 +61,40 @@ export default function RegisterCompanyPage() {
       <div className="max-w-2xl mx-auto">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200 dark:shadow-blue-900/50 mb-4">
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200 dark:shadow-blue-900/50 mb-4"
+          >
             <span className="text-white font-bold text-2xl">EP</span>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Créer votre entreprise</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Rejoignez EmployraRH Africa</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Créer votre entreprise
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Rejoignez EmployraRH</p>
         </div>
 
         {/* Progress Steps */}
         <div className="flex items-center justify-center mb-8">
           <div className="flex items-center">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-              step >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-            }`}>
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                step >= 1
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+              }`}
+            >
               1
             </div>
-            <div className={`w-20 h-1 ${step >= 2 ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`} />
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
-              step >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
-            }`}>
+            <div
+              className={`w-20 h-1 ${step >= 2 ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'}`}
+            />
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                step >= 2
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+              }`}
+            >
               2
             </div>
           </div>
@@ -90,26 +105,41 @@ export default function RegisterCompanyPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {step === 1 ? (
               <>
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Informations de l'entreprise</h2>
-                
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
+                  Informations de l'entreprise
+                </h2>
+
                 {/* Logo Upload */}
                 <div className="flex justify-center">
                   <div className="relative">
                     <div className="w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-500 transition-colors cursor-pointer">
                       {formData.logo ? (
-                        <img src={formData.logo} alt="Logo de l'entreprise" className="w-full h-full object-cover rounded-2xl" />
+                        <img
+                          src={formData.logo}
+                          alt="Logo de l'entreprise"
+                          className="w-full h-full object-cover rounded-2xl"
+                        />
                       ) : (
                         <Upload size={24} className="text-gray-400" />
                       )}
                     </div>
-                    <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
+                    <input
+                      type="file"
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      accept="image/*"
+                    />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom de l'entreprise *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Nom de l'entreprise *
+                  </label>
                   <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Building2
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
                     <input
                       type="text"
                       name="name"
@@ -124,9 +154,14 @@ export default function RegisterCompanyPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prénom du dirigeant *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Prénom du dirigeant *
+                    </label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                      <User
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        size={20}
+                      />
                       <input
                         type="text"
                         name="ownerFirstName"
@@ -139,7 +174,9 @@ export default function RegisterCompanyPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Nom du dirigeant *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Nom du dirigeant *
+                    </label>
                     <input
                       type="text"
                       name="ownerLastName"
@@ -153,9 +190,14 @@ export default function RegisterCompanyPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Adresse email *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Adresse email *
+                  </label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Mail
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
                     <input
                       type="email"
                       name="email"
@@ -170,9 +212,14 @@ export default function RegisterCompanyPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Téléphone *</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Téléphone *
+                    </label>
                     <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                      <Phone
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        size={20}
+                      />
                       <input
                         type="tel"
                         name="phone"
@@ -185,7 +232,9 @@ export default function RegisterCompanyPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre d'employés</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      Nombre d'employés
+                    </label>
                     <input
                       type="number"
                       name="employeeCount"
@@ -198,9 +247,14 @@ export default function RegisterCompanyPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Adresse de l'entreprise</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Adresse de l'entreprise
+                  </label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <MapPin
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
                     <input
                       type="text"
                       name="address"
@@ -213,9 +267,14 @@ export default function RegisterCompanyPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Site internet</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Site internet
+                  </label>
                   <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Globe
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
                     <input
                       type="url"
                       name="website"
@@ -229,12 +288,19 @@ export default function RegisterCompanyPage() {
               </>
             ) : (
               <>
-                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Sécurité du compte</h2>
-                
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
+                  Sécurité du compte
+                </h2>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mot de passe *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Mot de passe *
+                  </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Lock
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
                     <input
                       type="password"
                       name="password"
@@ -245,13 +311,20 @@ export default function RegisterCompanyPage() {
                       required
                     />
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum 8 caractères</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Minimum 8 caractères
+                  </p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirmer le mot de passe *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Confirmer le mot de passe *
+                  </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Lock
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
                     <input
                       type="password"
                       name="confirmPassword"
@@ -265,9 +338,13 @@ export default function RegisterCompanyPage() {
                 </div>
 
                 <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-4">
-                  <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">Votre entreprise sera créée avec :</h3>
+                  <h3 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">
+                    Votre entreprise sera créée avec :
+                  </h3>
                   <ul className="space-y-1 text-sm text-blue-700 dark:text-blue-300">
-                    <li>• Identifiant unique : <span className="font-mono">EP-XXXXX</span></li>
+                    <li>
+                      • Identifiant unique : <span className="font-mono">EP-XXXXX</span>
+                    </li>
                     <li>• Dashboard administrateur</li>
                     <li>• Capacité d'invitation des employés</li>
                   </ul>

@@ -37,7 +37,7 @@ export default function CTASection() {
         </h2>
 
         <p className="text-xl text-primary-foreground/80 mb-10 max-w-2xl mx-auto">
-          Rejoignez des milliers d'entreprises qui font confiance à EmployraRH Africa. Commencez
+          Rejoignez des milliers d'entreprises qui font confiance à EmployraRH. Commencez
           gratuitement, sans carte bancaire.
         </p>
 

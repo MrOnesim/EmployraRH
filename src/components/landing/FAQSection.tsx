@@ -17,8 +17,8 @@ const faqs = [
     a: 'Nous supportons actuellement plus de 60 pays sur tous les continents (Europe, Afrique, Amérique latine, Moyen-Orient, Asie…). Nous ajoutons régulièrement de nouveaux pays et devises.',
   },
   {
-    q: 'Les données sont-elles stockées en Afrique ?',
-    a: 'Nous proposons des data centers en Europe et en Afrique. Vous pouvez choisir la localisation de vos données. Tout est conforme RGPD et aux réglementations locales.',
+    q: 'Les données sont-elles hébergées près de vos utilisateurs ?',
+    a: 'Nous proposons des data centers répartis dans le monde entier (Europe, Amériques, Asie…). Vous pouvez choisir la localisation de vos données. Tout est conforme RGPD et aux réglementations locales.',
   },
   {
     q: 'Puis-je payer les salaires depuis la plateforme ?',
@@ -103,7 +103,7 @@ export default function FAQSection() {
             Questions fréquentes
           </h2>
           <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-            Tout ce que vous devez savoir sur EmployraRH Africa.
+            Tout ce que vous devez savoir sur EmployraRH.
           </p>
         </div>
 

@@ -185,9 +185,9 @@ const faqData: FAQItem[] = [
 
 export default function FAQPage() {
   usePageMeta({
-    title: 'FAQ EmployéPro Africa — Vos questions, nos réponses',
+    title: 'FAQ EmployraRH — Vos questions, nos réponses',
     description:
-      'Questions fréquentes sur EmployéPro Africa : tarifs, multi-pays, paie, présence, sécurité, assistant IA et support client.',
+      'Questions fréquentes sur EmployraRH : tarifs, multi-pays, paie, présence, sécurité, assistant IA et support client.',
   });
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
   const [searchQuery, setSearchQuery] = useState('');
