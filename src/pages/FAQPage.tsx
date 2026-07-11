@@ -41,7 +41,7 @@ const faqData: FAQItem[] = [
       {
         question: 'EmployraRH est-il disponible dans mon pays ?',
         answer:
-          "Oui ! EmployraRH supporte plus de 60 pays incluant la France, les pays africains francophones et anglophones, l'Amérique latine, le Moyen-Orient, l'Asie et l'Europe. Chaque pays a ses indicateurs téléphoniques et formats adaptés.",
+          'Oui ! EmployraRH supporte plus de 60 pays sur tous les continents (Europe, Afrique, Amérique latine, Moyen-Orient, Asie…). Chaque pays a ses indicateurs téléphoniques, devises et formats de paie adaptés.',
       },
       {
         question: 'Est-ce que EmployraRH est gratuit ?',

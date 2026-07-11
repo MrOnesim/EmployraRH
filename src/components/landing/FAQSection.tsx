@@ -14,7 +14,7 @@ const faqs = [
   },
   {
     q: 'Quels sont les pays supportés ?',
-    a: "Nous supportons actuellement 16+ pays en Afrique de l'Ouest, Centrale, Australe, du Nord et en Europe. Nous ajoutons régulièrement de nouveaux pays.",
+    a: 'Nous supportons actuellement plus de 60 pays sur tous les continents (Europe, Afrique, Amérique latine, Moyen-Orient, Asie…). Nous ajoutons régulièrement de nouveaux pays et devises.',
   },
   {
     q: 'Les données sont-elles stockées en Afrique ?',
@@ -59,7 +59,9 @@ function FAQItem({ faq }: { faq: (typeof faqs)[0] }) {
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between py-5 text-left group outline-none cursor-pointer"
       >
-          <span className={`text-base font-semibold transition-colors pr-4 ${open ? 'text-primary-hover font-bold' : 'text-gray-700 group-hover:text-gray-900'}`}>
+        <span
+          className={`text-base font-semibold transition-colors pr-4 ${open ? 'text-primary-hover font-bold' : 'text-gray-700 group-hover:text-gray-900'}`}
+        >
           {faq.q}
         </span>
         <ChevronDown

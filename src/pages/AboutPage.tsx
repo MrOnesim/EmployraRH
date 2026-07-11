@@ -315,9 +315,9 @@ function SectionLabel({ icon: Icon, text }: { icon: React.ElementType; text: str
 
 export default function AboutPage() {
   usePageMeta({
-    title: 'À propos — EmployéPro Africa, la RH africaine réinventée',
+    title: 'À propos — EmployéPro Africa, la RH réinventée pour le monde',
     description:
-      'EmployéPro Africa est une solution RH & paie cloud conçue pour les entreprises africaines : conformité, présence, paie et IA.',
+      'EmployéPro Africa est une solution RH & paie cloud conçue pour les entreprises de tous les pays : conformité, présence, paie et IA.',
   });
   return (
     <div className="min-h-screen bg-white">
@@ -441,7 +441,7 @@ export default function AboutPage() {
               color: 'bg-blue-500',
               year: '2019',
               title: 'Le constat',
-              text: 'Les solutions RH disponibles sont soit trop chères pour les PME, soit conçues uniquement pour les pays développés — ignorant le mobile money, les régimes sociaux variés et les réalités africaines.',
+              text: 'Les solutions RH disponibles sont soit trop chères pour les PME, soit conçues uniquement pour les pays développés — ignorant le mobile money, les régimes sociaux variés et les réalités des marchés émergents.',
             },
             {
               icon: Zap,
@@ -554,8 +554,8 @@ export default function AboutPage() {
             </div>
             <h2 className="text-4xl font-black text-white mb-4">Payez comme vous voulez</h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              Paiements internationaux et africains pour que vous puissiez régler depuis n'importe
-              où.
+              Paiements internationaux pour que vous puissiez régler vos équipes depuis n'importe
+              quel pays.
             </p>
           </FadeUp>
 

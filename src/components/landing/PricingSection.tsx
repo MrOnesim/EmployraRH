@@ -113,9 +113,7 @@ function PlanCard({ plan }: { plan: (typeof plans)[0] }) {
         <h3 className="text-xl font-bold text-gray-800 mb-1">{plan.name}</h3>
         <div className="flex items-baseline gap-1 mb-2">
           <span className="text-4xl font-black text-gray-900">
-            {plan.price === 'Sur mesure'
-              ? 'Sur mesure'
-              : `${plan.price} €`}
+            {plan.price === 'Sur mesure' ? 'Sur mesure' : `${plan.price} €`}
           </span>
           <span className="text-gray-400 text-sm">{plan.period}</span>
         </div>
@@ -211,7 +209,7 @@ export default function PricingSection() {
                 name: 'SAP SuccessFactors',
                 price: '€100K+/an',
                 features: [true, false, false, false, true, false, false, true],
-                bad: 'Configuration longue, surcoût Afrique',
+                bad: 'Configuration longue, surcoût international',
               },
               {
                 name: 'Sage',
@@ -307,7 +305,7 @@ export default function PricingSection() {
 
           <div className="mt-6 space-y-1">
             {[
-              { name: 'SAP SuccessFactors', bad: 'Configuration longue, surcoût Afrique' },
+              { name: 'SAP SuccessFactors', bad: 'Configuration longue, surcoût international' },
               { name: 'Sage', bad: "Limité à l'Europe, absence IA" },
             ].map((c) => (
               <p key={c.name} className="text-sm text-gray-400 text-right">

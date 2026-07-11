@@ -57,9 +57,9 @@ function FloatingCTA() {
 
 export default function LandingPage() {
   usePageMeta({
-    title: 'EmployéPro Africa — La plateforme RH & paie des PME africaines',
+    title: 'EmployéPro Africa — La plateforme RH & paie des PME du monde entier',
     description:
-      "Gérez employés, paie, présence, congés et conformité sociale dans une seule solution cloud pensée pour l'Afrique francophone.",
+      'Gérez employés, paie, présence, congés et conformité sociale dans une seule solution cloud pensée pour les entreprises de tous les pays.',
   });
   return (
     <div className="pt-16">

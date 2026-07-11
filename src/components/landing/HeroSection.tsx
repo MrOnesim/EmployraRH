@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useSpring } from 'framer-motion';
 import {
   ArrowRight,
-  Play,
+  ArrowDown,
   Globe,
   Users,
   Shield,
@@ -19,7 +19,7 @@ import { useCountUp } from '../../hooks/useCountUp';
 
 const stats = [
   { value: 50, label: 'Employés gérés', icon: Users, suffix: 'K+' },
-  { value: 16, label: 'Pays supportés', icon: Globe, suffix: '+' },
+  { value: 60, label: 'Pays supportés', icon: Globe, suffix: '+' },
   { value: 99, label: 'Disponibilité', icon: Shield, suffix: '.9%' },
   { value: 49, label: 'Satisfaction', icon: Star, suffix: '/5', prefix: '4.' },
 ];
@@ -100,12 +100,14 @@ function AnimatedValue({
 }
 
 export default function HeroSection() {
-  const [scrollY, setScrollY] = useState(0);
   const [activeTab, setActiveTab] = useState<'overview' | 'payroll' | 'qr'>('overview');
 
-  // 3D Tilt state
+  // 3D Tilt — motion values to avoid React re-renders on mouse move
   const containerRef = useRef<HTMLDivElement>(null);
-  const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0, scale: 1 });
+  const gridRef = useRef<HTMLDivElement>(null);
+  const rotateX = useSpring(0, { stiffness: 200, damping: 25 });
+  const rotateY = useSpring(0, { stiffness: 200, damping: 25 });
+  const scale = useSpring(1, { stiffness: 200, damping: 25 });
 
   // Interactive states for calculator
   const [baseSalary, setBaseSalary] = useState(2800);
@@ -125,29 +127,39 @@ export default function HeroSection() {
   ]);
 
   useEffect(() => {
-    const handle = () => setScrollY(window.scrollY);
+    let frame = 0;
+    const handle = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (gridRef.current) {
+          gridRef.current.style.transform = `translateY(${window.scrollY * -0.12}px)`;
+        }
+      });
+    };
     window.addEventListener('scroll', handle, { passive: true });
-    return () => window.removeEventListener('scroll', handle);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', handle);
+    };
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = containerRef.current;
     if (!card) return;
     const rect = card.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left - width / 2;
-    const mouseY = e.clientY - rect.top - height / 2;
+    const mouseX = e.clientX - rect.left - rect.width / 2;
+    const mouseY = e.clientY - rect.top - rect.height / 2;
 
     // Rotate max 8 degrees
-    const rX = -(mouseY / (height / 2)) * 8;
-    const rY = (mouseX / (width / 2)) * 8;
-
-    setTilt({ rotateX: rX, rotateY: rY, scale: 1.02 });
+    rotateX.set(-(mouseY / (rect.height / 2)) * 8);
+    rotateY.set((mouseX / (rect.width / 2)) * 8);
+    scale.set(1.02);
   };
 
   const handleMouseLeave = () => {
-    setTilt({ rotateX: 0, rotateY: 0, scale: 1 });
+    rotateX.set(0);
+    rotateY.set(0);
+    scale.set(1);
   };
 
   const triggerQRScan = () => {
@@ -215,11 +227,11 @@ export default function HeroSection() {
 
       {/* Interactive moving grid pattern */}
       <div
-        className="absolute inset-0 opacity-15 pointer-events-none z-0"
+        ref={gridRef}
+        className="absolute inset-0 opacity-15 pointer-events-none z-0 will-change-transform"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M60 0L0 60M0 0l60 60' stroke='white' stroke-width='0.75'/%3E%3C/svg%3E")`,
           backgroundSize: '60px 60px',
-          transform: `translateY(${scrollY * -0.12}px)`,
         }}
       />
 
@@ -249,7 +261,7 @@ export default function HeroSection() {
               variants={textFadeUp}
               className="text-lg md:text-xl text-primary-foreground/80 leading-relaxed mb-8 max-w-xl"
             >
-              La solution paie et RH tout-en-un conçue pour les entreprises d'Afrique et d'ailleurs.
+              La solution paie et RH tout-en-un conçue pour les entreprises du monde entier.
               Automatisez vos processus de bout en bout : paie multi-pays, IA, signatures en ligne
               et pointage QR.
             </motion.p>
@@ -277,8 +289,11 @@ export default function HeroSection() {
                 }}
                 className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold text-lg border border-white/20 backdrop-blur-md transition-all active:scale-95 duration-300 hover:border-white/40 shadow-lg"
               >
-                <Play size={20} className="fill-white" />
-                Voir la démo
+                <ArrowDown
+                  size={20}
+                  className="group-hover:translate-y-1 transition-transform duration-300"
+                />
+                Découvrir la plateforme
               </button>
             </motion.div>
 
@@ -302,12 +317,7 @@ export default function HeroSection() {
               ref={containerRef}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
-              animate={{
-                rotateX: tilt.rotateX,
-                rotateY: tilt.rotateY,
-                scale: tilt.scale,
-              }}
-              transition={{ type: 'spring', stiffness: 200, damping: 25 }}
+              style={{ rotateX, rotateY, scale }}
               className="relative w-full max-w-[540px] bg-slate-900/60 backdrop-blur-2xl rounded-3xl border border-white/15 p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.4)] overflow-hidden z-10"
             >
               {/* Top window styling */}
