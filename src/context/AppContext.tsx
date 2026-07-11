@@ -203,68 +203,44 @@ const mockEmployees: Employee[] = [
   },
 ];
 
-const mockAttendance: Attendance[] = [
-  {
-    id: '1',
-    employeeId: '1',
-    date: new Date(),
-    checkIn: new Date(new Date().setHours(8, 0)),
-    breakStart: new Date(new Date().setHours(12, 0)),
-    breakEnd: new Date(new Date().setHours(13, 0)),
-    checkOut: null,
-    totalHours: 4,
-    overtime: 0,
-    status: 'present',
-  },
-  {
-    id: '2',
-    employeeId: '2',
-    date: new Date(),
-    checkIn: new Date(new Date().setHours(7, 45)),
-    breakStart: null,
-    breakEnd: null,
-    checkOut: null,
-    totalHours: 4.25,
-    overtime: 0,
-    status: 'present',
-  },
-  {
-    id: '3',
-    employeeId: '3',
-    date: new Date(),
-    checkIn: new Date(new Date().setHours(9, 15)),
-    breakStart: null,
-    breakEnd: null,
-    checkOut: null,
-    totalHours: 3,
-    overtime: 0,
-    status: 'late',
-  },
-  {
-    id: '4',
-    employeeId: '4',
-    date: new Date(),
-    checkIn: null,
-    breakStart: null,
-    breakEnd: null,
-    checkOut: null,
-    totalHours: 0,
-    overtime: 0,
-    status: 'absent',
-  },
-  {
-    id: '5',
-    employeeId: '5',
-    date: new Date(),
-    checkIn: new Date(new Date().setHours(8, 0)),
-    breakStart: new Date(new Date().setHours(12, 0)),
-    breakEnd: new Date(new Date().setHours(12, 45)),
-    checkOut: null,
-    totalHours: 4,
-    overtime: 0,
-    status: 'present',
-  },
-];
+function generateMockAttendance(): Attendance[] {
+  const records: Attendance[] = [];
+  let id = 0;
+  const now = new Date();
+  const h = (d: Date, h: number, m: number) =>
+    new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
+  for (let day = 30; day >= 0; day--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day);
+    if (d.getDay() === 0 || d.getDay() === 6) continue;
+    const isToday = day === 0;
+    [1, 2, 3, 4, 5].forEach((eid) => {
+      const r = () => Math.random();
+      const checkInH =
+        eid === 3 ? (r() > 0.3 ? 8 : 9 + Math.floor(r() * 2)) : 7 + Math.floor(r() * 2);
+      const late = eid === 3 && checkInH >= 9;
+      const absent = eid === 4 && r() < 0.15;
+      id++;
+      records.push({
+        id: String(id),
+        employeeId: String(eid),
+        date: h(d, 0, 0),
+        checkIn: absent || (isToday && eid === 4) ? null : h(d, checkInH, Math.floor(r() * 60)),
+        breakStart: absent || isToday ? null : h(d, 12, 0),
+        breakEnd: absent || isToday ? null : h(d, 12 + (eid === 5 ? 0 : 1), eid === 5 ? 45 : 0),
+        checkOut:
+          absent || isToday
+            ? null
+            : h(d, 17 + (eid === 1 ? Math.floor(r() * 2) : 0), Math.floor(r() * 60)),
+        totalHours: absent ? 0 : 8 + (eid === 1 ? r() * 2 : 0),
+        overtime: eid === 1 ? Math.floor(r() * 2) : 0,
+        status: absent ? ('absent' as const) : late ? ('late' as const) : ('present' as const),
+      });
+    });
+  }
+  return records;
+}
+
+const mockAttendance: Attendance[] = generateMockAttendance();
 
 const mockLeaves: Leave[] = [
   {
@@ -295,7 +271,77 @@ const mockLeaves: Leave[] = [
     reason: 'Congé personnel',
     status: 'rejected',
   },
+  {
+    id: '4',
+    employeeId: '1',
+    type: 'annual',
+    startDate: new Date('2025-01-03'),
+    endDate: new Date('2025-01-10'),
+    reason: 'Congés annuels',
+    status: 'approved',
+    approvedBy: '1',
+  },
+  {
+    id: '5',
+    employeeId: '2',
+    type: 'special',
+    startDate: new Date('2025-02-10'),
+    endDate: new Date('2025-02-11'),
+    reason: 'Événement familial',
+    status: 'pending',
+  },
+  {
+    id: '6',
+    employeeId: '4',
+    type: 'annual',
+    startDate: new Date('2025-03-01'),
+    endDate: new Date('2025-03-05'),
+    reason: 'Congé planifié',
+    status: 'approved',
+    approvedBy: '1',
+  },
+  {
+    id: '7',
+    employeeId: '6',
+    type: 'sick',
+    startDate: new Date('2024-11-15'),
+    endDate: new Date('2024-11-16'),
+    reason: 'Consultation médicale',
+    status: 'approved',
+    approvedBy: '2',
+  },
 ];
+
+const mockPayslips: Payslip[] = (() => {
+  const ps: Payslip[] = [];
+  let id = 0;
+  const baseSalary: Record<string, number> = {
+    '1': 1500000,
+    '2': 800000,
+    '3': 750000,
+    '4': 700000,
+    '5': 600000,
+  };
+  [9, 10, 11].forEach((month) => {
+    Object.entries(baseSalary).forEach(([eid, salary]) => {
+      id++;
+      const bonuses = Math.round(salary * (0.05 + Math.random() * 0.1));
+      const deductions = Math.round(salary * 0.15);
+      ps.push({
+        id: String(id),
+        employeeId: eid,
+        month,
+        year: month >= 9 ? 2024 : 2025,
+        basicSalary: salary,
+        bonuses,
+        deductions,
+        netSalary: salary + bonuses - deductions,
+        generatedAt: new Date(2024, month, 1),
+      });
+    });
+  });
+  return ps;
+})();
 
 const mockNotifications: Notification[] = [
   {
@@ -338,7 +384,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [employees, setEmployees] = useState<Employee[]>(mockEmployees);
   const [attendance, setAttendance] = useState<Attendance[]>(mockAttendance);
   const [leaves, setLeaves] = useState<Leave[]>(mockLeaves);
-  const [payslips, setPayslips] = useState<Payslip[]>([]);
+  const [payslips, setPayslips] = useState<Payslip[]>(mockPayslips);
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [invitations, setInvitations] = useState<Invitation[]>([]);
   const [missions, setMissions] = useState<Mission[]>([]);

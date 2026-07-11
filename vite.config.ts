@@ -59,12 +59,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,woff2,ico}'],
-        globIgnores: [
-          '**/images/screenshots/**',
-          '**/images/global-network.png',
-          '**/images/hero-section.png',
-        ],
-        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+        globIgnores: ['**/images/**'],
         navigateFallback: '/offline.html',
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
@@ -115,6 +110,7 @@ export default defineConfig({
     },
   },
   build: {
+    chunkSizeWarningLimit: 700,
     rollupOptions: {
       output: {
         manualChunks: {
