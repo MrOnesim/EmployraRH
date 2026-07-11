@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import EquipmentPage from '../pages/EquipmentPage';
 
+vi.mock('../hooks/usePageLoading', () => ({ usePageLoading: () => false }));
+
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
     currentUser: { id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' },
@@ -11,7 +13,19 @@ vi.mock('../context/AppContext', () => ({
 vi.mock('../context/DataContext', () => ({
   useData: () => ({
     equipment: [
-      { id: 'e1', name: 'MacBook Pro 16', type: 'computer', serialNumber: 'SN001', status: 'available', purchaseDate: new Date(), purchasePrice: 2500, assigneeId: undefined, condition: 'good', companyId: 'c1', notes: '' },
+      {
+        id: 'e1',
+        name: 'MacBook Pro 16',
+        type: 'computer',
+        serialNumber: 'SN001',
+        status: 'available',
+        purchaseDate: new Date(),
+        purchasePrice: 2500,
+        assigneeId: undefined,
+        condition: 'good',
+        companyId: 'c1',
+        notes: '',
+      },
     ],
     equipmentAssignments: [],
     employees: [{ id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' }],

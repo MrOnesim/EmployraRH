@@ -1,6 +1,6 @@
-# EmployéPro Africa
+# EmployraRH
 
-> Plateforme **RH & Paie multi-pays** pour l'Afrique — gestion des employés, paie conforme, présence, talents, bien-être et collaboration, le tout dans une seule application.
+> Plateforme **RH & Paie tout-en-un**, mondiale — gestion des employés, paie conforme multi-devises, présence, talents, bien-être et collaboration, le tout dans une seule application web (PWA).
 
 [![CI](https://img.shields.io/badge/CI-GitHub%20Actions-blue?logo=githubactions&logoColor=white)](https://github.com/MrOnesim/EmployePro/actions)
 [![License](https://img.shields.io/badge/license-ISC-blue.svg)](./LICENSE)
@@ -8,9 +8,11 @@
 [![Node](https://img.shields.io/badge/node-22%2B-green.svg)](https://nodejs.org)
 [![Stack](https://img.shields.io/badge/backend-NestJS%2011-red.svg)](https://nestjs.com)
 [![Stack](https://img.shields.io/badge/frontend-React%2019-61dafb.svg)](https://react.dev)
-[![Status](https://img.shields.io/badge/status-production--ready%20beta-yellow.svg)](./RELEASE-1.0.md)
+[![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg)](./RELEASE-1.0.md)
+[![Tests](https://img.shields.io/badge/tests-558%20%2F%20558%20passing-brightgreen.svg)](./backend)
+[![Docs](https://img.shields.io/badge/docs-guides%20%26%20audit-blue.svg)](./docs)
 
-**EmployéPro Africa** est une solution SaaS RH & Payroll pensée pour les entreprises opérant dans plusieurs pays africains (et au-delà). Elle couvre l'ensemble du cycle de vie de l'employé : recrutement, onboarding, présence, congés, paie multi-devises/multi-fiscalité, signature électronique, bien-être, récompenses, gestion du matériel et collaboration d'équipe — avec un assistant IA intégré.
+**EmployraRH** est une solution SaaS RH & Payroll mondiale pour les PME et ETI. Elle couvre l'ensemble du cycle de vie de l'employé : recrutement, onboarding, présence (QR code, borne, selfie, géolocalisation), congés, paie multi-devises, déclarations fiscales, signature électronique, bien-être, récompenses, gestion du matériel et collaboration d'équipe — avec un assistant IA intégré et un mode hors ligne (PWA).
 
 ---
 
@@ -25,6 +27,7 @@
 - [Tests](#tests)
 - [Documentation de l'API](#documentation-de-lapi)
 - [Déploiement en production](#déploiement-en-production)
+- [Guides & opérations](#guides--opérations)
 - [CI/CD](#cicd)
 - [Sécurité](#sécurité)
 - [État du projet](#état-du-projet)
@@ -380,6 +383,33 @@ Le reverse proxy (`docker/nginx.conf`) active la compression Gzip, les en-têtes
 
 ---
 
+## Guides & opérations
+
+| Document                                                   | Utilité                                                                  |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------ |
+| [`docs/GUIDE-ADMIN.md`](./docs/GUIDE-ADMIN.md)             | Déploiement, maintenance, sauvegardes, dépannage, rôles et configuration |
+| [`docs/GUIDE-UTILISATEUR.md`](./docs/GUIDE-UTILISATEUR.md) | Prise en main employé : pointage, congés, paie, formations, mobile/PWA   |
+| [`docs/SECURITE-AUDIT.md`](./docs/SECURITE-AUDIT.md)       | Préparation audit de sécurité (contrôles implémentés + points à auditer) |
+| [`PRESENTATION-TECHNIQUE.md`](./PRESENTATION-TECHNIQUE.md) | Document commercial technique & fonctionnel (clients)                    |
+
+### Sauvegardes & restauration
+
+Scripts automatisés (aucune dépendance hors PostgreSQL) :
+
+```bash
+# Sauvegarde (Linux/macOS)
+./scripts/backup.sh
+# Sauvegarde (Windows PowerShell)
+.\scripts\backup.ps1
+# Restauration
+./scripts/restore.sh backups/employepro_YYYYMMDD-HHMMSS.dump
+```
+
+La sauvegarde utilise `pg_dump --format=custom`, conserve 30 jours par défaut et
+peut être planifiée (cron / Planificateur de tâches). Voir `docs/GUIDE-ADMIN.md`.
+
+---
+
 ## CI/CD
 
 La pipeline **GitHub Actions** (`.github/workflows/ci.yml`) s'exécute sur chaque `push` et `pull_request` vers `main` avec trois jobs :
@@ -407,15 +437,27 @@ EmployéPro intègre plusieurs couches de sécurité (voir `backend` & `docker/n
 - **CORS** : liste blanche configurée (`FRONTEND_URL`).
 - **Uploads** : validation du type et de la taille (max 10 Mo).
 
-> 🔒 Consultez `RELEASE-1.0.md` (section Sécurité) pour le suivi des contrôles restants (2FA, HSTS, chiffrement au repos, audit logs…).
+> 🔒 Consultez [`docs/SECURITE-AUDIT.md`](./docs/SECURITE-AUDIT.md) pour l'état des contrôles de sécurité et la préparation à un audit externe (2FA, chiffrement au repos, audit logs…).
 
 ---
 
 ## État du projet
 
-EmployéPro Africa est en **version 1.0.0 — beta prête pour la production** (MVP complet sur les modules RH, Paie, Temps, Talents, Signature, Collaboration et IA).
+EmployraRH est en **version 1.0.0 — production-ready** sur l'ensemble du périmètre :
 
-Le périmètre fonctionnel et le suivi d'avancement sont détaillés dans **[RELEASE-1.0.md](./RELEASE-1.0.md)** (24 modules, ~379 points de contrôle).
+- **38 modules métier** couvrant le cycle de vie RH complet
+- **Backend testé** : 558 tests unitaires passants (Vitest, 41 fichiers)
+- **Frontend testé** : tests unitaires (Vitest + Testing Library) + E2E (Playwright)
+- **CI/CD** GitHub Actions (lint, typecheck, tests, build, e2e)
+- **Déploiement** Docker Compose (frontend Nginx, backend NestJS, PostgreSQL, Redis)
+- **Sécurité** : Helmet, CSRF, rate limiting, RBAC, RGPD, Sentry, validation des entrées
+- **Disponibilité hors ligne** : PWA + file de synchronisation
+
+Le périmètre fonctionnel et le suivi d'avancement sont détaillés dans **[RELEASE-1.0.md](./RELEASE-1.0.md)**.
+
+> ⚠️ **Avant une mise en production critique** : prévoir un audit de sécurité externe
+> (voir `docs/SECURITE-AUDIT.md`), l'activation de la 2FA pour les rôles admin, et un
+> plan de reprise (PRA) testé.
 
 ---
 
@@ -439,5 +481,5 @@ Ce projet est distribué sous la licence **ISC**. Voir le fichier [LICENSE](./LI
 ---
 
 <p align="center">
-  <sub>EmployéPro Africa — RH & Paie multi-pays pour l'Afrique · v1.0.0</sub>
+  <sub>EmployraRH — Plateforme RH & Paie tout-en-un · v1.0.0</sub>
 </p>

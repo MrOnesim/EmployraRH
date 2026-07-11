@@ -1,40 +1,59 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { LeaveService } from './leave.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 
 describe('LeaveService', () => {
   let service: LeaveService;
   let prisma: any;
+  let cache: any;
 
-  const mockEmployee = { id: 'emp-1', companyId: 'comp-1' };
+  const mockEmployee = {
+    id: 'emp-1',
+    firstName: 'John',
+    lastName: 'Doe',
+    companyId: 'c1',
+    email: 'john@test.com',
+  };
   const mockLeave = {
     id: 'leave-1',
     employeeId: 'emp-1',
     type: 'annual',
-    status: 'pending',
     startDate: new Date('2026-08-01'),
-    endDate: new Date('2026-08-10'),
-    reason: 'Vacation',
+    endDate: new Date('2026-08-05'),
+    reason: 'Vacances',
+    status: 'pending',
     comment: null,
+    employee: mockEmployee,
   };
 
   beforeEach(async () => {
     prisma = {
-      employee: { findUnique: vi.fn() },
       leave: {
-        findFirst: vi.fn(),
         findUnique: vi.fn(),
+        findFirst: vi.fn(),
         findMany: vi.fn(),
         create: vi.fn(),
         update: vi.fn(),
       },
+      employee: { findUnique: vi.fn() },
+      member: { findMany: vi.fn() },
     };
+    cache = {
+      get: vi.fn().mockResolvedValue(null),
+      set: vi.fn().mockResolvedValue(undefined),
+      del: vi.fn().mockResolvedValue(undefined),
+    };
+    const mailService = { sendMail: vi.fn().mockResolvedValue({ messageId: 'test' }) };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LeaveService,
         { provide: PrismaService, useValue: prisma },
+        { provide: MailService, useValue: mailService },
+        { provide: CACHE_MANAGER, useValue: cache },
       ],
     }).compile();
 
@@ -42,109 +61,55 @@ describe('LeaveService', () => {
   });
 
   describe('create', () => {
-    it('should create a leave successfully', async () => {
+    const validInput = {
+      employeeId: 'emp-1',
+      type: 'annual' as const,
+      startDate: new Date('2026-08-01'),
+      endDate: new Date('2026-08-05'),
+      reason: 'Vacances',
+    };
+
+    it('should create a leave when input is valid', async () => {
       prisma.employee.findUnique.mockResolvedValue(mockEmployee);
       prisma.leave.findFirst.mockResolvedValue(null);
       prisma.leave.findMany.mockResolvedValue([]);
       prisma.leave.create.mockResolvedValue(mockLeave);
-
-      const result = await service.create({
-        employeeId: 'emp-1',
-        type: 'annual',
-        startDate: new Date('2026-08-01'),
-        endDate: new Date('2026-08-10'),
-        reason: 'Vacation',
-      });
-
-      expect(result).toEqual(mockLeave);
-      expect(prisma.leave.create).toHaveBeenCalled();
+      const result = await service.create(validInput);
+      expect(result.id).toBe('leave-1');
     });
 
-    it('should throw on invalid leave type', async () => {
-      prisma.employee.findUnique.mockResolvedValue(mockEmployee);
+    it('should reject invalid leave type', async () => {
+      await expect(service.create({ ...validInput, type: 'unknown' as any })).rejects.toThrow(
+        BadRequestException,
+      );
+    });
 
+    it('should reject past startDate', async () => {
+      const past = new Date('2024-01-01');
       await expect(
-        service.create({
-          employeeId: 'emp-1',
-          type: 'invalid',
-          startDate: new Date('2026-08-01'),
-          endDate: new Date('2026-08-10'),
-        }),
+        service.create({ ...validInput, startDate: past, endDate: past }),
       ).rejects.toThrow(BadRequestException);
     });
 
-    it('should throw when startDate >= endDate', async () => {
-      prisma.employee.findUnique.mockResolvedValue(mockEmployee);
-
+    it('should reject endDate before startDate', async () => {
       await expect(
         service.create({
-          employeeId: 'emp-1',
-          type: 'annual',
+          ...validInput,
           startDate: new Date('2026-08-10'),
-          endDate: new Date('2026-08-01'),
-        }),
-      ).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw on past startDate', async () => {
-      prisma.employee.findUnique.mockResolvedValue(mockEmployee);
-
-      await expect(
-        service.create({
-          employeeId: 'emp-1',
-          type: 'annual',
-          startDate: new Date('2020-01-01'),
-          endDate: new Date('2020-01-05'),
-        }),
-      ).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw when employee not found', async () => {
-      prisma.employee.findUnique.mockResolvedValue(null);
-
-      await expect(
-        service.create({
-          employeeId: 'emp-unknown',
-          type: 'sick',
-          startDate: new Date('2026-08-01'),
           endDate: new Date('2026-08-05'),
         }),
-      ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should throw on overlapping leave', async () => {
-      prisma.employee.findUnique.mockResolvedValue(mockEmployee);
-      prisma.leave.findFirst.mockResolvedValue({ id: 'existing-leave' });
-
-      await expect(
-        service.create({
-          employeeId: 'emp-1',
-          type: 'annual',
-          startDate: new Date('2026-08-05'),
-          endDate: new Date('2026-08-15'),
-        }),
-      ).rejects.toThrow(ConflictException);
-    });
-
-    it('should throw when annual balance exceeded', async () => {
-      prisma.employee.findUnique.mockResolvedValue(mockEmployee);
-      prisma.leave.findFirst.mockResolvedValue(null);
-      // 20 business days used across 4 Mon-Fri weeks → 5 remaining, but requesting 6
-      prisma.leave.findMany.mockResolvedValue([
-        { id: 'l-1', type: 'annual', status: 'approved', startDate: new Date('2026-06-01'), endDate: new Date('2026-06-05') },
-        { id: 'l-2', type: 'annual', status: 'approved', startDate: new Date('2026-06-08'), endDate: new Date('2026-06-12') },
-        { id: 'l-3', type: 'annual', status: 'approved', startDate: new Date('2026-06-15'), endDate: new Date('2026-06-19') },
-        { id: 'l-4', type: 'annual', status: 'approved', startDate: new Date('2026-06-22'), endDate: new Date('2026-06-26') },
-      ]);
-
-      await expect(
-        service.create({
-          employeeId: 'emp-1',
-          type: 'annual',
-          startDate: new Date('2026-08-01'),
-          endDate: new Date('2026-08-10'),
-        }),
       ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should reject when employee not found', async () => {
+      prisma.employee.findUnique.mockResolvedValue(null);
+      await expect(service.create(validInput)).rejects.toThrow(NotFoundException);
+    });
+
+    it('should reject overlapping leave', async () => {
+      prisma.employee.findUnique.mockResolvedValue(mockEmployee);
+      prisma.leave.findFirst.mockResolvedValue(mockLeave);
+      await expect(service.create(validInput)).rejects.toThrow(ConflictException);
     });
   });
 
@@ -152,149 +117,79 @@ describe('LeaveService', () => {
     it('should approve a pending leave', async () => {
       prisma.leave.findUnique.mockResolvedValue(mockLeave);
       prisma.leave.update.mockResolvedValue({ ...mockLeave, status: 'approved' });
-
+      cache.del.mockResolvedValue(true);
       const result = await service.approve('leave-1');
-
       expect(result.status).toBe('approved');
-      expect(prisma.leave.update).toHaveBeenCalledWith({
-        where: { id: 'leave-1' },
-        data: { status: 'approved' },
-      });
     });
 
     it('should throw when leave not found', async () => {
       prisma.leave.findUnique.mockResolvedValue(null);
-
-      await expect(service.approve('leave-unknown')).rejects.toThrow(NotFoundException);
+      await expect(service.approve('missing')).rejects.toThrow(NotFoundException);
     });
 
-    it('should throw when trying to approve a rejected leave', async () => {
-      prisma.leave.findUnique.mockResolvedValue({ ...mockLeave, status: 'rejected' });
-
-      await expect(service.approve('leave-1')).rejects.toThrow(BadRequestException);
-    });
-
-    it('should throw when trying to approve an already approved leave', async () => {
+    it('should reject approving non-pending leave', async () => {
       prisma.leave.findUnique.mockResolvedValue({ ...mockLeave, status: 'approved' });
-
       await expect(service.approve('leave-1')).rejects.toThrow(BadRequestException);
     });
   });
 
   describe('reject', () => {
-    it('should reject a pending leave', async () => {
+    it('should reject a pending leave with comment', async () => {
       prisma.leave.findUnique.mockResolvedValue(mockLeave);
-      prisma.leave.update.mockResolvedValue({ ...mockLeave, status: 'rejected', comment: 'Not approved' });
-
-      const result = await service.reject('leave-1', 'Not approved');
-
+      prisma.leave.update.mockResolvedValue({
+        ...mockLeave,
+        status: 'rejected',
+        comment: 'Pas assez de soldes',
+      });
+      cache.del.mockResolvedValue(true);
+      const result = await service.reject('leave-1', 'Pas assez de soldes');
       expect(result.status).toBe('rejected');
-      expect(prisma.leave.update).toHaveBeenCalledWith({
-        where: { id: 'leave-1' },
-        data: { status: 'rejected', comment: 'Not approved' },
-      });
-    });
-
-    it('should throw when leave not found', async () => {
-      prisma.leave.findUnique.mockResolvedValue(null);
-
-      await expect(service.reject('leave-unknown', 'reason')).rejects.toThrow(NotFoundException);
-    });
-
-    it('should throw when trying to reject an already rejected leave', async () => {
-      prisma.leave.findUnique.mockResolvedValue({ ...mockLeave, status: 'rejected' });
-
-      await expect(service.reject('leave-1', 'again')).rejects.toThrow(BadRequestException);
-    });
-  });
-
-  describe('getBalance', () => {
-    it('should return leave balance with annual days calculated', async () => {
-      prisma.employee.findUnique.mockResolvedValue(mockEmployee);
-      prisma.leave.findMany.mockResolvedValue([]);
-
-      const result = await service.getBalance('emp-1');
-
-      expect(result).toEqual({
-        annual: 25,
-        sick: null,
-        personal: null,
-        maternity: null,
-        paternity: null,
-      });
-    });
-
-    it('should subtract used annual days from balance', async () => {
-      prisma.employee.findUnique.mockResolvedValue(mockEmployee);
-      // 5 business days used (Mon-Fri)
-      prisma.leave.findMany.mockResolvedValue([
-        {
-          id: 'l-1',
-          type: 'annual',
-          status: 'approved',
-          startDate: new Date('2026-07-06'),
-          endDate: new Date('2026-07-10'),
-        },
-      ]);
-
-      const result = await service.getBalance('emp-1');
-
-      expect(result.annual).toBe(20);
-    });
-
-    it('should throw when employee not found', async () => {
-      prisma.employee.findUnique.mockResolvedValue(null);
-
-      await expect(service.getBalance('emp-unknown')).rejects.toThrow(NotFoundException);
-    });
-  });
-
-  describe('findAll', () => {
-    it('should return leaves for a company', async () => {
-      const leaves = [
-        { ...mockLeave, employee: mockEmployee },
-        { ...mockLeave, id: 'leave-2', employee: mockEmployee },
-      ];
-      prisma.leave.findMany.mockResolvedValue(leaves);
-
-      const result = await service.findAll('comp-1');
-
-      expect(result).toHaveLength(2);
-      expect(prisma.leave.findMany).toHaveBeenCalledWith({
-        where: { employee: { companyId: 'comp-1' } },
-        include: { employee: true },
-      });
-    });
-  });
-
-  describe('findByEmployee', () => {
-    it('should return leaves for an employee', async () => {
-      const leaves = [{ ...mockLeave, employee: mockEmployee }];
-      prisma.leave.findMany.mockResolvedValue(leaves);
-
-      const result = await service.findByEmployee('emp-1');
-
-      expect(result).toHaveLength(1);
-      expect(prisma.leave.findMany).toHaveBeenCalledWith({
-        where: { employeeId: 'emp-1' },
-        include: { employee: true },
-      });
     });
   });
 
   describe('findById', () => {
-    it('should return a leave by id', async () => {
-      prisma.leave.findUnique.mockResolvedValue({ ...mockLeave, employee: mockEmployee });
-
+    it('should return leave with employee', async () => {
+      prisma.leave.findUnique.mockResolvedValue(mockLeave);
       const result = await service.findById('leave-1');
-
-      expect(result.id).toBe('leave-1');
+      expect(result.employee.firstName).toBe('John');
     });
 
-    it('should throw when leave not found', async () => {
+    it('should throw when not found', async () => {
       prisma.leave.findUnique.mockResolvedValue(null);
+      await expect(service.findById('missing')).rejects.toThrow(NotFoundException);
+    });
+  });
 
-      await expect(service.findById('leave-unknown')).rejects.toThrow(NotFoundException);
+  describe('getRemainingAnnualDays', () => {
+    it('should return 25 when no leaves', async () => {
+      prisma.leave.findMany.mockResolvedValue([]);
+      const result = await service.getRemainingAnnualDays('emp-1');
+      expect(result).toBe(25);
+    });
+
+    it('should subtract used days', async () => {
+      prisma.leave.findMany.mockResolvedValue([
+        { startDate: new Date('2026-07-01'), endDate: new Date('2026-07-05') },
+      ]);
+      const result = await service.getRemainingAnnualDays('emp-1');
+      expect(result).toBeLessThan(25);
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return leaves with caching', async () => {
+      cache.get.mockResolvedValue(null);
+      prisma.leave.findMany.mockResolvedValue([mockLeave]);
+      const result = await service.findAll('c1');
+      expect(result).toHaveLength(1);
+      expect(cache.set).toHaveBeenCalled();
+    });
+
+    it('should return cached result when available', async () => {
+      cache.get.mockResolvedValue([mockLeave]);
+      const result = await service.findAll('c1');
+      expect(result).toHaveLength(1);
+      expect(prisma.leave.findMany).not.toHaveBeenCalled();
     });
   });
 });

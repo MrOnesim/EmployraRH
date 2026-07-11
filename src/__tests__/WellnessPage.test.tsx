@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import WellnessPage from '../pages/WellnessPage';
 
+vi.mock('../hooks/usePageLoading', () => ({ usePageLoading: () => false }));
+
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
     currentUser: { id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' },
@@ -11,7 +13,14 @@ vi.mock('../context/AppContext', () => ({
 vi.mock('../context/DataContext', () => ({
   useData: () => ({
     wellnessSurveys: [
-      { id: 's1', title: 'Sondage mensuel', description: 'Comment allez-vous ?', questions: [], active: true, createdAt: new Date() },
+      {
+        id: 's1',
+        title: 'Sondage mensuel',
+        description: 'Comment allez-vous ?',
+        questions: [],
+        active: true,
+        createdAt: new Date(),
+      },
     ],
     wellnessResponses: [],
     employees: [{ id: 'emp1', firstName: 'Kofi', lastName: 'Mensah' }],

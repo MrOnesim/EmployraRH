@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import TrainingPage from '../pages/TrainingPage';
 
+vi.mock('../hooks/usePageLoading', () => ({ usePageLoading: () => false }));
+
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
     currentUser: { id: '1', firstName: 'Kofi', lastName: 'Mensah' },
@@ -20,7 +22,14 @@ vi.mock('../context/DataContext', () => ({
         instructor: 'Kwame Adjei',
         enrolledCount: 3,
         lessons: [
-          { id: 'l1', courseId: '1', title: 'Les fondamentaux', content: 'JSX', duration: 4, order: 1 },
+          {
+            id: 'l1',
+            courseId: '1',
+            title: 'Les fondamentaux',
+            content: 'JSX',
+            duration: 4,
+            order: 1,
+          },
         ],
         createdAt: new Date('2024-06-01'),
       },

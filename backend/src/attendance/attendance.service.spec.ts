@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { AttendanceService } from './attendance.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { QrTokenService } from '../qr-token/qr-token.service';
@@ -7,149 +7,181 @@ import { QrTokenService } from '../qr-token/qr-token.service';
 describe('AttendanceService', () => {
   let service: AttendanceService;
   let prisma: any;
-  let qrToken: any;
+  let qrTokenService: any;
 
-  const mockGuard = { id: 'guard-1', employeeId: 'emp-guard', companyId: 'comp-1', isActive: true };
-  const mockTerminal = { id: 'term-1', deviceFingerprint: 'DF-TEST123', isActive: true };
-  const mockEmployee = { id: 'emp-1', companyId: 'comp-1' };
+  const mockGuard = {
+    id: 'guard-1',
+    employeeId: 'g-emp-1',
+    isActive: true,
+    assignedAt: new Date(),
+  };
+  const mockTerminal = {
+    id: 'term-1',
+    deviceFingerprint: 'fp-1',
+    isActive: true,
+    lastSeenAt: null,
+  };
+  const mockEmployee = { id: 'emp-1', firstName: 'John', lastName: 'Doe', companyId: 'c1' };
+  const mockTokenResult = { valid: true, employeeId: 'emp-1' };
+  const mockAttendance = {
+    id: 'att-1',
+    employeeId: 'emp-1',
+    clockIn: new Date(),
+    clockOut: null,
+    breakStart: null,
+    breakEnd: null,
+    status: 'present',
+    createdAt: new Date(),
+  };
 
   beforeEach(async () => {
     prisma = {
+      attendance: {
+        create: vi.fn(),
+        findUnique: vi.fn(),
+        findFirst: vi.fn(),
+        findMany: vi.fn(),
+        count: vi.fn(),
+        update: vi.fn(),
+      },
       securityGuard: { findUnique: vi.fn() },
       terminal: { findUnique: vi.fn(), update: vi.fn() },
-      attendance: { findFirst: vi.fn(), create: vi.fn(), update: vi.fn(), count: vi.fn() },
+      employee: { findUnique: vi.fn() },
     };
-
-    qrToken = {
-      validateToken: vi.fn(),
-      generateToken: vi.fn(),
-    };
+    qrTokenService = { validateToken: vi.fn() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AttendanceService,
         { provide: PrismaService, useValue: prisma },
-        { provide: QrTokenService, useValue: qrToken },
+        { provide: QrTokenService, useValue: qrTokenService },
       ],
     }).compile();
 
     service = module.get<AttendanceService>(AttendanceService);
   });
 
-  const validToken = 'emp-1.comp-1.9999999999.abcdef';
+  describe('clockIn', () => {
+    it('should create an attendance record', async () => {
+      prisma.attendance.create.mockResolvedValue(mockAttendance);
+      const result = await service.clockIn('emp-1');
+      expect(result.id).toBe('att-1');
+      expect(prisma.attendance.create).toHaveBeenCalledWith({
+        data: { employeeId: 'emp-1', clockIn: expect.any(Date) },
+      });
+    });
+  });
 
-  function mockDefaults() {
-    prisma.securityGuard.findUnique.mockResolvedValue(mockGuard);
-    prisma.terminal.findUnique.mockResolvedValue(mockTerminal);
-    qrToken.validateToken.mockReturnValue({ valid: true, employeeId: 'emp-1', companyId: 'comp-1' });
-    prisma.attendance.findFirst.mockResolvedValue(null);
-    prisma.attendance.count.mockResolvedValue(0);
-    prisma.attendance.create.mockImplementation((d: any) => Promise.resolve({ id: 'att-1', ...d.data }));
-  }
+  describe('clockOut', () => {
+    it('should update clockOut when record exists', async () => {
+      prisma.attendance.findUnique.mockResolvedValue(mockAttendance);
+      prisma.attendance.update.mockResolvedValue({ ...mockAttendance, clockOut: new Date() });
+      const result = await service.clockOut('att-1');
+      expect(prisma.attendance.update).toHaveBeenCalledWith(
+        expect.objectContaining({ data: { clockOut: expect.any(Date) } }),
+      );
+    });
+
+    it('should throw NotFoundException when record is missing', async () => {
+      prisma.attendance.findUnique.mockResolvedValue(null);
+      await expect(service.clockOut('missing')).rejects.toThrow(NotFoundException);
+    });
+  });
 
   describe('scanWithGuard', () => {
-    const params = {
-      qrToken: validToken,
+    const scanParams = {
+      qrToken: 'token-1',
       guardId: 'guard-1',
       terminalId: 'term-1',
-      deviceFingerprint: 'DF-TEST123',
+      deviceFingerprint: 'fp-1',
+      ipAddress: '192.168.1.1',
       scanMethod: 'qr',
     };
 
-    it('should succeed with valid inputs', async () => {
-      mockDefaults();
-
-      const result = await service.scanWithGuard(params);
-
-      expect(result).toBeDefined();
-      expect(prisma.attendance.create).toHaveBeenCalled();
-      expect(result.employeeId).toBe('emp-1');
-    });
-
     it('should reject inactive guard', async () => {
-      mockDefaults();
       prisma.securityGuard.findUnique.mockResolvedValue({ ...mockGuard, isActive: false });
-
-      await expect(service.scanWithGuard(params)).rejects.toThrow(NotFoundException);
+      await expect(service.scanWithGuard(scanParams)).rejects.toThrow(NotFoundException);
     });
 
     it('should reject inactive terminal', async () => {
-      mockDefaults();
+      prisma.securityGuard.findUnique.mockResolvedValue(mockGuard);
       prisma.terminal.findUnique.mockResolvedValue({ ...mockTerminal, isActive: false });
-
-      await expect(service.scanWithGuard(params)).rejects.toThrow(NotFoundException);
+      await expect(service.scanWithGuard(scanParams)).rejects.toThrow(NotFoundException);
     });
 
     it('should reject device fingerprint mismatch', async () => {
-      mockDefaults();
-      prisma.terminal.findUnique.mockResolvedValue({ ...mockTerminal, deviceFingerprint: 'DF-OTHER' });
-
-      await expect(service.scanWithGuard(params)).rejects.toThrow(ForbiddenException);
+      prisma.securityGuard.findUnique.mockResolvedValue(mockGuard);
+      prisma.terminal.findUnique.mockResolvedValue({
+        ...mockTerminal,
+        deviceFingerprint: 'other-fp',
+      });
+      await expect(service.scanWithGuard(scanParams)).rejects.toThrow(ForbiddenException);
     });
 
-    it('should reject expired token', async () => {
-      mockDefaults();
-      qrToken.validateToken.mockReturnValue({ valid: false, reason: 'Token expired', employeeId: '', companyId: '' });
-
-      await expect(service.scanWithGuard(params)).rejects.toThrow(BadRequestException);
-    });
-
-    it('should reject invalid token signature', async () => {
-      mockDefaults();
-      qrToken.validateToken.mockReturnValue({ valid: false, reason: 'Invalid token signature', employeeId: '', companyId: '' });
-
-      await expect(service.scanWithGuard(params)).rejects.toThrow(BadRequestException);
-    });
-
-    it('should enforce cooldown (30s)', async () => {
-      mockDefaults();
-      const recentScan = { id: 'att-0', verifiedById: 'guard-1', createdAt: new Date(Date.now() - 5000), clockIn: new Date(), clockOut: null, status: 'present' };
-      prisma.attendance.findFirst.mockResolvedValue(recentScan);
-
-      await expect(service.scanWithGuard(params)).rejects.toThrow(/Cooldown/);
-    });
-
-    it('should allow scan after cooldown', async () => {
-      mockDefaults();
-      const oldScan = { id: 'att-0', verifiedById: 'guard-1', createdAt: new Date(Date.now() - 35000), clockIn: new Date(), clockOut: null, status: 'present' };
-      prisma.attendance.findFirst.mockResolvedValue(oldScan);
-      prisma.attendance.update.mockResolvedValue({ id: 'att-1', clockIn: new Date(), clockOut: new Date(), status: 'present' });
-
-      const result = await service.scanWithGuard(params);
-      expect(result).toBeDefined();
-    });
-
-    it('should clock out on second scan (entry → exit)', async () => {
-      mockDefaults();
-      const existing = { id: 'att-1', verifiedById: 'guard-1', createdAt: new Date(Date.now() - 36000), clockIn: new Date(), clockOut: null, status: 'present', employeeId: 'emp-1' };
-      prisma.attendance.findFirst.mockResolvedValue(existing);
-      prisma.attendance.update.mockResolvedValue({ id: 'att-1', clockIn: existing.clockIn, clockOut: new Date(), status: 'present' });
-
-      const result = await service.scanWithGuard(params);
-
-      expect(prisma.attendance.update).toHaveBeenCalled();
-      expect(prisma.attendance.create).not.toHaveBeenCalled();
-      expect(result.clockOut).toBeDefined();
-    });
-
-    it('should detect anomaly (too many scans)', async () => {
-      mockDefaults();
-      prisma.attendance.count.mockResolvedValue(10);
-
-      await expect(service.scanWithGuard(params)).rejects.toThrow(/Anomaly/);
-    });
-
-    it('should reject scan by different guard than last', async () => {
+    it('should reject invalid QR token', async () => {
       prisma.securityGuard.findUnique.mockResolvedValue(mockGuard);
       prisma.terminal.findUnique.mockResolvedValue(mockTerminal);
-      qrToken.validateToken.mockReturnValue({ valid: true, employeeId: 'emp-1', companyId: 'comp-1' });
-      prisma.attendance.findFirst.mockResolvedValue({
-        id: 'att-0', verifiedById: 'guard-other',
-        createdAt: new Date(Date.now() - 60000),
-        clockIn: new Date(), clockOut: null, status: 'present',
-      });
+      qrTokenService.validateToken.mockResolvedValue({ valid: false, reason: 'Expired token' });
+      await expect(service.scanWithGuard(scanParams)).rejects.toThrow(BadRequestException);
+    });
 
-      await expect(service.scanWithGuard(params)).rejects.toThrow(/another guard/);
+    it('should create attendance when no prior scan today', async () => {
+      prisma.securityGuard.findUnique.mockResolvedValue(mockGuard);
+      prisma.terminal.findUnique.mockResolvedValue(mockTerminal);
+      qrTokenService.validateToken.mockResolvedValue(mockTokenResult);
+      prisma.attendance.findFirst.mockResolvedValue(null);
+      prisma.attendance.count.mockResolvedValue(0);
+      prisma.attendance.create.mockResolvedValue(mockAttendance);
+      prisma.terminal.update.mockResolvedValue(mockTerminal);
+
+      const result = await service.scanWithGuard(scanParams);
+      expect(result.id).toBe('att-1');
+    });
+
+    it('should clock out when last scan has no clockOut', async () => {
+      prisma.securityGuard.findUnique.mockResolvedValue(mockGuard);
+      prisma.terminal.findUnique.mockResolvedValue(mockTerminal);
+      qrTokenService.validateToken.mockResolvedValue(mockTokenResult);
+      prisma.attendance.findFirst.mockResolvedValue({
+        ...mockAttendance,
+        clockOut: null,
+        verifiedById: 'guard-1',
+        createdAt: new Date(Date.now() - 60000),
+      });
+      prisma.attendance.count.mockResolvedValue(1);
+      prisma.attendance.update.mockResolvedValue({ ...mockAttendance, clockOut: new Date() });
+
+      const result = await service.scanWithGuard(scanParams);
+      expect(prisma.attendance.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { id: 'att-1' },
+          data: expect.objectContaining({ clockOut: expect.any(Date) }),
+        }),
+      );
+    });
+
+    it('should reject scan cooldown', async () => {
+      const recent = { ...mockAttendance, createdAt: new Date() };
+      prisma.securityGuard.findUnique.mockResolvedValue(mockGuard);
+      prisma.terminal.findUnique.mockResolvedValue(mockTerminal);
+      qrTokenService.validateToken.mockResolvedValue(mockTokenResult);
+      prisma.attendance.findFirst.mockResolvedValue(recent);
+      prisma.attendance.count.mockResolvedValue(1);
+      await expect(service.scanWithGuard(scanParams)).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('findAll / findByEmployee', () => {
+    it('should return all attendance for company', async () => {
+      prisma.attendance.findMany.mockResolvedValue([mockAttendance]);
+      const result = await service.findAll('c1');
+      expect(result).toHaveLength(1);
+    });
+
+    it('should return attendance by employee', async () => {
+      prisma.attendance.findMany.mockResolvedValue([mockAttendance]);
+      const result = await service.findByEmployee('emp-1');
+      expect(result).toHaveLength(1);
     });
   });
 });

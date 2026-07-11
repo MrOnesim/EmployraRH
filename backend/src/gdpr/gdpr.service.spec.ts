@@ -4,6 +4,10 @@ import * as bcrypt from 'bcryptjs';
 import { GdprService } from './gdpr.service';
 import { PrismaService } from '../prisma/prisma.service';
 
+vi.mock('bcryptjs', () => ({
+  compare: vi.fn(),
+}));
+
 describe('GdprService', () => {
   let service: GdprService;
   let prisma: any;
@@ -64,7 +68,7 @@ describe('GdprService', () => {
   describe('eraseOwnAccount', () => {
     it('should soft-delete when password is valid', async () => {
       prisma.user.findUnique.mockResolvedValue(mockUser);
-      vi.spyOn(bcrypt, 'compare').mockResolvedValue(true);
+      vi.mocked(bcrypt.compare).mockResolvedValue(true);
       prisma.employee.updateMany.mockResolvedValue({ count: 0 });
       prisma.user.update.mockResolvedValue({ ...mockUser, deletedAt: new Date() });
       prisma.gdprAccessLog.create.mockResolvedValue({ id: 'log-1' });
@@ -79,7 +83,7 @@ describe('GdprService', () => {
 
     it('should throw UnauthorizedException when password is invalid', async () => {
       prisma.user.findUnique.mockResolvedValue(mockUser);
-      vi.spyOn(bcrypt, 'compare').mockResolvedValue(false);
+      vi.mocked(bcrypt.compare).mockResolvedValue(false);
       await expect(service.eraseOwnAccount('user-1', 'wrong')).rejects.toThrow(
         UnauthorizedException,
       );

@@ -2,6 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import TaxPage from '../pages/TaxPage';
 
+vi.mock('../hooks/usePageLoading', () => ({ usePageLoading: () => false }));
+
 vi.mock('../context/AppContext', () => ({
   useApp: () => ({
     currentCompany: { id: '1', name: 'GlobalTech' },
