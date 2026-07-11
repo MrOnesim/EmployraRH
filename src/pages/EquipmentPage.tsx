@@ -4,23 +4,43 @@ import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
 import { usePageLoading } from '../hooks/usePageLoading';
 import { LoadingScreen } from '../components/ui';
-import {
-  Monitor, Smartphone, Car, CreditCard, Wrench, Plus, Search,
-} from 'lucide-react';
+import { Monitor, Smartphone, Car, CreditCard, Wrench, Plus, Search } from 'lucide-react';
 import Badge from '../components/Badge';
 import Modal from '../components/Modal';
 import { cn } from '../utils/cn';
 import type { Equipment } from '../types';
 
-const TYPE_CONFIG: Record<Equipment['type'], { label: string; icon: typeof Monitor; color: string }> = {
-  computer: { label: 'Ordinateur', icon: Monitor, color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30' },
-  phone: { label: 'Téléphone', icon: Smartphone, color: 'text-green-600 bg-green-100 dark:bg-green-900/30' },
-  vehicle: { label: 'Véhicule', icon: Car, color: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30' },
-  access_card: { label: 'Badge', icon: CreditCard, color: 'text-purple-600 bg-purple-100 dark:bg-purple-900/30' },
+const TYPE_CONFIG: Record<
+  Equipment['type'],
+  { label: string; icon: typeof Monitor; color: string }
+> = {
+  computer: {
+    label: 'Ordinateur',
+    icon: Monitor,
+    color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30',
+  },
+  phone: {
+    label: 'Téléphone',
+    icon: Smartphone,
+    color: 'text-green-600 bg-green-100 dark:bg-green-900/30',
+  },
+  vehicle: {
+    label: 'Véhicule',
+    icon: Car,
+    color: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30',
+  },
+  access_card: {
+    label: 'Badge',
+    icon: CreditCard,
+    color: 'text-purple-600 bg-purple-100 dark:bg-purple-900/30',
+  },
   other: { label: 'Autre', icon: Wrench, color: 'text-gray-600 bg-gray-100 dark:bg-gray-900/30' },
 };
 
-const STATUS_BADGE: Record<Equipment['status'], { label: string; variant: 'green' | 'blue' | 'yellow' | 'gray' }> = {
+const STATUS_BADGE: Record<
+  Equipment['status'],
+  { label: string; variant: 'green' | 'blue' | 'yellow' | 'gray' }
+> = {
   available: { label: 'Disponible', variant: 'green' },
   assigned: { label: 'Assigné', variant: 'blue' },
   maintenance: { label: 'En maintenance', variant: 'yellow' },
@@ -70,7 +90,14 @@ const DEFAULT_FORM: Omit<Equipment, 'id'> = {
 
 export default function EquipmentPage() {
   const { currentUser } = useApp();
-  const { equipment, equipmentAssignments, addEquipment, assignEquipment, returnEquipment, employees } = useData();
+  const {
+    equipment,
+    equipmentAssignments,
+    addEquipment,
+    assignEquipment,
+    returnEquipment,
+    employees,
+  } = useData();
   const { addToast } = useToast();
   const loading = usePageLoading();
 
@@ -155,14 +182,19 @@ export default function EquipmentPage() {
   if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Gestion du matériel</h1>
-          <p className="text-gray-500 dark:text-gray-400">Suivez et gérez les équipements de l'entreprise</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            Suivez et gérez les équipements de l'entreprise
+          </p>
         </div>
         <button
-          onClick={() => { resetForm(); setShowAddModal(true); }}
-          className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+          onClick={() => {
+            resetForm();
+            setShowAddModal(true);
+          }}
+          className="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto"
         >
           <Plus size={18} />
           <span>Ajouter un équipement</span>
@@ -221,11 +253,21 @@ export default function EquipmentPage() {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-gray-700/50">
               <tr>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Équipement</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">N° Série</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Statut</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Assigné à</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">État</th>
+                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Équipement
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  N° Série
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Statut
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Assigné à
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  État
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -244,7 +286,9 @@ export default function EquipmentPage() {
                         <div className={cn('p-2 rounded-lg', typeCfg.color)}>
                           <TypeIcon size={18} />
                         </div>
-                        <span className="text-sm font-medium text-gray-800 dark:text-white">{eq.name}</span>
+                        <span className="text-sm font-medium text-gray-800 dark:text-white">
+                          {eq.name}
+                        </span>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 font-mono">
@@ -257,7 +301,9 @@ export default function EquipmentPage() {
                       {getEmployeeName(eq.assigneeId)}
                     </td>
                     <td className="px-4 py-3">
-                      <Badge variant={CONDITION_VARIANTS[eq.condition]}>{CONDITION_LABELS[eq.condition]}</Badge>
+                      <Badge variant={CONDITION_VARIANTS[eq.condition]}>
+                        {CONDITION_LABELS[eq.condition]}
+                      </Badge>
                     </td>
                   </tr>
                 );
@@ -272,10 +318,17 @@ export default function EquipmentPage() {
         )}
       </div>
 
-      <Modal open={showAddModal} onClose={() => setShowAddModal(false)} title="Ajouter un équipement" maxWidth="lg">
+      <Modal
+        open={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Ajouter un équipement"
+        maxWidth="lg"
+      >
         <form onSubmit={handleAddEquipment} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom *</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Nom *
+            </label>
             <input
               type="text"
               required
@@ -287,7 +340,9 @@ export default function EquipmentPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Type
+              </label>
               <select
                 value={form.type}
                 onChange={(e) => setForm({ ...form, type: e.target.value as Equipment['type'] })}
@@ -301,7 +356,9 @@ export default function EquipmentPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Numéro de série</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Numéro de série
+              </label>
               <input
                 type="text"
                 value={form.serialNumber}
@@ -313,20 +370,36 @@ export default function EquipmentPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date d'achat</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Date d'achat
+              </label>
               <input
                 type="date"
-                value={form.purchaseDate ? new Date(form.purchaseDate).toISOString().split('T')[0] : ''}
-                onChange={(e) => setForm({ ...form, purchaseDate: e.target.value ? new Date(e.target.value) : undefined })}
+                value={
+                  form.purchaseDate ? new Date(form.purchaseDate).toISOString().split('T')[0] : ''
+                }
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    purchaseDate: e.target.value ? new Date(e.target.value) : undefined,
+                  })
+                }
                 className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prix d'achat (FCFA)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Prix d'achat (FCFA)
+              </label>
               <input
                 type="number"
                 value={form.purchasePrice ?? ''}
-                onChange={(e) => setForm({ ...form, purchasePrice: e.target.value ? Number(e.target.value) : undefined })}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    purchasePrice: e.target.value ? Number(e.target.value) : undefined,
+                  })
+                }
                 min={0}
                 placeholder="0"
                 className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
@@ -334,10 +407,14 @@ export default function EquipmentPage() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">État</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              État
+            </label>
             <select
               value={form.condition}
-              onChange={(e) => setForm({ ...form, condition: e.target.value as Equipment['condition'] })}
+              onChange={(e) =>
+                setForm({ ...form, condition: e.target.value as Equipment['condition'] })
+              }
               className="w-full px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
             >
               <option value="good">Bon état</option>
@@ -346,7 +423,9 @@ export default function EquipmentPage() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Notes
+            </label>
             <textarea
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
@@ -373,7 +452,15 @@ export default function EquipmentPage() {
         </form>
       </Modal>
 
-      <Modal open={!!selectedEq && !showAssignModal} onClose={() => { setSelectedEq(null); setShowReturnForm(false); }} title={selectedEq?.name ?? ''} maxWidth="lg">
+      <Modal
+        open={!!selectedEq && !showAssignModal}
+        onClose={() => {
+          setSelectedEq(null);
+          setShowReturnForm(false);
+        }}
+        title={selectedEq?.name ?? ''}
+        maxWidth="lg"
+      >
         {selectedEq && (
           <div className="space-y-5">
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -385,7 +472,9 @@ export default function EquipmentPage() {
               </div>
               <div>
                 <span className="text-gray-400 dark:text-gray-500">N° de série</span>
-                <p className="text-gray-800 dark:text-white font-mono">{selectedEq.serialNumber || '-'}</p>
+                <p className="text-gray-800 dark:text-white font-mono">
+                  {selectedEq.serialNumber || '-'}
+                </p>
               </div>
               <div>
                 <span className="text-gray-400 dark:text-gray-500">Statut</span>
@@ -422,7 +511,9 @@ export default function EquipmentPage() {
               {selectedEq.assigneeId && (
                 <div className="col-span-2">
                   <span className="text-gray-400 dark:text-gray-500">Assigné à</span>
-                  <p className="text-gray-800 dark:text-white font-medium">{getEmployeeName(selectedEq.assigneeId)}</p>
+                  <p className="text-gray-800 dark:text-white font-medium">
+                    {getEmployeeName(selectedEq.assigneeId)}
+                  </p>
                 </div>
               )}
               {selectedEq.notes && (
@@ -434,15 +525,22 @@ export default function EquipmentPage() {
             </div>
 
             <div>
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Historique des assignations</h4>
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                Historique des assignations
+              </h4>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {getAssignmentsForEquipment(selectedEq.id).length === 0 && (
                   <p className="text-sm text-gray-400 dark:text-gray-500">Aucun historique</p>
                 )}
                 {getAssignmentsForEquipment(selectedEq.id).map((a) => (
-                  <div key={a.id} className="flex items-center justify-between text-sm bg-gray-50 dark:bg-gray-700/30 rounded-lg p-2">
+                  <div
+                    key={a.id}
+                    className="flex items-center justify-between text-sm bg-gray-50 dark:bg-gray-700/30 rounded-lg p-2"
+                  >
                     <div>
-                      <p className="text-gray-800 dark:text-white font-medium">{getEmployeeName(a.employeeId)}</p>
+                      <p className="text-gray-800 dark:text-white font-medium">
+                        {getEmployeeName(a.employeeId)}
+                      </p>
                       <p className="text-gray-400 dark:text-gray-500 text-xs">
                         {new Date(a.assignedAt).toLocaleDateString('fr-FR')}
                         {a.returnedAt && ` → ${new Date(a.returnedAt).toLocaleDateString('fr-FR')}`}
@@ -454,7 +552,8 @@ export default function EquipmentPage() {
                       </Badge>
                       {a.conditionAtReturn && (
                         <span className="text-gray-400 dark:text-gray-500 ml-1">
-                          → <Badge variant={CONDITION_VARIANTS[a.conditionAtReturn]}>
+                          →{' '}
+                          <Badge variant={CONDITION_VARIANTS[a.conditionAtReturn]}>
                             {CONDITION_LABELS[a.conditionAtReturn]}
                           </Badge>
                         </span>
@@ -468,7 +567,10 @@ export default function EquipmentPage() {
             <div className="flex space-x-3 pt-2 border-t border-gray-100 dark:border-gray-700">
               {selectedEq.status === 'available' && (
                 <button
-                  onClick={() => { setAssignEmployeeId(''); setShowAssignModal(true); }}
+                  onClick={() => {
+                    setAssignEmployeeId('');
+                    setShowAssignModal(true);
+                  }}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-medium transition-colors"
                 >
                   Assigner à un employé
@@ -476,7 +578,10 @@ export default function EquipmentPage() {
               )}
               {selectedEq.status === 'assigned' && !showReturnForm && (
                 <button
-                  onClick={() => { setReturnCondition('good'); setShowReturnForm(true); }}
+                  onClick={() => {
+                    setReturnCondition('good');
+                    setShowReturnForm(true);
+                  }}
                   className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg text-sm font-medium transition-colors"
                 >
                   Marquer comme retourné
@@ -485,7 +590,9 @@ export default function EquipmentPage() {
               {selectedEq.status === 'assigned' && showReturnForm && (
                 <div className="col-span-full space-y-3">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">État au retour</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                      État au retour
+                    </label>
                     <select
                       value={returnCondition}
                       onChange={(e) => setReturnCondition(e.target.value as Equipment['condition'])}
@@ -504,7 +611,10 @@ export default function EquipmentPage() {
                       Annuler
                     </button>
                     <button
-                      onClick={() => { handleReturn(); setShowReturnForm(false); }}
+                      onClick={() => {
+                        handleReturn();
+                        setShowReturnForm(false);
+                      }}
                       className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg text-sm font-medium transition-colors"
                     >
                       Confirmer le retour
@@ -513,7 +623,10 @@ export default function EquipmentPage() {
                 </div>
               )}
               <button
-                onClick={() => { setSelectedEq(null); setShowReturnForm(false); }}
+                onClick={() => {
+                  setSelectedEq(null);
+                  setShowReturnForm(false);
+                }}
                 className="flex-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 py-2 rounded-lg text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
               >
                 Fermer
@@ -523,10 +636,17 @@ export default function EquipmentPage() {
         )}
       </Modal>
 
-      <Modal open={showAssignModal} onClose={() => setShowAssignModal(false)} title="Assigner un équipement" maxWidth="md">
+      <Modal
+        open={showAssignModal}
+        onClose={() => setShowAssignModal(false)}
+        title="Assigner un équipement"
+        maxWidth="md"
+      >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Employé</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Employé
+            </label>
             <select
               value={assignEmployeeId}
               onChange={(e) => setAssignEmployeeId(e.target.value)}

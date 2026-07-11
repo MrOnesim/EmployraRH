@@ -41,7 +41,7 @@ export default function LoginPage() {
         </div>
 
         {/* Login Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sm:p-8">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">Connexion</h2>
 
           {/* Login Type Toggle */}
@@ -50,27 +50,27 @@ export default function LoginPage() {
               type="button"
               onClick={() => setLoginType('company')}
               aria-pressed={loginType === 'company'}
-              className={`flex-1 flex items-center justify-center space-x-2 py-2 px-4 rounded-md transition-all ${
+              className={`flex-1 flex items-center justify-center space-x-1.5 sm:space-x-2 py-2 px-3 sm:px-4 rounded-md transition-all ${
                 loginType === 'company'
                   ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
-              <Building2 size={18} />
-              <span className="font-medium">Entreprise</span>
+              <Building2 size={16} className="shrink-0" />
+              <span className="font-medium text-sm sm:text-base">Entreprise</span>
             </button>
             <button
               type="button"
               onClick={() => setLoginType('employee')}
               aria-pressed={loginType === 'employee'}
-              className={`flex-1 flex items-center justify-center space-x-2 py-2 px-4 rounded-md transition-all ${
+              className={`flex-1 flex items-center justify-center space-x-1.5 sm:space-x-2 py-2 px-3 sm:px-4 rounded-md transition-all ${
                 loginType === 'employee'
                   ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm'
                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
               }`}
             >
-              <User size={18} />
-              <span className="font-medium">Employé</span>
+              <User size={16} className="shrink-0" />
+              <span className="font-medium text-sm sm:text-base">Employé</span>
             </button>
           </div>
 
@@ -207,13 +207,13 @@ export default function LoginPage() {
               }}
               className="w-full flex items-center justify-between px-4 py-3 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors text-left"
             >
-              <div>
+              <div className="min-w-0">
                 <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Admin</span>
-                <p className="text-sm text-gray-700 dark:text-gray-300 font-mono">
+                <p className="text-sm text-gray-700 dark:text-gray-300 font-mono truncate">
                   admin@globaltech.com
                 </p>
               </div>
-              <span className="text-blue-600 text-xs font-medium shrink-0 ml-2">
+              <span className="text-blue-600 text-xs font-medium shrink-0 ml-2 whitespace-nowrap">
                 Se connecter →
               </span>
             </button>
@@ -228,15 +228,15 @@ export default function LoginPage() {
               }}
               className="w-full flex items-center justify-between px-4 py-3 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition-colors text-left"
             >
-              <div>
+              <div className="min-w-0">
                 <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                   Employé
                 </span>
-                <p className="text-sm text-gray-700 dark:text-gray-300 font-mono">
+                <p className="text-sm text-gray-700 dark:text-gray-300 font-mono truncate">
                   ama@globaltech.com
                 </p>
               </div>
-              <span className="text-green-600 text-xs font-medium shrink-0 ml-2">
+              <span className="text-green-600 text-xs font-medium shrink-0 ml-2 whitespace-nowrap">
                 Se connecter →
               </span>
             </button>

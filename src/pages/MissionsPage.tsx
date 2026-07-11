@@ -5,24 +5,36 @@ import { useToast } from '../context/ToastContext';
 import { usePageLoading } from '../hooks/usePageLoading';
 import { LoadingScreen } from '../components/ui';
 import {
-  Plane, Receipt, Plus, CheckCircle, XCircle, MapPin, Calendar, DollarSign, FileText
+  Plane,
+  Receipt,
+  Plus,
+  CheckCircle,
+  XCircle,
+  MapPin,
+  Calendar,
+  DollarSign,
+  FileText,
 } from 'lucide-react';
 import Modal from '../components/Modal';
 import Badge from '../components/Badge';
 import { exportMissionsPdf, exportExpensesPdf } from '../utils/pdfExport';
 
-const missionStatusConfig: Record<string, { label: string; variant: 'yellow' | 'green' | 'red' | 'blue' }> = {
+const missionStatusConfig: Record<
+  string,
+  { label: string; variant: 'yellow' | 'green' | 'red' | 'blue' }
+> = {
   pending: { label: 'En attente', variant: 'yellow' },
   approved: { label: 'Approuvée', variant: 'green' },
   rejected: { label: 'Refusée', variant: 'red' },
   completed: { label: 'Terminée', variant: 'blue' },
 };
 
-const expenseStatusConfig: Record<string, { label: string; variant: 'yellow' | 'green' | 'red' }> = {
-  pending: { label: 'En attente', variant: 'yellow' },
-  approved: { label: 'Approuvée', variant: 'green' },
-  rejected: { label: 'Refusée', variant: 'red' },
-};
+const expenseStatusConfig: Record<string, { label: string; variant: 'yellow' | 'green' | 'red' }> =
+  {
+    pending: { label: 'En attente', variant: 'yellow' },
+    approved: { label: 'Approuvée', variant: 'green' },
+    rejected: { label: 'Refusée', variant: 'red' },
+  };
 
 const defaultMissionForm = {
   title: '',
@@ -46,13 +58,20 @@ const defaultExpenseForm = {
 const transportTypes = ['Avion', 'Train', 'Voiture', 'Bus', 'Bateau', 'Autre'];
 
 const expenseCategories = [
-  'Transport', 'Hébergement', 'Restauration', 'Carburant', 'Péage',
-  'Communication', 'Fournitures', 'Autre',
+  'Transport',
+  'Hébergement',
+  'Restauration',
+  'Carburant',
+  'Péage',
+  'Communication',
+  'Fournitures',
+  'Autre',
 ];
 
 export default function MissionsPage() {
   const { currentUser } = useApp();
-  const { employees, missions, expenses, addMission, updateMission, addExpense, updateExpense } = useData();
+  const { employees, missions, expenses, addMission, updateMission, addExpense, updateExpense } =
+    useData();
   const { addToast } = useToast();
   const loading = usePageLoading();
   const [activeTab, setActiveTab] = useState<'missions' | 'expenses'>('missions');
@@ -78,7 +97,12 @@ export default function MissionsPage() {
   };
 
   const handleSaveMission = () => {
-    if (!missionForm.title.trim() || !missionForm.destination.trim() || !missionForm.startDate || !missionForm.endDate) {
+    if (
+      !missionForm.title.trim() ||
+      !missionForm.destination.trim() ||
+      !missionForm.startDate ||
+      !missionForm.endDate
+    ) {
       addToast('Veuillez remplir tous les champs obligatoires', 'error');
       return;
     }
@@ -143,7 +167,10 @@ export default function MissionsPage() {
   const handleExpenseAction = (id: string, status: 'approved' | 'rejected') => {
     try {
       updateExpense(id, { status, approvedBy: currentUser?.id });
-      addToast(status === 'approved' ? 'Note de frais approuvée' : 'Note de frais refusée', 'success');
+      addToast(
+        status === 'approved' ? 'Note de frais approuvée' : 'Note de frais refusée',
+        'success',
+      );
     } catch {
       addToast('Erreur lors de la mise à jour de la note de frais', 'error');
     }
@@ -153,7 +180,9 @@ export default function MissionsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Missions & Notes de frais</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+          Missions & Notes de frais
+        </h1>
         <p className="text-gray-500 dark:text-gray-400">Gérez les missions et les notes de frais</p>
       </div>
 
@@ -184,7 +213,7 @@ export default function MissionsPage() {
 
       {activeTab === 'missions' && (
         <>
-          <div className="flex justify-end space-x-3">
+          <div className="flex flex-wrap justify-end gap-2">
             <button
               onClick={() => exportMissionsPdf(missions)}
               className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors"
@@ -216,7 +245,9 @@ export default function MissionsPage() {
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-2 mb-2">
-                      <h3 className="font-semibold text-gray-800 dark:text-gray-100">{mission.title}</h3>
+                      <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+                        {mission.title}
+                      </h3>
                       <Badge variant={missionStatusConfig[mission.status].variant}>
                         {missionStatusConfig[mission.status].label}
                       </Badge>
@@ -228,7 +259,9 @@ export default function MissionsPage() {
                       </span>
                       <span className="flex items-center space-x-1">
                         <Calendar size={14} />
-                        <span>{formatDate(mission.startDate)} - {formatDate(mission.endDate)}</span>
+                        <span>
+                          {formatDate(mission.startDate)} - {formatDate(mission.endDate)}
+                        </span>
                       </span>
                       <span className="flex items-center space-x-1">
                         <DollarSign size={14} />
@@ -239,7 +272,9 @@ export default function MissionsPage() {
                       </span>
                     </div>
                     {mission.objectives && (
-                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{mission.objectives}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+                        {mission.objectives}
+                      </p>
                     )}
                     <p className="text-xs text-gray-400 mt-1">
                       {getEmployeeName(mission.employeeId)}
@@ -276,7 +311,9 @@ export default function MissionsPage() {
           >
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Titre *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Titre *
+                </label>
                 <input
                   type="text"
                   value={missionForm.title}
@@ -286,7 +323,9 @@ export default function MissionsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Destination *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Destination *
+                </label>
                 <input
                   type="text"
                   value={missionForm.destination}
@@ -297,7 +336,9 @@ export default function MissionsPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date de début *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Date de début *
+                  </label>
                   <input
                     type="date"
                     value={missionForm.startDate}
@@ -306,7 +347,9 @@ export default function MissionsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date de fin *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Date de fin *
+                  </label>
                   <input
                     type="date"
                     value={missionForm.endDate}
@@ -316,7 +359,9 @@ export default function MissionsPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Objectifs</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Objectifs
+                </label>
                 <textarea
                   value={missionForm.objectives}
                   onChange={(e) => setMissionForm({ ...missionForm, objectives: e.target.value })}
@@ -327,38 +372,48 @@ export default function MissionsPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type de transport</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Type de transport
+                  </label>
                   <select
                     value={missionForm.transportType}
-                    onChange={(e) => setMissionForm({ ...missionForm, transportType: e.target.value })}
+                    onChange={(e) =>
+                      setMissionForm({ ...missionForm, transportType: e.target.value })
+                    }
                     className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                   >
                     {transportTypes.map((t) => (
-                      <option key={t} value={t}>{t}</option>
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Budget (FCFA)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Budget (FCFA)
+                  </label>
                   <input
                     type="number"
                     value={missionForm.budget}
-                    onChange={(e) => setMissionForm({ ...missionForm, budget: Number(e.target.value) })}
+                    onChange={(e) =>
+                      setMissionForm({ ...missionForm, budget: Number(e.target.value) })
+                    }
                     min={0}
                     className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                   />
                 </div>
               </div>
-              <div className="flex space-x-3 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
                 <button
                   onClick={() => setShowMissionModal(false)}
-                  className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 py-2.5 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700"
+                  className="w-full sm:flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 py-2.5 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700"
                 >
                   Annuler
                 </button>
                 <button
                   onClick={handleSaveMission}
-                  className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700"
+                  className="w-full sm:flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700"
                 >
                   Créer la mission
                 </button>
@@ -370,7 +425,7 @@ export default function MissionsPage() {
 
       {activeTab === 'expenses' && (
         <>
-          <div className="flex justify-end space-x-3">
+          <div className="flex flex-wrap justify-end gap-2">
             <button
               onClick={() => exportExpensesPdf(expenses)}
               className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors"
@@ -391,7 +446,9 @@ export default function MissionsPage() {
             {expenses.length === 0 && (
               <div className="bg-white dark:bg-gray-900 rounded-xl p-10 text-center border border-gray-200 dark:border-gray-700">
                 <Receipt size={48} className="mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-                <p className="text-gray-500 dark:text-gray-400">Aucune note de frais pour le moment</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                  Aucune note de frais pour le moment
+                </p>
               </div>
             )}
             {expenses.map((expense) => {
@@ -404,7 +461,9 @@ export default function MissionsPage() {
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-2">
-                        <h3 className="font-semibold text-gray-800 dark:text-gray-100">{expense.category}</h3>
+                        <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+                          {expense.category}
+                        </h3>
                         <Badge variant={expenseStatusConfig[expense.status].variant}>
                           {expenseStatusConfig[expense.status].label}
                         </Badge>
@@ -412,7 +471,9 @@ export default function MissionsPage() {
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 dark:text-gray-400 mb-1">
                         <span className="flex items-center space-x-1">
                           <DollarSign size={14} />
-                          <span>{formatCurrency(expense.amount)} {expense.currency}</span>
+                          <span>
+                            {formatCurrency(expense.amount)} {expense.currency}
+                          </span>
                         </span>
                         <span className="flex items-center space-x-1">
                           <Calendar size={14} />
@@ -426,7 +487,9 @@ export default function MissionsPage() {
                         )}
                       </div>
                       {expense.description && (
-                        <p className="text-sm text-gray-600 dark:text-gray-300">{expense.description}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                          {expense.description}
+                        </p>
                       )}
                       <p className="text-xs text-gray-400 mt-1">
                         {getEmployeeName(expense.employeeId)}
@@ -464,7 +527,9 @@ export default function MissionsPage() {
           >
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Catégorie *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Catégorie *
+                </label>
                 <select
                   value={expenseForm.category}
                   onChange={(e) => setExpenseForm({ ...expenseForm, category: e.target.value })}
@@ -472,24 +537,32 @@ export default function MissionsPage() {
                 >
                   <option value="">Sélectionner une catégorie</option>
                   {expenseCategories.map((cat) => (
-                    <option key={cat} value={cat}>{cat}</option>
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Montant *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Montant *
+                  </label>
                   <input
                     type="number"
                     value={expenseForm.amount}
-                    onChange={(e) => setExpenseForm({ ...expenseForm, amount: Number(e.target.value) })}
+                    onChange={(e) =>
+                      setExpenseForm({ ...expenseForm, amount: Number(e.target.value) })
+                    }
                     min={0}
                     placeholder="0"
                     className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Devise</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Devise
+                  </label>
                   <select
                     value={expenseForm.currency}
                     onChange={(e) => setExpenseForm({ ...expenseForm, currency: e.target.value })}
@@ -502,7 +575,9 @@ export default function MissionsPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Date *
+                </label>
                 <input
                   type="date"
                   value={expenseForm.date}
@@ -511,7 +586,9 @@ export default function MissionsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mission liée</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Mission liée
+                </label>
                 <select
                   value={expenseForm.missionId}
                   onChange={(e) => setExpenseForm({ ...expenseForm, missionId: e.target.value })}
@@ -519,12 +596,16 @@ export default function MissionsPage() {
                 >
                   <option value="">Aucune</option>
                   {missions.map((m) => (
-                    <option key={m.id} value={m.id}>{m.title} - {m.destination}</option>
+                    <option key={m.id} value={m.id}>
+                      {m.title} - {m.destination}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Description
+                </label>
                 <textarea
                   value={expenseForm.description}
                   onChange={(e) => setExpenseForm({ ...expenseForm, description: e.target.value })}
@@ -533,16 +614,16 @@ export default function MissionsPage() {
                   className="w-full px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                 />
               </div>
-              <div className="flex space-x-3 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
                 <button
                   onClick={() => setShowExpenseModal(false)}
-                  className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 py-2.5 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700"
+                  className="w-full sm:flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 py-2.5 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700"
                 >
                   Annuler
                 </button>
                 <button
                   onClick={handleSaveExpense}
-                  className="flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700"
+                  className="w-full sm:flex-1 bg-blue-600 text-white py-2.5 rounded-lg font-medium hover:bg-blue-700"
                 >
                   Créer la note de frais
                 </button>

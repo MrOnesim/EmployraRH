@@ -5,23 +5,56 @@ import { useToast } from '../context/ToastContext';
 import { usePageLoading } from '../hooks/usePageLoading';
 import { LoadingScreen } from '../components/ui';
 import {
-  Building2, Smartphone, Plus, ArrowUpRight, ArrowDownLeft,
-  CreditCard, X, Banknote, FileText,
+  Building2,
+  Smartphone,
+  Plus,
+  ArrowUpRight,
+  ArrowDownLeft,
+  CreditCard,
+  X,
+  Banknote,
+  FileText,
 } from 'lucide-react';
 import Badge from '../components/Badge';
 import { cn } from '../utils/cn';
 import type { BankAccount, BankTransaction } from '../types';
 import { exportTransactionHistoryPdf } from '../utils/pdfExport';
 
-const TX_TYPE_MAP: Record<BankTransaction['type'], { label: string; icon: typeof ArrowUpRight; color: string }> = {
-  deposit: { label: 'Dépôt', icon: ArrowDownLeft, color: 'text-green-600 bg-green-100 dark:bg-green-900/30' },
-  withdrawal: { label: 'Retrait', icon: ArrowUpRight, color: 'text-red-600 bg-red-100 dark:bg-red-900/30' },
-  payment: { label: 'Paiement', icon: CreditCard, color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30' },
-  fee: { label: 'Frais', icon: Banknote, color: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30' },
-  transfer: { label: 'Virement', icon: ArrowUpRight, color: 'text-purple-600 bg-purple-100 dark:bg-purple-900/30' },
+const TX_TYPE_MAP: Record<
+  BankTransaction['type'],
+  { label: string; icon: typeof ArrowUpRight; color: string }
+> = {
+  deposit: {
+    label: 'Dépôt',
+    icon: ArrowDownLeft,
+    color: 'text-green-600 bg-green-100 dark:bg-green-900/30',
+  },
+  withdrawal: {
+    label: 'Retrait',
+    icon: ArrowUpRight,
+    color: 'text-red-600 bg-red-100 dark:bg-red-900/30',
+  },
+  payment: {
+    label: 'Paiement',
+    icon: CreditCard,
+    color: 'text-blue-600 bg-blue-100 dark:bg-blue-900/30',
+  },
+  fee: {
+    label: 'Frais',
+    icon: Banknote,
+    color: 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30',
+  },
+  transfer: {
+    label: 'Virement',
+    icon: ArrowUpRight,
+    color: 'text-purple-600 bg-purple-100 dark:bg-purple-900/30',
+  },
 };
 
-const TX_STATUS_BADGE: Record<BankTransaction['status'], { label: string; variant: 'green' | 'red' | 'yellow' }> = {
+const TX_STATUS_BADGE: Record<
+  BankTransaction['status'],
+  { label: string; variant: 'green' | 'red' | 'yellow' }
+> = {
   completed: { label: 'Complété', variant: 'green' },
   failed: { label: 'Échoué', variant: 'red' },
   pending: { label: 'En attente', variant: 'yellow' },
@@ -74,15 +107,17 @@ export default function BankingPage() {
   if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Banque</h1>
-          <p className="text-gray-500 dark:text-gray-400">Gestion des comptes bancaires et transactions</p>
+          <p className="text-gray-500 dark:text-gray-400">
+            Gestion des comptes bancaires et transactions
+          </p>
         </div>
         {activeTab === 'accounts' ? (
           <button
             onClick={openModal}
-            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+            className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto justify-center"
           >
             <Plus size={18} />
             <span>Ajouter un compte</span>
@@ -90,7 +125,7 @@ export default function BankingPage() {
         ) : (
           <button
             onClick={() => exportTransactionHistoryPdf(transactions)}
-            className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors"
+            className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors w-full sm:w-auto justify-center"
           >
             <FileText size={18} />
             <span>Exporter PDF</span>
@@ -132,8 +167,12 @@ export default function BankingPage() {
                     )}
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800 dark:text-white">{account.bankName}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{account.accountName}</p>
+                    <p className="font-semibold text-gray-800 dark:text-white">
+                      {account.bankName}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {account.accountName}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -153,13 +192,17 @@ export default function BankingPage() {
                 {account.iban && (
                   <div className="col-span-2">
                     <span className="text-gray-400 dark:text-gray-500">IBAN</span>
-                    <p className="text-gray-800 dark:text-white font-mono text-xs">{account.iban}</p>
+                    <p className="text-gray-800 dark:text-white font-mono text-xs">
+                      {account.iban}
+                    </p>
                   </div>
                 )}
                 {account.swift && (
                   <div className="col-span-2">
                     <span className="text-gray-400 dark:text-gray-500">SWIFT</span>
-                    <p className="text-gray-800 dark:text-white font-mono text-xs">{account.swift}</p>
+                    <p className="text-gray-800 dark:text-white font-mono text-xs">
+                      {account.swift}
+                    </p>
                   </div>
                 )}
                 {account.isMobileMoney && account.mobileProvider && (
@@ -183,11 +226,21 @@ export default function BankingPage() {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-gray-700/50">
                 <tr>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Type</th>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Montant</th>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Description</th>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Statut</th>
-                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Date</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Type
+                  </th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Montant
+                  </th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Description
+                  </th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Statut
+                  </th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                    Date
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -196,23 +249,33 @@ export default function BankingPage() {
                   const statusInfo = TX_STATUS_BADGE[tx.status];
                   const Icon = typeInfo.icon;
                   return (
-                    <tr key={tx.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                    <tr
+                      key={tx.id}
+                      className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
+                    >
                       <td className="px-4 py-3">
                         <div className="flex items-center space-x-3">
                           <div className={cn('p-2 rounded-lg', typeInfo.color)}>
                             <Icon size={16} />
                           </div>
-                          <span className="text-sm font-medium text-gray-800 dark:text-white">{typeInfo.label}</span>
+                          <span className="text-sm font-medium text-gray-800 dark:text-white">
+                            {typeInfo.label}
+                          </span>
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={cn(
-                          'text-sm font-semibold',
-                          tx.type === 'deposit' ? 'text-green-600 dark:text-green-400' :
-                          tx.type === 'withdrawal' ? 'text-red-600 dark:text-red-400' :
-                          'text-gray-800 dark:text-white',
-                        )}>
-                          {tx.type === 'deposit' ? '+' : '-'}{tx.amount.toLocaleString()} {tx.currency}
+                        <span
+                          className={cn(
+                            'text-sm font-semibold',
+                            tx.type === 'deposit'
+                              ? 'text-green-600 dark:text-green-400'
+                              : tx.type === 'withdrawal'
+                                ? 'text-red-600 dark:text-red-400'
+                                : 'text-gray-800 dark:text-white',
+                          )}
+                        >
+                          {tx.type === 'deposit' ? '+' : '-'}
+                          {tx.amount.toLocaleString()} {tx.currency}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300 max-w-xs truncate">
@@ -239,18 +302,25 @@ export default function BankingPage() {
       )}
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-lg mx-4 p-6">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-2xl rounded-b-none sm:rounded-b-2xl shadow-xl w-full max-w-lg mx-0 sm:mx-4 p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-800 dark:text-white">Ajouter un compte bancaire</h2>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-white">
+              <h2 className="text-lg font-bold text-gray-800 dark:text-white">
+                Ajouter un compte bancaire
+              </h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-white"
+              >
                 <X size={20} />
               </button>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Banque</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Banque
+                  </label>
                   <input
                     type="text"
                     required
@@ -260,7 +330,9 @@ export default function BankingPage() {
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom du compte</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Nom du compte
+                  </label>
                   <input
                     type="text"
                     required
@@ -270,7 +342,9 @@ export default function BankingPage() {
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Numéro de compte</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Numéro de compte
+                  </label>
                   <input
                     type="text"
                     required
@@ -280,7 +354,9 @@ export default function BankingPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">IBAN</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    IBAN
+                  </label>
                   <input
                     type="text"
                     value={form.iban}
@@ -289,7 +365,9 @@ export default function BankingPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">SWIFT</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    SWIFT
+                  </label>
                   <input
                     type="text"
                     value={form.swift}
@@ -298,7 +376,9 @@ export default function BankingPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Devise</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Devise
+                  </label>
                   <select
                     value={form.currency}
                     onChange={(e) => setForm({ ...form, currency: e.target.value })}
@@ -319,14 +399,19 @@ export default function BankingPage() {
                     onChange={(e) => setForm({ ...form, isMobileMoney: e.target.checked })}
                     className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <label htmlFor="isMobileMoney" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <label
+                    htmlFor="isMobileMoney"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
                     Mobile Money
                   </label>
                 </div>
               </div>
               {form.isMobileMoney && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Opérateur mobile</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Opérateur mobile
+                  </label>
                   <select
                     value={form.mobileProvider}
                     onChange={(e) => setForm({ ...form, mobileProvider: e.target.value })}
@@ -349,21 +434,24 @@ export default function BankingPage() {
                   onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
                   className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <label htmlFor="isDefault" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="isDefault"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Compte par défaut
                 </label>
               </div>
-              <div className="flex justify-end space-x-3 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:space-x-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                  className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
                 >
                   Annuler
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                  className="w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                 >
                   Ajouter
                 </button>

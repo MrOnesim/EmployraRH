@@ -4,7 +4,17 @@ import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
 import { usePageLoading } from '../hooks/usePageLoading';
 import { LoadingScreen } from '../components/ui';
-import { FileText, Landmark, Plus, Download, CheckCircle, Clock, AlertTriangle, Search, Filter } from 'lucide-react';
+import {
+  FileText,
+  Landmark,
+  Plus,
+  Download,
+  CheckCircle,
+  Clock,
+  AlertTriangle,
+  Search,
+  Filter,
+} from 'lucide-react';
 import Modal from '../components/Modal';
 import Badge from '../components/Badge';
 import { PAYROLL_COUNTRIES } from '../constants';
@@ -29,15 +39,28 @@ const TAX_TYPE_VARIANTS: Record<string, 'blue' | 'green' | 'yellow' | 'red' | 'g
   CET: 'blue',
 };
 
-const STATUS_CONFIG: Record<TaxDeclaration['status'], { label: string; variant: 'yellow' | 'blue' | 'green' }> = {
+const STATUS_CONFIG: Record<
+  TaxDeclaration['status'],
+  { label: string; variant: 'yellow' | 'blue' | 'green' }
+> = {
   draft: { label: 'Brouillon', variant: 'yellow' },
   submitted: { label: 'Soumis', variant: 'blue' },
   paid: { label: 'Payé', variant: 'green' },
 };
 
 const PERIODS = [
-  'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-  'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre',
+  'Janvier',
+  'Février',
+  'Mars',
+  'Avril',
+  'Mai',
+  'Juin',
+  'Juillet',
+  'Août',
+  'Septembre',
+  'Octobre',
+  'Novembre',
+  'Décembre',
 ];
 
 const DEFAULT_FORM = {
@@ -50,7 +73,10 @@ function formatCurrency(amount: number, countryCode: string): string {
   const cfg = PAYROLL_COUNTRIES.find((c) => c.country === countryCode);
   if (!cfg) return amount.toLocaleString('fr-FR');
   try {
-    return new Intl.NumberFormat(cfg.currencyLocale, { style: 'currency', currency: cfg.currency }).format(amount);
+    return new Intl.NumberFormat(cfg.currencyLocale, {
+      style: 'currency',
+      currency: cfg.currency,
+    }).format(amount);
   } catch {
     return `${amount.toLocaleString('fr-FR')} ${cfg.currency}`;
   }
@@ -58,7 +84,16 @@ function formatCurrency(amount: number, countryCode: string): string {
 
 function generateCsv(declaration: TaxDeclaration): string {
   const rows = [
-    ['ID', 'Pays', 'Période', 'Type', 'Masse Salariale', 'Montant Taxe', 'Statut', 'Date d\'échéance'],
+    [
+      'ID',
+      'Pays',
+      'Période',
+      'Type',
+      'Masse Salariale',
+      'Montant Taxe',
+      'Statut',
+      "Date d'échéance",
+    ],
     [
       declaration.id,
       declaration.country,
@@ -101,7 +136,9 @@ export default function TaxPage() {
   const autoCalculated = useMemo(() => {
     const totalSalary = employees.reduce((sum, e) => sum + e.salary, 0);
     const countryConfig = PAYROLL_COUNTRIES.find((c) => c.country === form.country);
-    const totalTax = countryConfig ? totalSalary * (countryConfig.deductionRate + countryConfig.bonusRate) : 0;
+    const totalTax = countryConfig
+      ? totalSalary * (countryConfig.deductionRate + countryConfig.bonusRate)
+      : 0;
     return { totalSalary, totalTax };
   }, [form.country, employees]);
 
@@ -109,7 +146,10 @@ export default function TaxPage() {
     return taxDeclarations.filter((d) => {
       const matchCountry = !filterCountry || d.country === filterCountry;
       const matchStatus = !filterStatus || d.status === filterStatus;
-      const matchSearch = !searchQuery || d.type.toLowerCase().includes(searchQuery.toLowerCase()) || d.period.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchSearch =
+        !searchQuery ||
+        d.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        d.period.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCountry && matchStatus && matchSearch;
     });
   }, [taxDeclarations, filterCountry, filterStatus, searchQuery]);
@@ -142,14 +182,21 @@ export default function TaxPage() {
   if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Déclarations Fiscales</h1>
-          <p className="text-gray-500 dark:text-gray-400">Gestion automatisée des déclarations par pays</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+            Déclarations Fiscales
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400">
+            Gestion automatisée des déclarations par pays
+          </p>
         </div>
         <button
-          onClick={() => { resetForm(); setShowModal(true); }}
-          className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg transition-colors"
+          onClick={() => {
+            resetForm();
+            setShowModal(true);
+          }}
+          className="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg transition-colors w-full sm:w-auto"
         >
           <Plus size={18} />
           <span>Nouvelle déclaration</span>
@@ -176,7 +223,9 @@ export default function TaxPage() {
           >
             <option value="">Tous les pays</option>
             {PAYROLL_COUNTRIES.map((c) => (
-              <option key={c.country} value={c.country}>{c.countryName}</option>
+              <option key={c.country} value={c.country}>
+                {c.countryName}
+              </option>
             ))}
           </select>
           <select
@@ -197,13 +246,27 @@ export default function TaxPage() {
           <table className="w-full">
             <thead className="bg-gray-50 dark:bg-gray-700/50">
               <tr>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Type</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Pays</th>
-                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Période</th>
-                <th className="text-right px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Masse salariale</th>
-                <th className="text-right px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Montant taxe</th>
-                <th className="text-center px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Statut</th>
-                <th className="text-center px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">Actions</th>
+                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Type
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Pays
+                </th>
+                <th className="text-left px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Période
+                </th>
+                <th className="text-right px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Masse salariale
+                </th>
+                <th className="text-right px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Montant taxe
+                </th>
+                <th className="text-center px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Statut
+                </th>
+                <th className="text-center px-4 py-3 text-sm font-medium text-gray-500 dark:text-gray-400">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -218,25 +281,36 @@ export default function TaxPage() {
                 const statusCfg = STATUS_CONFIG[declaration.status];
                 const countryCfg = PAYROLL_COUNTRIES.find((c) => c.country === declaration.country);
                 return (
-                  <tr key={declaration.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                  <tr
+                    key={declaration.id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
+                  >
                     <td className="px-4 py-3">
                       <div className="flex items-center space-x-3">
                         <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
                           <FileText size={16} className="text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                          <Badge variant={TAX_TYPE_VARIANTS[declaration.type] || 'gray'}>{declaration.type}</Badge>
-                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{TAX_TYPE_LABELS[declaration.type] || ''}</p>
+                          <Badge variant={TAX_TYPE_VARIANTS[declaration.type] || 'gray'}>
+                            {declaration.type}
+                          </Badge>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+                            {TAX_TYPE_LABELS[declaration.type] || ''}
+                          </p>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center space-x-2">
                         <Landmark size={16} className="text-gray-400" />
-                        <span className="text-sm text-gray-800 dark:text-gray-100">{countryCfg?.countryName || declaration.country}</span>
+                        <span className="text-sm text-gray-800 dark:text-gray-100">
+                          {countryCfg?.countryName || declaration.country}
+                        </span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{declaration.period}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
+                      {declaration.period}
+                    </td>
                     <td className="px-4 py-3 text-sm text-right font-medium text-gray-800 dark:text-gray-100">
                       {formatCurrency(declaration.totalSalary, declaration.country)}
                     </td>
@@ -245,9 +319,15 @@ export default function TaxPage() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center space-x-1.5">
-                        {declaration.status === 'draft' && <AlertTriangle size={14} className="text-yellow-500" />}
-                        {declaration.status === 'submitted' && <Clock size={14} className="text-blue-500" />}
-                        {declaration.status === 'paid' && <CheckCircle size={14} className="text-green-500" />}
+                        {declaration.status === 'draft' && (
+                          <AlertTriangle size={14} className="text-yellow-500" />
+                        )}
+                        {declaration.status === 'submitted' && (
+                          <Clock size={14} className="text-blue-500" />
+                        )}
+                        {declaration.status === 'paid' && (
+                          <CheckCircle size={14} className="text-green-500" />
+                        )}
                         <Badge variant={statusCfg.variant}>{statusCfg.label}</Badge>
                       </div>
                     </td>
@@ -277,10 +357,17 @@ export default function TaxPage() {
         </div>
       </div>
 
-      <Modal open={showModal} onClose={() => setShowModal(false)} title="Nouvelle déclaration fiscale" maxWidth="lg">
+      <Modal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="Nouvelle déclaration fiscale"
+        maxWidth="lg"
+      >
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Pays</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Pays
+            </label>
             <select
               required
               value={form.country}
@@ -289,13 +376,17 @@ export default function TaxPage() {
             >
               <option value="">Sélectionner un pays</option>
               {PAYROLL_COUNTRIES.map((c) => (
-                <option key={c.country} value={c.country}>{c.countryName}</option>
+                <option key={c.country} value={c.country}>
+                  {c.countryName}
+                </option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Période</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Période
+            </label>
             <select
               required
               value={form.period}
@@ -304,13 +395,17 @@ export default function TaxPage() {
             >
               <option value="">Sélectionner une période</option>
               {PERIODS.map((p) => (
-                <option key={p} value={p}>{p}</option>
+                <option key={p} value={p}>
+                  {p}
+                </option>
               ))}
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Type de déclaration</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Type de déclaration
+            </label>
             <select
               required
               value={form.type}
@@ -318,7 +413,9 @@ export default function TaxPage() {
               className="w-full px-3 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
             >
               {Object.entries(TAX_TYPE_LABELS).map(([key, label]) => (
-                <option key={key} value={key}>{key} - {label}</option>
+                <option key={key} value={key}>
+                  {key} - {label}
+                </option>
               ))}
             </select>
           </div>
@@ -339,7 +436,9 @@ export default function TaxPage() {
               </div>
               <div className="border-t border-gray-200 dark:border-gray-600 pt-2 flex justify-between text-sm">
                 <span className="font-medium text-gray-700 dark:text-gray-300">Total employés</span>
-                <span className="font-semibold text-gray-800 dark:text-white">{employees.length}</span>
+                <span className="font-semibold text-gray-800 dark:text-white">
+                  {employees.length}
+                </span>
               </div>
             </div>
           )}
@@ -347,7 +446,10 @@ export default function TaxPage() {
           <div className="flex justify-end space-x-3 pt-2">
             <button
               type="button"
-              onClick={() => { setShowModal(false); resetForm(); }}
+              onClick={() => {
+                setShowModal(false);
+                resetForm();
+              }}
               className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
             >
               Annuler

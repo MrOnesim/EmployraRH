@@ -62,7 +62,7 @@ export default function Layout() {
               </Button>
 
               {notificationsOpen && (
-                <div className="absolute right-0 top-full mt-2 w-80 bg-popover rounded-xl shadow-lg border z-50">
+                <div className="absolute right-0 top-full mt-2 w-[calc(100vw-2rem)] sm:w-80 bg-popover rounded-xl shadow-lg border z-50 right-4 sm:right-0">
                   <div className="p-3 border-b">
                     <h3 className="font-semibold text-sm">Notifications</h3>
                   </div>

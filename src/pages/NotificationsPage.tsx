@@ -6,9 +6,16 @@ import { useToast } from '../context/ToastContext';
 import { LoadingScreen } from '../components/ui';
 
 const TYPE_LABELS: Record<string, string> = {
-  invitation: 'Invitation', payment: 'Paiement', leave: 'Congé',
-  attendance: 'Présence', payslip: 'Bulletin de paie', recruitment: 'Recrutement',
-  objective: 'Objectif', review: 'Évaluation', contract: 'Contrat', document: 'Document',
+  invitation: 'Invitation',
+  payment: 'Paiement',
+  leave: 'Congé',
+  attendance: 'Présence',
+  payslip: 'Bulletin de paie',
+  recruitment: 'Recrutement',
+  objective: 'Objectif',
+  review: 'Évaluation',
+  contract: 'Contrat',
+  document: 'Document',
 };
 
 const TYPE_COLORS: Record<string, string> = {
@@ -30,31 +37,38 @@ export default function NotificationsPage() {
   const loading = usePageLoading();
   const { addToast } = useToast();
 
-  const userNotifications = notifications.filter(n => n.userId === currentUser?.id);
-  const filtered = filter === 'unread' ? userNotifications.filter(n => !n.read) : userNotifications;
+  const userNotifications = notifications.filter((n) => n.userId === currentUser?.id);
+  const filtered =
+    filter === 'unread' ? userNotifications.filter((n) => !n.read) : userNotifications;
 
   if (loading) return <LoadingScreen message="Chargement..." />;
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Notifications</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">
-            {userNotifications.filter(n => !n.read).length} non lues
+            {userNotifications.filter((n) => !n.read).length} non lues
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setFilter(f => f === 'all' ? 'unread' : 'all')}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+            onClick={() => setFilter((f) => (f === 'all' ? 'unread' : 'all'))}
+            className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 flex-1 sm:flex-none"
           >
             <Filter size={16} />
             {filter === 'all' ? 'Toutes' : 'Non lues'}
           </button>
-          {userNotifications.some(n => !n.read) && (
+          {userNotifications.some((n) => !n.read) && (
             <button
-              onClick={() => { try { markAllNotificationsRead(); } catch { addToast("Erreur lors du marquage des notifications", 'error'); } }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              onClick={() => {
+                try {
+                  markAllNotificationsRead();
+                } catch {
+                  addToast('Erreur lors du marquage des notifications', 'error');
+                }
+              }}
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex-1 sm:flex-none"
             >
               <CheckCheck size={16} />
               Tout marquer comme lu
@@ -68,15 +82,23 @@ export default function NotificationsPage() {
           <BellOff size={48} className="mb-4" />
           <p className="text-lg font-medium">Aucune notification</p>
           <p className="text-sm mt-1">
-            {filter === 'unread' ? 'Toutes les notifications sont lues.' : 'Vous n\'avez pas encore de notifications.'}
+            {filter === 'unread'
+              ? 'Toutes les notifications sont lues.'
+              : "Vous n'avez pas encore de notifications."}
           </p>
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered.map(n => (
+          {filtered.map((n) => (
             <div
               key={n.id}
-              onClick={() => { try { markNotificationRead(n.id); } catch { addToast("Erreur lors du marquage de la notification", 'error'); } }}
+              onClick={() => {
+                try {
+                  markNotificationRead(n.id);
+                } catch {
+                  addToast('Erreur lors du marquage de la notification', 'error');
+                }
+              }}
               className={`bg-white dark:bg-gray-800 rounded-xl border p-4 cursor-pointer transition-colors ${
                 n.read
                   ? 'border-gray-100 dark:border-gray-700'
@@ -84,23 +106,30 @@ export default function NotificationsPage() {
               } hover:bg-gray-50 dark:hover:bg-gray-750`}
             >
               <div className="flex items-start gap-4">
-                <div className={`px-2.5 py-1 rounded-full text-xs font-medium mt-0.5 ${TYPE_COLORS[n.type] || TYPE_COLORS.document}`}>
+                <div
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium mt-0.5 ${TYPE_COLORS[n.type] || TYPE_COLORS.document}`}
+                >
                   {TYPE_LABELS[n.type] || n.type}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4">
-                    <h3 className={`text-sm ${n.read ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-gray-100 font-semibold'}`}>
+                    <h3
+                      className={`text-sm ${n.read ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-gray-100 font-semibold'}`}
+                    >
                       {n.title}
                     </h3>
                     <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">
-                      {new Date(n.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      {new Date(n.createdAt).toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
                     </span>
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{n.message}</p>
                 </div>
-                {!n.read && (
-                  <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />
-                )}
+                {!n.read && <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0" />}
               </div>
             </div>
           ))}
