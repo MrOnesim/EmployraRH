@@ -398,8 +398,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     async (email: string, password: string, type: 'company' | 'employee'): Promise<boolean> => {
       if (useApi) {
         try {
-          const { data } = await authClient.signIn.email({ email, password });
-          if (data?.user) {
+          const { data, error } = await authClient.signIn.email({ email, password });
+          if (data?.user && !error) {
             setCurrentUser(data.user as unknown as Employee);
             setIsLoggedIn(true);
 
@@ -414,9 +414,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             }
             return true;
           }
-          return false;
         } catch {
-          return false;
+          /* API unreachable — fall through to mock accounts */
         }
       }
       if (email === 'admin@globaltech.com') {

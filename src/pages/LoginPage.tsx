@@ -192,25 +192,54 @@ export default function LoginPage() {
 
         {/* Demo Credentials */}
         <div className="mt-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur rounded-xl p-4">
-          <p className="text-sm text-gray-600 dark:text-gray-300 font-medium mb-2">
-            Comptes de démonstration :
+          <p className="text-sm text-gray-600 dark:text-gray-300 font-medium mb-3">
+            Accès rapide — comptes de démonstration
           </p>
-          <div className="space-y-2 text-sm">
-            <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
-              <span>Admin :</span>
-              <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">
-                admin@globaltech.com
-              </code>
-            </div>
-            <div className="flex items-center justify-between text-gray-600 dark:text-gray-400">
-              <span>Employé :</span>
-              <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-gray-800 dark:text-gray-200">
-                ama@globaltech.com
-              </code>
-            </div>
-            <p className="text-gray-400 dark:text-gray-500 text-xs">
-              Mot de passe : n'importe lequel
-            </p>
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={async () => {
+                setEmail('admin@globaltech.com');
+                setLoginType('company');
+                const ok = await login('admin@globaltech.com', 'demo123', 'company');
+                if (ok) navigate('/admin');
+                else setError('Email ou mot de passe incorrect');
+              }}
+              className="w-full flex items-center justify-between px-4 py-3 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors text-left"
+            >
+              <div>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">Admin</span>
+                <p className="text-sm text-gray-700 dark:text-gray-300 font-mono">
+                  admin@globaltech.com
+                </p>
+              </div>
+              <span className="text-blue-600 text-xs font-medium shrink-0 ml-2">
+                Se connecter →
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                setEmail('ama@globaltech.com');
+                setLoginType('employee');
+                const ok = await login('ama@globaltech.com', 'demo123', 'employee');
+                if (ok) navigate('/employee-dashboard');
+                else setError('Email ou mot de passe incorrect');
+              }}
+              className="w-full flex items-center justify-between px-4 py-3 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-lg transition-colors text-left"
+            >
+              <div>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                  Employé
+                </span>
+                <p className="text-sm text-gray-700 dark:text-gray-300 font-mono">
+                  ama@globaltech.com
+                </p>
+              </div>
+              <span className="text-green-600 text-xs font-medium shrink-0 ml-2">
+                Se connecter →
+              </span>
+            </button>
           </div>
         </div>
       </div>
