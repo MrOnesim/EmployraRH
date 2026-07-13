@@ -41,6 +41,13 @@ import { SecurityGuardModule } from './security-guard/security-guard.module';
 import { QrTokenModule } from './qr-token/qr-token.module';
 import { TerminalModule } from './terminal/terminal.module';
 import { InvitationModule } from './invitation/invitation.module';
+import { TeamModule } from './team/team.module';
+import { PostModule } from './post/post.module';
+import { ContractModule } from './contract/contract.module';
+import { TimelineModule } from './timeline/timeline.module';
+import { RewardModule } from './reward/reward.module';
+import { EmployeeVaultModule } from './employee-vault/employee-vault.module';
+import { RbacModule } from './rbac/rbac.module';
 import { AppCacheModule } from './cache/cache.module';
 import { HealthController } from './health.controller';
 import { AuthGuard } from './common/guards/auth.guard';
@@ -95,6 +102,13 @@ import { ThrottlerBehindProxyGuard } from './common/throttler-behind-proxy.guard
     QrTokenModule,
     TerminalModule,
     InvitationModule,
+    TeamModule,
+    PostModule,
+    ContractModule,
+    TimelineModule,
+    RewardModule,
+    EmployeeVaultModule,
+    RbacModule,
   ],
   controllers: [HealthController],
   providers: [
