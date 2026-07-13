@@ -1,4 +1,48 @@
-import type { Employee, Attendance, Leave, Payslip, Company, Notification, Invitation, CalendarEvent, PayrollConfig, JobOffer, Candidate, Objective, PerformanceReview, BankAccount, BankTransaction, TaxDeclaration, Course, Enrollment, Mission, ExpenseReport, Meeting, Equipment, EquipmentAssignment, WellnessSurvey, WellnessResponse, SalaryAdvance, SalaryTransfer, Quiz, QuizAttempt, Certificate, SignatureRequest, SignatureTemplate, SecurityGuard, Terminal, Document } from '../types';
+import type {
+  Employee,
+  Attendance,
+  Leave,
+  Payslip,
+  Company,
+  Notification,
+  Invitation,
+  CalendarEvent,
+  PayrollConfig,
+  JobOffer,
+  Candidate,
+  Objective,
+  PerformanceReview,
+  BankAccount,
+  BankTransaction,
+  TaxDeclaration,
+  Course,
+  Enrollment,
+  Mission,
+  ExpenseReport,
+  Meeting,
+  Equipment,
+  EquipmentAssignment,
+  WellnessSurvey,
+  WellnessResponse,
+  SalaryAdvance,
+  SalaryTransfer,
+  Quiz,
+  QuizAttempt,
+  Certificate,
+  SignatureRequest,
+  SignatureTemplate,
+  SecurityGuard,
+  Terminal,
+  Document,
+  Team,
+  Post,
+  PostComment,
+  EmployeeVaultItem,
+  RewardTransaction,
+  RewardCatalog,
+  Contract,
+  TimelineEvent,
+} from '../types';
 
 export function mapEmployee(raw: any): Employee {
   return {
@@ -124,7 +168,7 @@ export function mapInvitation(raw: any): Invitation {
     companyId: raw.companyId,
     email: raw.email || '',
     status: raw.status || 'pending',
-    sentAt: (raw.sentAt || raw.createdAt) ? new Date(raw.sentAt || raw.createdAt) : new Date(),
+    sentAt: raw.sentAt || raw.createdAt ? new Date(raw.sentAt || raw.createdAt) : new Date(),
   };
 }
 
@@ -137,7 +181,7 @@ export function mapCalendarEvent(raw: any): CalendarEvent {
     id: raw.id,
     title: raw.title || '',
     description: raw.description || '',
-    date: (raw.startDate || raw.date) || '',
+    date: raw.startDate || raw.date || '',
     time: raw.time || '',
     location: raw.location || '',
     type: raw.type || 'other',
@@ -280,7 +324,7 @@ export function mapBankTransaction(raw: any): BankTransaction {
     description: raw.description || '',
     reference: raw.reference || '',
     status: raw.status || 'pending',
-    date: (raw.createdAt || raw.date) ? new Date(raw.createdAt || raw.date) : new Date(),
+    date: raw.createdAt || raw.date ? new Date(raw.createdAt || raw.date) : new Date(),
     accountId: raw.accountId,
   };
 }
@@ -293,7 +337,7 @@ export function mapTaxDeclaration(raw: any): TaxDeclaration {
   return {
     id: raw.id,
     companyId: raw.companyId,
-    type: (raw.taxType || raw.type) || 'IRPP',
+    type: raw.taxType || raw.type || 'IRPP',
     period: raw.period || '',
     totalSalary: raw.totalSalary || 0,
     totalTax: raw.totalTax || 0,
@@ -391,7 +435,7 @@ export function mapMeeting(raw: any): Meeting {
     companyId: raw.companyId,
     title: raw.title || '',
     description: raw.description || '',
-    date: (raw.startTime || raw.date) ? new Date(raw.startTime || raw.date) : new Date(),
+    date: raw.startTime || raw.date ? new Date(raw.startTime || raw.date) : new Date(),
     startTime: raw.startTime || '',
     endTime: raw.endTime || '',
     department: raw.department || undefined,
@@ -491,7 +535,8 @@ export function mapSalaryAdvance(raw: any): SalaryAdvance {
     currency: raw.currency || '',
     status: raw.status || 'requested',
     reason: raw.reason || '',
-    requestedAt: (raw.createdAt || raw.requestedAt) ? new Date(raw.createdAt || raw.requestedAt) : new Date(),
+    requestedAt:
+      raw.createdAt || raw.requestedAt ? new Date(raw.createdAt || raw.requestedAt) : new Date(),
     approvedAt: raw.approvedAt ? new Date(raw.approvedAt) : undefined,
     paidAt: raw.paidAt ? new Date(raw.paidAt) : undefined,
     approvedBy: raw.approvedBy || undefined,
@@ -587,7 +632,8 @@ export function mapSignatureRequest(raw: any): SignatureRequest {
     documentId: raw.documentId || undefined,
     expiresAt: raw.expiresAt ? new Date(raw.expiresAt) : undefined,
     completedAt: raw.completedAt ? new Date(raw.completedAt) : undefined,
-    initiatedAt: (raw.createdAt || raw.initiatedAt) ? new Date(raw.createdAt || raw.initiatedAt) : new Date(),
+    initiatedAt:
+      raw.createdAt || raw.initiatedAt ? new Date(raw.createdAt || raw.initiatedAt) : new Date(),
   };
 }
 
@@ -618,7 +664,8 @@ export function mapSecurityGuard(raw: any): SecurityGuard {
     companyId: raw.companyId,
     employeeId: raw.employeeId,
     isActive: raw.isActive ?? true,
-    assignedAt: (raw.assignedAt || raw.createdAt) ? new Date(raw.assignedAt || raw.createdAt) : new Date(),
+    assignedAt:
+      raw.assignedAt || raw.createdAt ? new Date(raw.assignedAt || raw.createdAt) : new Date(),
   };
 }
 
@@ -660,4 +707,125 @@ export function mapAppDocument(raw: any): Document {
 
 export function mapAppDocuments(raw: any[]): Document[] {
   return (raw || []).map(mapAppDocument);
+}
+
+export function mapTeam(raw: any): Team {
+  return {
+    id: raw.id,
+    name: raw.name || '',
+    description: raw.description || '',
+    leaderId: raw.leaderId || '',
+    memberIds: raw.memberIds || [],
+    createdAt: raw.createdAt ? new Date(raw.createdAt) : new Date(),
+  };
+}
+
+export function mapTeams(raw: any[]): Team[] {
+  return (raw || []).map(mapTeam);
+}
+
+export function mapPostComment(raw: any): PostComment {
+  return {
+    id: raw.id,
+    authorId: raw.authorId,
+    authorName: raw.authorName || '',
+    content: raw.content || '',
+    createdAt: raw.createdAt ? new Date(raw.createdAt) : new Date(),
+  };
+}
+
+export function mapPost(raw: any): Post {
+  return {
+    id: raw.id,
+    authorId: raw.authorId,
+    authorName: raw.authorName || '',
+    content: raw.content || '',
+    createdAt: raw.createdAt ? new Date(raw.createdAt) : new Date(),
+    likes: raw.likes || [],
+    comments: (raw.comments || []).map(mapPostComment),
+  };
+}
+
+export function mapPosts(raw: any[]): Post[] {
+  return (raw || []).map(mapPost);
+}
+
+export function mapVaultItem(raw: any): EmployeeVaultItem {
+  return {
+    id: raw.id,
+    employeeId: raw.employeeId,
+    type: raw.type || 'other',
+    name: raw.name || '',
+    fileUrl: raw.fileUrl || undefined,
+    uploadedAt: raw.uploadedAt ? new Date(raw.uploadedAt) : new Date(),
+    expiresAt: raw.expiresAt ? new Date(raw.expiresAt) : undefined,
+    status: raw.status || 'active',
+  };
+}
+
+export function mapVaultItems(raw: any[]): EmployeeVaultItem[] {
+  return (raw || []).map(mapVaultItem);
+}
+
+export function mapRewardTransaction(raw: any): RewardTransaction {
+  return {
+    id: raw.id,
+    employeeId: raw.employeeId,
+    points: raw.points ?? 0,
+    type: raw.type || 'earned',
+    reason: raw.reason || '',
+    createdAt: raw.createdAt ? new Date(raw.createdAt) : new Date(),
+  };
+}
+
+export function mapRewardTransactions(raw: any[]): RewardTransaction[] {
+  return (raw || []).map(mapRewardTransaction);
+}
+
+export function mapRewardCatalog(raw: any): RewardCatalog {
+  return {
+    id: raw.id,
+    name: raw.name || '',
+    description: raw.description || '',
+    pointsCost: raw.pointsCost ?? 0,
+    stock: raw.stock ?? 0,
+    category: raw.category || 'gift',
+    active: raw.active ?? true,
+  };
+}
+
+export function mapRewardCatalogs(raw: any[]): RewardCatalog[] {
+  return (raw || []).map(mapRewardCatalog);
+}
+
+export function mapContract(raw: any): Contract {
+  return {
+    id: raw.id,
+    type: raw.type || 'CDI',
+    position: raw.position || '',
+    startDate: raw.startDate ? new Date(raw.startDate) : new Date(),
+    endDate: raw.endDate ? new Date(raw.endDate) : undefined,
+    salary: raw.salary ?? 0,
+    status: raw.status || 'active',
+    documentUrl: raw.documentUrl || undefined,
+  };
+}
+
+export function mapContracts(raw: any[]): Contract[] {
+  return (raw || []).map(mapContract);
+}
+
+export function mapTimelineEvent(raw: any): TimelineEvent {
+  return {
+    id: raw.id,
+    employeeId: raw.employeeId,
+    type: raw.type || 'other',
+    title: raw.title || '',
+    description: raw.description || '',
+    date: raw.date ? new Date(raw.date) : new Date(),
+  };
+}
+
+export function mapTimelineEvents(raw: any[]): TimelineEvent[] {
+  return (raw || []).map(mapTimelineEvent);
 }

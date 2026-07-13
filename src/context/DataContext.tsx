@@ -65,6 +65,12 @@ import * as TaxService from '../services/taxService';
 import * as CalendarService from '../services/calendarService';
 import * as SignatureService from '../services/signatureService';
 import * as NotificationService from '../services/notificationService';
+import * as TeamService from '../services/teamService';
+import * as FeedService from '../services/feedService';
+import * as VaultService from '../services/vaultService';
+import * as RewardService from '../services/rewardService';
+import * as TimelineApiService from '../services/timelineService';
+import * as ContractApiService from '../services/contractService';
 import api from '../lib/axios';
 
 interface DataState {
@@ -1995,6 +2001,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
           transfers,
           sigReqs,
           sigTmpls,
+          tms,
+          psts,
+          rwdCatalog,
+          tline,
         ] = await Promise.all([
           EmployeeService.getEmployees(companyId).catch(() => []),
           AttendanceService.getAttendance(companyId).catch(() => []),
@@ -2047,6 +2057,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
           BankingService.getSalaryTransfers(companyId).catch(() => []),
           SignatureService.getSignatureRequests({ companyId }).catch(() => []),
           SignatureService.getSignatureTemplates({ companyId }).catch(() => []),
+          TeamService.getTeams(companyId).catch(() => []),
+          FeedService.getPosts(companyId).catch(() => []),
+          RewardService.getCatalog(companyId).catch(() => []),
+          TimelineApiService.getTimeline(companyId).catch(() => []),
         ]);
         if (emps.length) setEmployees(emps);
         if (att.length) setAttendance(att);
@@ -2075,6 +2089,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
         if (transfers.length) setSalaryTransfers(transfers);
         if (sigReqs.length) setSignatureRequests(sigReqs);
         if (sigTmpls.length) setSignatureTemplates(sigTmpls);
+        if (tms.length) setTeams(tms);
+        if (psts.length) setPosts(psts);
+        if (rwdCatalog.length) setRewardCatalog(rwdCatalog);
+        if (tline.length) setTimelineEvents(tline);
       } catch {
         /* keep mock data */
       }
@@ -2310,18 +2328,44 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const addTeam = (team: Omit<Team, 'id' | 'createdAt'>) => {
+    if (useApi && currentCompany?.id) {
+      TeamService.createTeam({ companyId: currentCompany.id, ...team })
+        .then((created) => setTeams((prev) => [...prev, created]))
+        .catch(() =>
+          setTeams((prev) => [...prev, { ...team, id: String(Date.now()), createdAt: new Date() }]),
+        );
+      return;
+    }
     setTeams((prev) => [...prev, { ...team, id: String(Date.now()), createdAt: new Date() }]);
   };
 
   const updateTeam = (id: string, data: Partial<Team>) => {
     setTeams((prev) => prev.map((t) => (t.id === id ? { ...t, ...data } : t)));
+    if (useApi) TeamService.updateTeam(id, data).catch(() => {});
   };
 
   const deleteTeam = (id: string) => {
     setTeams((prev) => prev.filter((t) => t.id !== id));
+    if (useApi) TeamService.deleteTeam(id).catch(() => {});
   };
 
   const addPost = (post: Omit<Post, 'id' | 'createdAt' | 'likes' | 'comments'>) => {
+    if (useApi && currentCompany?.id) {
+      FeedService.createPost({
+        companyId: currentCompany.id,
+        authorId: post.authorId,
+        authorName: post.authorName,
+        content: post.content,
+      })
+        .then((created) => setPosts((prev) => [created, ...prev]))
+        .catch(() =>
+          setPosts((prev) => [
+            { ...post, id: String(Date.now()), createdAt: new Date(), likes: [], comments: [] },
+            ...prev,
+          ]),
+        );
+      return;
+    }
     setPosts((prev) => [
       { ...post, id: String(Date.now()), createdAt: new Date(), likes: [], comments: [] },
       ...prev,
@@ -2341,6 +2385,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
           : p,
       ),
     );
+    if (useApi) FeedService.toggleLike(postId, userId).catch(() => {});
   };
 
   const addComment = (postId: string, comment: Omit<PostComment, 'id' | 'createdAt'>) => {
@@ -2357,6 +2402,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
           : p,
       ),
     );
+    if (useApi) {
+      FeedService.addComment(postId, {
+        authorId: comment.authorId,
+        authorName: comment.authorName,
+        content: comment.content,
+      })
+        .then((updated) => setPosts((prev) => prev.map((p) => (p.id === postId ? updated : p))))
+        .catch(() => {});
+    }
   };
 
   const updatePayrollConfig = (config: Partial<PayrollConfig>) => {
@@ -2463,6 +2517,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const addTimelineEvent = (event: Omit<TimelineEvent, 'id'>) => {
     setTimelineEvents((prev) => [{ ...event, id: String(Date.now()) }, ...prev]);
+    if (useApi) {
+      TimelineApiService.createTimelineEvent({
+        employeeId: event.employeeId,
+        type: event.type,
+        title: event.title,
+        description: event.description,
+        date: event.date instanceof Date ? event.date.toISOString() : event.date,
+      }).catch(() => {});
+    }
   };
 
   const updateEmployeeContract = (employeeId: string, contract: Contract) => {
@@ -2473,6 +2536,21 @@ export function DataProvider({ children }: { children: ReactNode }) {
           : e,
       ),
     );
+    if (useApi) {
+      ContractApiService.createContract({
+        employeeId,
+        type: contract.type,
+        position: contract.position,
+        startDate:
+          contract.startDate instanceof Date
+            ? contract.startDate.toISOString()
+            : contract.startDate,
+        endDate:
+          contract.endDate instanceof Date ? contract.endDate.toISOString() : contract.endDate,
+        salary: contract.salary,
+        documentUrl: contract.documentUrl,
+      }).catch(() => {});
+    }
     addTimelineEvent({
       employeeId,
       type: 'contract',
@@ -2684,9 +2762,19 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const addVaultItem = (item: Omit<EmployeeVaultItem, 'id'>) => {
     setVaultItems((prev) => [{ ...item, id: String(Date.now()) }, ...prev]);
     eventBus.emit(EVENTS.VAULT_ITEM_ADDED);
+    if (useApi) {
+      VaultService.createVaultItem({
+        employeeId: item.employeeId,
+        type: item.type,
+        name: item.name,
+        fileUrl: item.fileUrl,
+        expiresAt: item.expiresAt instanceof Date ? item.expiresAt.toISOString() : item.expiresAt,
+      }).catch(() => {});
+    }
   };
   const deleteVaultItem = (id: string) => {
     setVaultItems((prev) => prev.filter((v) => v.id !== id));
+    if (useApi) VaultService.deleteVaultItem(id).catch(() => {});
   };
 
   // Récompenses
@@ -2701,10 +2789,29 @@ export function DataProvider({ children }: { children: ReactNode }) {
       type: 'payslip',
       read: false,
     });
+    if (useApi) {
+      RewardService.addTransaction({
+        employeeId: tx.employeeId,
+        points: Math.abs(tx.points),
+        type: tx.type,
+        reason: tx.reason,
+      }).catch(() => {});
+    }
   };
 
   const addRewardCatalogItem = (item: Omit<RewardCatalog, 'id'>) => {
     setRewardCatalog((prev) => [...prev, { ...item, id: String(Date.now()) }]);
+    if (useApi && currentCompany?.id) {
+      RewardService.createCatalogItem({
+        companyId: currentCompany.id,
+        name: item.name,
+        description: item.description,
+        pointsCost: item.pointsCost,
+        stock: item.stock,
+        category: item.category,
+        active: item.active,
+      }).catch(() => {});
+    }
   };
 
   const redeemReward = (employeeId: string, catalogItemId: string) => {
@@ -2718,6 +2825,30 @@ export function DataProvider({ children }: { children: ReactNode }) {
       .reduce((s, t) => s + t.points, 0);
     const balance = totalEarned - totalRedeemed;
     if (balance < item.pointsCost) return;
+    if (useApi) {
+      RewardService.redeemReward(employeeId, catalogItemId).catch(() => {});
+      const newTx: RewardTransaction = {
+        id: String(Date.now()),
+        employeeId,
+        points: -item.pointsCost,
+        type: 'redeemed',
+        reason: item.name,
+        createdAt: new Date(),
+      };
+      setRewardTransactions((prev) => [newTx, ...prev]);
+      eventBus.emit(EVENTS.REWARD_REDEEMED);
+      addNotification({
+        userId: employeeId,
+        title: 'Points récompense',
+        message: `-${item.pointsCost} points - ${item.name}`,
+        type: 'payslip',
+        read: false,
+      });
+      setRewardCatalog((prev) =>
+        prev.map((c) => (c.id === catalogItemId ? { ...c, stock: c.stock - 1 } : c)),
+      );
+      return;
+    }
     addRewardTransaction({
       employeeId,
       points: -item.pointsCost,
