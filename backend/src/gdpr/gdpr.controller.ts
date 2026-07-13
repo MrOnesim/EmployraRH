@@ -1,12 +1,5 @@
-import {
-  Controller,
-  Delete,
-  Param,
-  Req,
-  UseGuards,
-  ParseUUIDPipe,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Controller, Delete, Param, Req, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { Request } from 'express';
 import { GdprService } from './gdpr.service';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -23,7 +16,7 @@ export class GdprController {
   @Delete('users/:id')
   @Roles('ADMIN')
   @ApiOperation({ summary: 'DPO/Admin: supprime (droit à l’effacement) un utilisateur par id' })
-  async eraseUser(@Req() req: Request, @Param('id', ParseUUIDPipe) id: string) {
+  async eraseUser(@Req() req: Request, @Param('id', ParseCuidPipe) id: string) {
     const actor = (req as any).user;
     if (!actor?.id) throw new UnauthorizedException();
     return this.gdprService.eraseUserAsAdmin(actor.id, id);

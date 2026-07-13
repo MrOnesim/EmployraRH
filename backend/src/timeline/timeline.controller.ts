@@ -1,13 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Query,
-  UseGuards,
-  ParseUUIDPipe,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { TimelineService } from './timeline.service';
@@ -34,7 +26,7 @@ export class TimelineController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get timeline events by employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.service.findByEmployee(employeeId);
   }
 }

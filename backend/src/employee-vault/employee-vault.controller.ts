@@ -1,14 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Query,
-  UseGuards,
-  ParseUUIDPipe,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { EmployeeVaultService } from './employee-vault.service';
@@ -42,19 +33,19 @@ export class EmployeeVaultController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a vault item by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Get(':id/download-url')
   @ApiOperation({ summary: 'Get a presigned download URL for a vault item' })
-  getDownloadUrl(@Param('id', ParseUUIDPipe) id: string) {
+  getDownloadUrl(@Param('id', ParseCuidPipe) id: string) {
     return this.service.getDownloadUrl(id);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a vault item' })
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseCuidPipe) id: string) {
     return this.service.remove(id);
   }
 }

@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { QuizService } from './quiz.service';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
@@ -26,13 +27,13 @@ export class QuizController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get quiz by ID with attempt count' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a quiz' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateQuizDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() dto: UpdateQuizDto) {
     return this.service.update(id, dto);
   }
 }

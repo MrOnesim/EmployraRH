@@ -1,13 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Query,
-  UseGuards,
-  ParseUUIDPipe,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { RewardService } from './reward.service';
@@ -42,7 +34,7 @@ export class RewardController {
 
   @Get('balance/:employeeId')
   @ApiOperation({ summary: 'Get reward points balance for an employee' })
-  getBalance(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  getBalance(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.service.getBalance(employeeId);
   }
 

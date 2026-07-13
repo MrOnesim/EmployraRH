@@ -2,7 +2,6 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { bearer } from 'better-auth/plugins/bearer';
-import { admin } from 'better-auth/plugins/admin';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -13,9 +12,17 @@ export class BetterAuthService implements OnModuleInit {
   constructor(private prisma: PrismaService) {}
 
   onModuleInit() {
+    const trustedOrigins = [
+      process.env.FRONTEND_URL,
+      process.env.BETTER_AUTH_URL,
+      process.env.APP_BASE_URL,
+    ].filter((value): value is string => !!value);
+
     this.auth = betterAuth({
       database: prismaAdapter(this.prisma, { provider: 'postgresql' }),
-      plugins: [bearer(), admin()],
+      emailAndPassword: { enabled: true },
+      trustedOrigins,
+      plugins: [bearer()],
       socialProviders: {
         google: {
           clientId: process.env.GOOGLE_CLIENT_ID || '',

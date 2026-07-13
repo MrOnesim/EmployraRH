@@ -1,4 +1,15 @@
-import { Controller, Post, Get, Patch, Param, Delete, Body, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Patch,
+  Param,
+  Delete,
+  Body,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { TerminalService } from './terminal.service';
 import { RegisterTerminalDto } from './dto/register-terminal.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -14,7 +25,10 @@ export class TerminalController {
   @Post('register')
   @ApiOperation({ summary: 'Register a new terminal' })
   register(@Body() dto: RegisterTerminalDto) {
-    return this.terminalService.register(dto.companyId, { name: dto.name, deviceFingerprint: dto.deviceFingerprint });
+    return this.terminalService.register(dto.companyId, {
+      name: dto.name,
+      deviceFingerprint: dto.deviceFingerprint,
+    });
   }
 
   @Get()
@@ -31,25 +45,25 @@ export class TerminalController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get terminal by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.terminalService.findById(id);
   }
 
   @Patch(':id/activate')
   @ApiOperation({ summary: 'Activate a terminal' })
-  activate(@Param('id', ParseUUIDPipe) id: string) {
+  activate(@Param('id', ParseCuidPipe) id: string) {
     return this.terminalService.activate(id);
   }
 
   @Patch(':id/deactivate')
   @ApiOperation({ summary: 'Deactivate a terminal' })
-  deactivate(@Param('id', ParseUUIDPipe) id: string) {
+  deactivate(@Param('id', ParseCuidPipe) id: string) {
     return this.terminalService.deactivate(id);
   }
 
   @Patch(':id/last-seen')
   @ApiOperation({ summary: 'Update terminal last seen timestamp' })
-  updateLastSeen(@Param('id', ParseUUIDPipe) id: string) {
+  updateLastSeen(@Param('id', ParseCuidPipe) id: string) {
     return this.terminalService.updateLastSeen(id);
   }
 }

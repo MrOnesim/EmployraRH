@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { BankAccountService } from './bank-account.service';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -26,25 +37,25 @@ export class BankAccountController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a bank account by id' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a bank account' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateBankAccountDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() dto: UpdateBankAccountDto) {
     return this.service.update(id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a bank account' })
-  delete(@Param('id', ParseUUIDPipe) id: string) {
+  delete(@Param('id', ParseCuidPipe) id: string) {
     return this.service.delete(id);
   }
 
   @Post(':id/default')
   @ApiOperation({ summary: 'Set a bank account as default' })
-  setDefault(@Param('id', ParseUUIDPipe) id: string) {
+  setDefault(@Param('id', ParseCuidPipe) id: string) {
     return this.service.setDefault(id);
   }
 }

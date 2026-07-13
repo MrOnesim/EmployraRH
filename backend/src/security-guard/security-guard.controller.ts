@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Patch, Delete, Param, Query, Body, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Query,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { SecurityGuardService } from './security-guard.service';
@@ -26,25 +37,28 @@ export class SecurityGuardController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get security guard by employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string, @Query('companyId') companyId: string) {
+  findByEmployee(
+    @Param('employeeId', ParseCuidPipe) employeeId: string,
+    @Query('companyId') companyId: string,
+  ) {
     return this.service.findByEmployee(employeeId, companyId);
   }
 
   @Get(':id/scan-history')
   @ApiOperation({ summary: 'Get attendance scan history for a guard' })
-  getScanHistory(@Param('id', ParseUUIDPipe) id: string) {
+  getScanHistory(@Param('id', ParseCuidPipe) id: string) {
     return this.service.getScanHistory(id);
   }
 
   @Patch(':id/toggle-active')
   @ApiOperation({ summary: 'Toggle security guard active status' })
-  toggleActive(@Param('id', ParseUUIDPipe) id: string) {
+  toggleActive(@Param('id', ParseCuidPipe) id: string) {
     return this.service.toggleActive(id);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Remove a security guard' })
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseCuidPipe) id: string) {
     return this.service.remove(id);
   }
 

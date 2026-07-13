@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { EquipmentService } from './equipment.service';
 import { CreateEquipmentDto } from './dto/create-equipment.dto';
 import { UpdateEquipmentDto } from './dto/update-equipment.dto';
@@ -29,55 +40,58 @@ export class EquipmentController {
 
   @Get('company/:companyId')
   @ApiOperation({ summary: 'Get equipment by company with assignment status' })
-  findByCompany(@Param('companyId', ParseUUIDPipe) companyId: string) {
+  findByCompany(@Param('companyId', ParseCuidPipe) companyId: string) {
     return this.service.findByCompany(companyId);
   }
 
   @Get('available/:companyId')
   @ApiOperation({ summary: 'Get available equipment' })
-  findAvailable(@Param('companyId', ParseUUIDPipe) companyId: string) {
+  findAvailable(@Param('companyId', ParseCuidPipe) companyId: string) {
     return this.service.findAvailable(companyId);
   }
 
   @Get('type/:companyId/:type')
   @ApiOperation({ summary: 'Get equipment by type' })
-  findByType(@Param('companyId', ParseUUIDPipe) companyId: string, @Param('type') type: string) {
+  findByType(@Param('companyId', ParseCuidPipe) companyId: string, @Param('type') type: string) {
     return this.service.findByType(companyId, type);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get equipment by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update equipment' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateEquipmentDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() dto: UpdateEquipmentDto) {
     return this.service.update(id, dto);
   }
 
   @Patch(':id/status')
   @ApiOperation({ summary: 'Update equipment status' })
-  updateStatus(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateEquipmentStatusDto) {
+  updateStatus(@Param('id', ParseCuidPipe) id: string, @Body() dto: UpdateEquipmentStatusDto) {
     return this.service.updateStatus(id, dto.status);
   }
 
   @Post(':id/assign')
   @ApiOperation({ summary: 'Assign equipment to employee' })
-  assign(@Param('id', ParseUUIDPipe) id: string, @Body() dto: AssignEquipmentDto) {
+  assign(@Param('id', ParseCuidPipe) id: string, @Body() dto: AssignEquipmentDto) {
     return this.service.assign(id, dto.employeeId, dto.conditionAtAssignment);
   }
 
   @Patch('assignments/:assignmentId/return')
   @ApiOperation({ summary: 'Return equipment from assignment' })
-  return(@Param('assignmentId', ParseUUIDPipe) assignmentId: string, @Body() dto: ReturnEquipmentDto) {
+  return(
+    @Param('assignmentId', ParseCuidPipe) assignmentId: string,
+    @Body() dto: ReturnEquipmentDto,
+  ) {
     return this.service.return(assignmentId, dto.conditionAtReturn);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete equipment' })
-  delete(@Param('id', ParseUUIDPipe) id: string) {
+  delete(@Param('id', ParseCuidPipe) id: string) {
     return this.service.delete(id);
   }
 }

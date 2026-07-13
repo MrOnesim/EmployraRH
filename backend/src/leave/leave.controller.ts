@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { LeaveService } from './leave.service';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -31,37 +32,37 @@ export class LeaveController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get leaves by employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.leaveService.findByEmployee(employeeId);
   }
 
   @Get('employee/:employeeId/balance')
   @ApiOperation({ summary: 'Get leave balance by employee' })
-  getBalance(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  getBalance(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.leaveService.getBalance(employeeId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a leave by id' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.leaveService.findById(id);
   }
 
   @Patch(':id/approve')
   @ApiOperation({ summary: 'Approve a leave request' })
-  approve(@Param('id', ParseUUIDPipe) id: string) {
+  approve(@Param('id', ParseCuidPipe) id: string) {
     return this.leaveService.approve(id);
   }
 
   @Patch(':id/reject')
   @ApiOperation({ summary: 'Reject a leave request with comment' })
-  reject(@Param('id', ParseUUIDPipe) id: string, @Body() dto: RejectLeaveDto) {
+  reject(@Param('id', ParseCuidPipe) id: string, @Body() dto: RejectLeaveDto) {
     return this.leaveService.reject(id, dto.comment);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a leave request (only if pending)' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateLeaveDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() dto: UpdateLeaveDto) {
     return this.leaveService.update(id, dto);
   }
 }

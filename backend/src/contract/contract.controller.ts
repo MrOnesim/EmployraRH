@@ -1,13 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Patch,
-  UseGuards,
-  ParseUUIDPipe,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { ContractService } from './contract.service';
@@ -29,19 +21,19 @@ export class ContractController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get contracts by employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.service.findByEmployee(employeeId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get contract by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a contract' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateContractDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() dto: UpdateContractDto) {
     return this.service.update(id, dto);
   }
 }

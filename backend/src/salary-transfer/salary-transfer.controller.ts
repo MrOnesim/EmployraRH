@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { SalaryTransferService } from './salary-transfer.service';
@@ -19,37 +20,37 @@ export class SalaryTransferController {
 
   @Get('company/:companyId')
   @ApiOperation({ summary: 'List salary transfers by company' })
-  findByCompany(@Param('companyId', ParseUUIDPipe) companyId: string) {
+  findByCompany(@Param('companyId', ParseCuidPipe) companyId: string) {
     return this.service.findByCompany(companyId);
   }
 
   @Get('company/:companyId/type/:type')
   @ApiOperation({ summary: 'List salary transfers by company and type' })
-  findByType(@Param('companyId', ParseUUIDPipe) companyId: string, @Param('type') type: string) {
+  findByType(@Param('companyId', ParseCuidPipe) companyId: string, @Param('type') type: string) {
     return this.service.findByType(companyId, type);
   }
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'List salary transfers by employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.service.findByEmployee(employeeId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a salary transfer by id' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Post(':id/complete')
   @ApiOperation({ summary: 'Complete a salary transfer' })
-  complete(@Param('id', ParseUUIDPipe) id: string) {
+  complete(@Param('id', ParseCuidPipe) id: string) {
     return this.service.complete(id);
   }
 
   @Post(':id/fail')
   @ApiOperation({ summary: 'Fail a salary transfer' })
-  fail(@Param('id', ParseUUIDPipe) id: string) {
+  fail(@Param('id', ParseCuidPipe) id: string) {
     return this.service.fail(id);
   }
 }

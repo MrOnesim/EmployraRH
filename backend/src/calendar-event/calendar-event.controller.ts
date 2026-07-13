@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { CalendarEventService } from './calendar-event.service';
@@ -48,19 +59,19 @@ export class CalendarEventController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get calendar event by id' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a calendar event' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateCalendarEventDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() body: UpdateCalendarEventDto) {
     return this.service.update(id, body);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a calendar event' })
-  delete(@Param('id', ParseUUIDPipe) id: string) {
+  delete(@Param('id', ParseCuidPipe) id: string) {
     return this.service.delete(id);
   }
 }

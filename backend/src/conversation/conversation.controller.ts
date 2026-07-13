@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { ConversationService } from './conversation.service';
@@ -35,19 +36,19 @@ export class ConversationController {
 
   @Get(':id/messages')
   @ApiOperation({ summary: 'Get messages for a conversation' })
-  findMessages(@Param('id', ParseUUIDPipe) id: string) {
+  findMessages(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findMessages(id);
   }
 
   @Post(':id/messages')
   @ApiOperation({ summary: 'Send a message' })
-  sendMessage(@Param('id', ParseUUIDPipe) id: string, @Body() body: AddMessageDto) {
+  sendMessage(@Param('id', ParseCuidPipe) id: string, @Body() body: AddMessageDto) {
     return this.service.sendMessage(id, body);
   }
 
   @Post(':id/read')
   @ApiOperation({ summary: 'Mark conversation as read' })
-  markRead(@Param('id', ParseUUIDPipe) id: string) {
+  markRead(@Param('id', ParseCuidPipe) id: string) {
     return this.service.markRead(id);
   }
 }

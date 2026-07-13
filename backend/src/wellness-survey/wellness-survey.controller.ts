@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { WellnessSurveyService } from './wellness-survey.service';
@@ -15,7 +16,10 @@ export class WellnessSurveyController {
   @Post()
   @ApiOperation({ summary: 'Create a new wellness survey' })
   create(@Body() dto: CreateWellnessSurveyDto) {
-    return this.service.create({ ...dto, expiresAt: dto.expiresAt ? new Date(dto.expiresAt) : undefined });
+    return this.service.create({
+      ...dto,
+      expiresAt: dto.expiresAt ? new Date(dto.expiresAt) : undefined,
+    });
   }
 
   @Get()
@@ -26,31 +30,31 @@ export class WellnessSurveyController {
 
   @Get('active/:companyId')
   @ApiOperation({ summary: 'Get active wellness surveys for company' })
-  findActive(@Param('companyId', ParseUUIDPipe) companyId: string) {
+  findActive(@Param('companyId', ParseCuidPipe) companyId: string) {
     return this.service.findActive(companyId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get wellness survey by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Get(':id/results')
   @ApiOperation({ summary: 'Get aggregated results for a survey' })
-  getResults(@Param('id', ParseUUIDPipe) id: string) {
+  getResults(@Param('id', ParseCuidPipe) id: string) {
     return this.service.getResults(id);
   }
 
   @Patch(':id/toggle-active')
   @ApiOperation({ summary: 'Toggle survey active status' })
-  toggleActive(@Param('id', ParseUUIDPipe) id: string) {
+  toggleActive(@Param('id', ParseCuidPipe) id: string) {
     return this.service.toggleActive(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a wellness survey' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateWellnessSurveyDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() dto: UpdateWellnessSurveyDto) {
     return this.service.update(id, dto);
   }
 }

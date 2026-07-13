@@ -8,8 +8,8 @@ import {
   Delete,
   Query,
   UseGuards,
-  ParseUUIDPipe,
 } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { TeamService } from './team.service';
@@ -37,31 +37,31 @@ export class TeamController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get team by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a team' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateTeamDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() dto: UpdateTeamDto) {
     return this.service.update(id, dto);
   }
 
   @Post(':id/members')
   @ApiOperation({ summary: 'Add a member to a team' })
-  addMember(@Param('id', ParseUUIDPipe) id: string, @Body('employeeId') employeeId: string) {
+  addMember(@Param('id', ParseCuidPipe) id: string, @Body('employeeId') employeeId: string) {
     return this.service.addMember(id, employeeId);
   }
 
   @Delete(':id/members/:employeeId')
   @ApiOperation({ summary: 'Remove a member from a team' })
-  removeMember(@Param('id', ParseUUIDPipe) id: string, @Param('employeeId') employeeId: string) {
+  removeMember(@Param('id', ParseCuidPipe) id: string, @Param('employeeId') employeeId: string) {
     return this.service.removeMember(id, employeeId);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a team' })
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseCuidPipe) id: string) {
     return this.service.remove(id);
   }
 }

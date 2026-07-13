@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { MeetingService } from './meeting.service';
@@ -27,31 +38,34 @@ export class MeetingController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get meeting by id' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.meetingService.findById(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a meeting' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateMeetingDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() body: UpdateMeetingDto) {
     return this.meetingService.update(id, body as any);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a meeting' })
-  delete(@Param('id', ParseUUIDPipe) id: string) {
+  delete(@Param('id', ParseCuidPipe) id: string) {
     return this.meetingService.delete(id);
   }
 
   @Post(':id/participants')
   @ApiOperation({ summary: 'Add participant to meeting' })
-  addParticipant(@Param('id', ParseUUIDPipe) id: string, @Body() body: JoinMeetingDto) {
+  addParticipant(@Param('id', ParseCuidPipe) id: string, @Body() body: JoinMeetingDto) {
     return this.meetingService.addParticipant(id, body);
   }
 
   @Delete(':id/participants/:participantId')
   @ApiOperation({ summary: 'Remove participant from meeting' })
-  removeParticipant(@Param('id', ParseUUIDPipe) id: string, @Param('participantId', ParseUUIDPipe) participantId: string) {
+  removeParticipant(
+    @Param('id', ParseCuidPipe) id: string,
+    @Param('participantId', ParseCuidPipe) participantId: string,
+  ) {
     return this.meetingService.removeParticipant(id, participantId);
   }
 }

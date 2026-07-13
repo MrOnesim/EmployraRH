@@ -1,14 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Patch,
-  Query,
-  ParseUUIDPipe,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { MissionService } from './mission.service';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -32,56 +23,48 @@ export class MissionController {
   @Get()
   @ApiOperation({ summary: 'Get all missions' })
   findAll(@Query('companyId') companyId?: string) {
-    return companyId
-      ? this.service.findByCompany(companyId)
-      : this.service.findAll();
+    return companyId ? this.service.findByCompany(companyId) : this.service.findAll();
   }
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get missions by employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.service.findByEmployee(employeeId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get mission by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Get(':id/expenses')
   @ApiOperation({ summary: 'Get linked expense reports for a mission' })
-  getExpenses(@Param('id', ParseUUIDPipe) id: string) {
+  getExpenses(@Param('id', ParseCuidPipe) id: string) {
     return this.service.getExpenses(id);
   }
 
   @Patch(':id/approve')
   @ApiOperation({ summary: 'Approve a mission' })
-  approve(@Param('id', ParseUUIDPipe) id: string) {
+  approve(@Param('id', ParseCuidPipe) id: string) {
     return this.service.approve(id);
   }
 
   @Patch(':id/reject')
   @ApiOperation({ summary: 'Reject a mission' })
-  reject(@Param('id', ParseUUIDPipe) id: string) {
+  reject(@Param('id', ParseCuidPipe) id: string) {
     return this.service.reject(id);
   }
 
   @Patch(':id/complete')
   @ApiOperation({ summary: 'Complete a mission' })
-  complete(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: CompleteMissionDto,
-  ) {
+  complete(@Param('id', ParseCuidPipe) id: string, @Body() dto: CompleteMissionDto) {
     return this.service.complete(id, dto);
   }
 
   @Patch(':id/submit-expense')
   @ApiOperation({ summary: 'Link an expense report to a mission' })
-  submitExpense(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() dto: SubmitExpenseDto,
-  ) {
+  submitExpense(@Param('id', ParseCuidPipe) id: string, @Body() dto: SubmitExpenseDto) {
     return this.service.submitExpense(id, dto);
   }
 }

@@ -1,4 +1,5 @@
-import { Controller, Post, Get, Param, Body, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { QrTokenService } from './qr-token.service';
@@ -24,7 +25,7 @@ export class QrTokenController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get current valid QR token for employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.qrTokenService.findByEmployee(employeeId);
   }
 

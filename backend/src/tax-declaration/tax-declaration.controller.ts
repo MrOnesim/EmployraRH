@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { TaxDeclarationService } from './tax-declaration.service';
@@ -38,31 +39,34 @@ export class TaxDeclarationController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a tax declaration by id' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Post(':id/submit')
   @ApiOperation({ summary: 'Submit a tax declaration' })
-  submit(@Param('id', ParseUUIDPipe) id: string) {
+  submit(@Param('id', ParseCuidPipe) id: string) {
     return this.service.submit(id);
   }
 
   @Post(':id/confirm-amount')
   @ApiOperation({ summary: 'Confirm amount for a tax declaration' })
-  confirmAmount(@Param('id', ParseUUIDPipe) id: string, @Body() dto: ConfirmAmountDto) {
+  confirmAmount(@Param('id', ParseCuidPipe) id: string, @Body() dto: ConfirmAmountDto) {
     return this.service.confirmAmount(id, dto.amount);
   }
 
   @Post(':id/paid')
   @ApiOperation({ summary: 'Mark a tax declaration as paid' })
-  markPaid(@Param('id', ParseUUIDPipe) id: string) {
+  markPaid(@Param('id', ParseCuidPipe) id: string) {
     return this.service.markPaid(id);
   }
 
   @Get('calculate/:employeeId/:year')
   @ApiOperation({ summary: 'Calculate estimated withholding for employee' })
-  calculateWithholding(@Param('employeeId', ParseUUIDPipe) employeeId: string, @Param('year') year: string) {
+  calculateWithholding(
+    @Param('employeeId', ParseCuidPipe) employeeId: string,
+    @Param('year') year: string,
+  ) {
     return this.service.calculateWithholding(employeeId, parseInt(year, 10));
   }
 }

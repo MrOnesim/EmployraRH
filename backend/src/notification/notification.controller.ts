@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { NotificationService } from './notification.service';
@@ -26,13 +37,13 @@ export class NotificationController {
 
   @Get('unread-count/:userId')
   @ApiOperation({ summary: 'Get unread notification count' })
-  getUnreadCount(@Param('userId', ParseUUIDPipe) userId: string) {
+  getUnreadCount(@Param('userId', ParseCuidPipe) userId: string) {
     return this.service.getUnreadCount(userId);
   }
 
   @Patch(':id/read')
   @ApiOperation({ summary: 'Mark notification as read' })
-  markRead(@Param('id', ParseUUIDPipe) id: string) {
+  markRead(@Param('id', ParseCuidPipe) id: string) {
     return this.service.markRead(id);
   }
 
@@ -44,7 +55,7 @@ export class NotificationController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a notification' })
-  delete(@Param('id', ParseUUIDPipe) id: string) {
+  delete(@Param('id', ParseCuidPipe) id: string) {
     return this.service.delete(id);
   }
 }

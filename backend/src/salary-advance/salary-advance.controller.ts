@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SalaryAdvanceService } from './salary-advance.service';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -26,37 +27,37 @@ export class SalaryAdvanceController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a salary advance by id' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get salary advances by employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.service.findByEmployee(employeeId);
   }
 
   @Patch(':id/approve')
   @ApiOperation({ summary: 'Approve a salary advance' })
-  approve(@Param('id', ParseUUIDPipe) id: string, @Body() dto: ApproveAdvanceDto) {
+  approve(@Param('id', ParseCuidPipe) id: string, @Body() dto: ApproveAdvanceDto) {
     return this.service.approve(id, dto.approvedBy);
   }
 
   @Patch(':id/reject')
   @ApiOperation({ summary: 'Reject a salary advance' })
-  reject(@Param('id', ParseUUIDPipe) id: string) {
+  reject(@Param('id', ParseCuidPipe) id: string) {
     return this.service.reject(id);
   }
 
   @Patch(':id/paid')
   @ApiOperation({ summary: 'Mark a salary advance as paid' })
-  markPaid(@Param('id', ParseUUIDPipe) id: string) {
+  markPaid(@Param('id', ParseCuidPipe) id: string) {
     return this.service.markPaid(id);
   }
 
   @Patch(':id/repaid')
   @ApiOperation({ summary: 'Mark a salary advance as repaid' })
-  markRepaid(@Param('id', ParseUUIDPipe) id: string) {
+  markRepaid(@Param('id', ParseCuidPipe) id: string) {
     return this.service.markRepaid(id);
   }
 }

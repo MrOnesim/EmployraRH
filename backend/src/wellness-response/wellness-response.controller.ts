@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { WellnessResponseService } from './wellness-response.service';
@@ -19,7 +20,11 @@ export class WellnessResponseController {
 
   @Get()
   @ApiOperation({ summary: 'Get responses by survey, employee, or company' })
-  findAll(@Query('surveyId') surveyId?: string, @Query('employeeId') employeeId?: string, @Query('companyId') companyId?: string) {
+  findAll(
+    @Query('surveyId') surveyId?: string,
+    @Query('employeeId') employeeId?: string,
+    @Query('companyId') companyId?: string,
+  ) {
     if (surveyId) return this.service.findBySurvey(surveyId);
     if (employeeId) return this.service.findByEmployee(employeeId);
     if (companyId) return this.service.findByCompany(companyId);
@@ -28,7 +33,7 @@ export class WellnessResponseController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get wellness response by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 }

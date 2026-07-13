@@ -1,4 +1,5 @@
-import { Controller, Post, Body, Param, Put, Get, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Get, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { InvitationService } from './invitation.service';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -19,7 +20,7 @@ export class InvitationController {
 
   @Put(':id/accept')
   @ApiOperation({ summary: 'Accept an invitation' })
-  accept(@Param('id', ParseUUIDPipe) id: string) {
+  accept(@Param('id', ParseCuidPipe) id: string) {
     return this.invitationService.accept(id);
   }
 

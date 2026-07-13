@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { QuizAttemptService } from './quiz-attempt.service';
 import { SubmitQuizDto } from './dto/submit-quiz.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -19,25 +20,25 @@ export class QuizAttemptController {
 
   @Get('quiz/:quizId')
   @ApiOperation({ summary: 'Get attempts by quiz' })
-  findByQuiz(@Param('quizId', ParseUUIDPipe) quizId: string) {
+  findByQuiz(@Param('quizId', ParseCuidPipe) quizId: string) {
     return this.service.findByQuiz(quizId);
   }
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get attempts by employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.service.findByEmployee(employeeId);
   }
 
   @Get('course/:courseId')
   @ApiOperation({ summary: 'Get attempts by course' })
-  findByCourse(@Param('courseId', ParseUUIDPipe) courseId: string) {
+  findByCourse(@Param('courseId', ParseCuidPipe) courseId: string) {
     return this.service.findByCourse(courseId);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get attempt by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 }

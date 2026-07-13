@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Delete, Body, Param, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { DocumentService } from './document.service';
@@ -25,7 +26,7 @@ export class DocumentController {
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get documents by employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.documentService.findByEmployee(employeeId);
   }
 
@@ -37,7 +38,7 @@ export class DocumentController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a document' })
-  delete(@Param('id', ParseUUIDPipe) id: string) {
+  delete(@Param('id', ParseCuidPipe) id: string) {
     return this.documentService.delete(id);
   }
 }

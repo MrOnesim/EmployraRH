@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { JobOfferService } from './job-offer.service';
 import { CreateJobOfferDto } from './dto/create-job-offer.dto';
 import { UpdateJobOfferDto } from './dto/update-job-offer.dto';
@@ -32,49 +43,52 @@ export class JobOfferController {
 
   @Get('company/:companyId')
   @ApiOperation({ summary: 'Get job offers by company' })
-  findByCompany(@Param('companyId', ParseUUIDPipe) companyId: string) {
+  findByCompany(@Param('companyId', ParseCuidPipe) companyId: string) {
     return this.service.findByCompany(companyId);
   }
 
   @Get('company/:companyId/status/:status')
   @ApiOperation({ summary: 'Get job offers by company and status' })
-  findByStatus(@Param('companyId', ParseUUIDPipe) companyId: string, @Param('status') status: string) {
+  findByStatus(
+    @Param('companyId', ParseCuidPipe) companyId: string,
+    @Param('status') status: string,
+  ) {
     return this.service.findByStatus(companyId, status);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get job offer by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Get(':id/candidates/count')
   @ApiOperation({ summary: 'Get candidate count for a job offer' })
-  getCandidateCount(@Param('id', ParseUUIDPipe) id: string) {
+  getCandidateCount(@Param('id', ParseCuidPipe) id: string) {
     return this.service.getCandidateCount(id);
   }
 
   @Patch(':id/publish')
   @ApiOperation({ summary: 'Publish a job offer (draft → open)' })
-  publish(@Param('id', ParseUUIDPipe) id: string) {
+  publish(@Param('id', ParseCuidPipe) id: string) {
     return this.service.publish(id);
   }
 
   @Patch(':id/close')
   @ApiOperation({ summary: 'Close a job offer (open → closed)' })
-  close(@Param('id', ParseUUIDPipe) id: string) {
+  close(@Param('id', ParseCuidPipe) id: string) {
     return this.service.close(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a job offer' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateJobOfferDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() dto: UpdateJobOfferDto) {
     return this.service.update(id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a job offer' })
-  delete(@Param('id', ParseUUIDPipe) id: string) {
+  delete(@Param('id', ParseCuidPipe) id: string) {
     return this.service.delete(id);
   }
 }

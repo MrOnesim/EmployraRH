@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PerformanceReviewService } from './performance-review.service';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -27,37 +28,37 @@ export class PerformanceReviewController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a performance review by id' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Get('employee/:employeeId')
   @ApiOperation({ summary: 'Get performance reviews by employee' })
-  findByEmployee(@Param('employeeId', ParseUUIDPipe) employeeId: string) {
+  findByEmployee(@Param('employeeId', ParseCuidPipe) employeeId: string) {
     return this.service.findByEmployee(employeeId);
   }
 
   @Get('reviewer/:reviewerId')
   @ApiOperation({ summary: 'Get performance reviews by reviewer' })
-  findByReviewer(@Param('reviewerId', ParseUUIDPipe) reviewerId: string) {
+  findByReviewer(@Param('reviewerId', ParseCuidPipe) reviewerId: string) {
     return this.service.findByReviewer(reviewerId);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a performance review (only if draft)' })
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdatePerformanceReviewDto) {
+  update(@Param('id', ParseCuidPipe) id: string, @Body() dto: UpdatePerformanceReviewDto) {
     return this.service.update(id, dto);
   }
 
   @Patch(':id/submit')
   @ApiOperation({ summary: 'Submit a performance review' })
-  submit(@Param('id', ParseUUIDPipe) id: string) {
+  submit(@Param('id', ParseCuidPipe) id: string) {
     return this.service.submit(id);
   }
 
   @Patch(':id/acknowledge')
   @ApiOperation({ summary: 'Acknowledge a performance review' })
-  acknowledge(@Param('id', ParseUUIDPipe) id: string, @Body() dto: AcknowledgeReviewDto) {
+  acknowledge(@Param('id', ParseCuidPipe) id: string, @Body() dto: AcknowledgeReviewDto) {
     return this.service.acknowledge(id, dto.employeeId);
   }
 }

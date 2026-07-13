@@ -1,14 +1,5 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Query,
-  UseGuards,
-  ParseUUIDPipe,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { PostService } from './post.service';
@@ -36,25 +27,25 @@ export class PostController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get post by ID' })
-  findById(@Param('id', ParseUUIDPipe) id: string) {
+  findById(@Param('id', ParseCuidPipe) id: string) {
     return this.service.findById(id);
   }
 
   @Post(':id/like')
   @ApiOperation({ summary: 'Toggle like on a post' })
-  toggleLike(@Param('id', ParseUUIDPipe) id: string, @Body('employeeId') employeeId: string) {
+  toggleLike(@Param('id', ParseCuidPipe) id: string, @Body('employeeId') employeeId: string) {
     return this.service.toggleLike(id, employeeId);
   }
 
   @Post(':id/comments')
   @ApiOperation({ summary: 'Add a comment to a post' })
-  addComment(@Param('id', ParseUUIDPipe) id: string, @Body() dto: CreateCommentDto) {
+  addComment(@Param('id', ParseCuidPipe) id: string, @Body() dto: CreateCommentDto) {
     return this.service.addComment(id, dto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a post' })
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseCuidPipe) id: string) {
     return this.service.remove(id);
   }
 }
