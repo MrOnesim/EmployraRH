@@ -50,6 +50,7 @@ model Company {
   teams              Team[]
   posts              Post[]
   rewardCatalog      RewardCatalog[]
+  subscriptions       Subscription[]
 }
 
 model User {
@@ -977,4 +978,150 @@ model CasbinRule {
   v5    String?
 
   @@index([ptype])
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  CANCELLED
+  EXPIRED
+  REFUNDED
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  SUSPENDED
+  CANCELLED
+  EXPIRED
+}
+
+enum BillingProvider {
+  MONEY_FUSION
+}
+
+model Plan {
+  id          String   @id @default(cuid())
+  name        String
+  description String   @default("")
+  price       Float
+  currency    String   @default("EUR")
+  interval    String   @default("month")
+  trialDays   Int      @default(0)
+  features    String   @default("")
+  taxRate     Float    @default(0)
+  taxExempt   Boolean  @default(false)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  subscriptions Subscription[]
+
+  @@index([active])
+}
+
+model Coupon {
+  id          String    @id @default(cuid())
+  code        String    @unique
+  description String    @default("")
+  type        String    @default("percent")
+  value       Float
+  maxUses     Int       @default(0)
+  usedCount   Int       @default(0)
+  expiresAt   DateTime?
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  subscriptions Subscription[]
+
+  @@index([code])
+}
+
+model Subscription {
+  id               String             @id @default(cuid())
+  companyId        String
+  company          Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  planId           String
+  plan             Plan               @relation(fields: [planId], references: [id])
+  couponId         String?
+  coupon           Coupon?            @relation(fields: [couponId], references: [id])
+  status           SubscriptionStatus @default(TRIAL)
+  provider         BillingProvider    @default(MONEY_FUSION)
+  currentPeriodEnd DateTime
+  trialEndsAt      DateTime?
+  cancelAt         DateTime?
+  cancelledAt      DateTime?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  payments         Payment[]
+  invoices         Invoice[]
+  events           SubscriptionEvent[]
+
+  @@index([companyId])
+  @@index([planId])
+}
+
+model Payment {
+  id             String         @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription   @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  provider       BillingProvider
+  providerRef    String?
+  amount         Float
+  currency       String         @default("EUR")
+  method         String?
+  status         PaymentStatus  @default(PENDING)
+  paidAt         DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([subscriptionId])
+  @@index([status])
+}
+
+model Invoice {
+  id             String         @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription   @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  number         String         @unique
+  amount         Float
+  taxAmount      Float         @default(0)
+  currency       String         @default("EUR")
+  status         PaymentStatus  @default(PENDING)
+  pdfUrl         String?
+  issuedAt       DateTime       @default(now())
+  paidAt         DateTime?
+
+  @@index([subscriptionId])
+}
+
+model SubscriptionEvent {
+  id             String       @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  fromStatus     SubscriptionStatus?
+  toStatus       SubscriptionStatus
+  note           String       @default("")
+  createdAt      DateTime     @default(now())
+
+  @@index([subscriptionId])
+}
+
+model WebhookEvent {
+  id          String         @id @default(cuid())
+  provider    BillingProvider
+  eventType   String
+  providerRef String?
+  payload     String
+  signature   String?
+  status      String         @default("RECEIVED")
+  processedAt DateTime?
+  createdAt   DateTime       @default(now())
+
+  @@index([providerRef])
+  @@index([status])
 }

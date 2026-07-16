@@ -249,6 +249,52 @@ async function main() {
       });
     }
 
+    if ((await prisma.plan.count()) === 0) {
+      await prisma.plan.createMany({
+        data: [
+          {
+            id: 'plan_free',
+            name: 'Free',
+            description: 'Pour decouvrir EmployePro',
+            price: 0,
+            currency: 'XOF',
+            interval: 'month',
+            trialDays: 0,
+            features: '5 employes;Modules RH de base',
+            taxRate: 0,
+            taxExempt: true,
+            active: true,
+          },
+          {
+            id: 'plan_business',
+            name: 'Business',
+            description: 'Pour les PME en croissance',
+            price: 50000,
+            currency: 'XOF',
+            interval: 'month',
+            trialDays: 14,
+            features: 'Employes illimites;Paie;Recrutement;Support prioritaire',
+            taxRate: 0,
+            taxExempt: true,
+            active: true,
+          },
+          {
+            id: 'plan_enterprise',
+            name: 'Enterprise',
+            description: 'Pour les grandes organisations',
+            price: 150000,
+            currency: 'XOF',
+            interval: 'month',
+            trialDays: 30,
+            features: 'Tout Business;SSO;Audit avance;Account manager',
+            taxRate: 0,
+            taxExempt: true,
+            active: true,
+          },
+        ],
+      });
+    }
+
     if ((await prisma.employeeVaultItem.count()) === 0) {
       await prisma.employeeVaultItem.createMany({
         data: [

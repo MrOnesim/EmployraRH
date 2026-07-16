@@ -62,7 +62,7 @@ async function bootstrap() {
       return res.status(403).json({ message: 'Untrusted request origin' });
     }
 
-    if (req.path.startsWith('/api/auth/')) {
+    if (req.path.startsWith('/api/auth/') || req.path.startsWith('/api/billing/webhooks/')) {
       return next();
     }
 
