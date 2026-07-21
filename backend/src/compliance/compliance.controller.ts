@@ -1,12 +1,18 @@
-import { Controller, Get, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, Param, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Response } from 'express';
 import { Public } from '../common/decorators/public.decorator';
 import { ComplianceService } from './compliance.service';
+import { PayslipPdfService } from './payslip-pdf.service';
+import { SimulatePayslipDto } from './dto/simulate-payslip.dto';
 
 @ApiTags('compliance')
 @Controller('compliance')
 export class ComplianceController {
-  constructor(private readonly service: ComplianceService) {}
+  constructor(
+    private readonly service: ComplianceService,
+    private readonly pdf: PayslipPdfService,
+  ) {}
 
   @Get('countries')
   @Public()
@@ -17,16 +23,62 @@ export class ComplianceController {
 
   @Post('simulate')
   @Public()
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Simulate a payslip calculation without creating records' })
-  async simulate(
-    @Body() input: { grossSalary: number; countryCode: string; month: number; year: number },
-  ) {
+  async simulate(@Body() dto: SimulatePayslipDto) {
     return this.service.calculatePayslip(
       'simulation',
-      input.month,
-      input.year,
-      input.grossSalary,
-      input.countryCode,
+      dto.month,
+      dto.year,
+      dto.grossSalary,
+      dto.countryCode,
     );
+  }
+
+  @Post('simulate/pdf')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Simulate payslip and return PDF stream' })
+  async simulatePdf(@Body() dto: SimulatePayslipDto, @Res() res: Response) {
+    const { result, countryCode } = await this.service.calculatePayslip(
+      'simulation',
+      dto.month,
+      dto.year,
+      dto.grossSalary,
+      dto.countryCode,
+    );
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="bulletin-paie-${countryCode}-${dto.month}-${dto.year}.pdf"`,
+    });
+
+    this.pdf.generate(result, countryCode, dto.month, dto.year).pipe(res);
+  }
+
+  @Get('simulate/pdf/:countryCode/:grossSalary/:month/:year')
+  @Public()
+  @ApiOperation({ summary: 'Simulate payslip PDF via GET (convenience)' })
+  async simulatePdfGet(
+    @Param('countryCode') countryCode: string,
+    @Param('grossSalary') grossSalary: string,
+    @Param('month') month: string,
+    @Param('year') year: string,
+    @Res() res: Response,
+  ) {
+    const { result, countryCode: cc } = await this.service.calculatePayslip(
+      'simulation',
+      +month,
+      +year,
+      +grossSalary,
+      countryCode,
+    );
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="bulletin-paie-${cc}-${month}-${year}.pdf"`,
+    });
+
+    this.pdf.generate(result, cc, +month, +year).pipe(res);
   }
 }

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { PrismaModule } from '../prisma/prisma.module';
 import { ComplianceController } from './compliance.controller';
 import { ComplianceService } from './compliance.service';
+import { PayslipPdfService } from './payslip-pdf.service';
 import { CountryProviderRegistry } from './providers/provider.registry';
 import { FranceProvider } from './providers/france.provider';
 import { BeninProvider } from './providers/benin.provider';
@@ -13,13 +14,14 @@ import { SenegalProvider } from './providers/senegal.provider';
   controllers: [ComplianceController],
   providers: [
     ComplianceService,
+    PayslipPdfService,
     CountryProviderRegistry,
     FranceProvider,
     BeninProvider,
     CoteDivoireProvider,
     SenegalProvider,
   ],
-  exports: [ComplianceService, CountryProviderRegistry],
+  exports: [ComplianceService, PayslipPdfService, CountryProviderRegistry],
 })
 export class ComplianceModule {
   constructor(
