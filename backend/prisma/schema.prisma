@@ -1001,6 +1001,7 @@ enum SubscriptionStatus {
 
 enum BillingProvider {
   MONEY_FUSION
+  PAYSTACK
 }
 
 model Plan {

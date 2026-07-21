@@ -71,7 +71,7 @@ export class BillingService {
         companyId: dto.companyId,
         planId: plan.id,
         couponId: coupon?.id ?? null,
-        provider: BillingProvider.MONEY_FUSION,
+        provider: dto.provider ?? BillingProvider.MONEY_FUSION,
         status,
         trialEndsAt,
         currentPeriodEnd: trialEndsAt ?? this.periodEnd(plan.interval),
@@ -184,11 +184,16 @@ export class BillingService {
       orderBy: { issuedAt: 'desc' },
     });
     const amount = invoice ? invoice.amount + invoice.taxAmount : sub.plan.price;
+    const member = await this.prisma.employee.findFirst({
+      where: { companyId: sub.companyId },
+      select: { email: true },
+    });
+    const customerReference = member?.email ?? `company-${sub.companyId.slice(-8)}@employepro.com`;
     const created = await provider.createPayment({
       amount,
       currency: sub.plan.currency,
       description: `Subscription ${sub.plan.name}`,
-      customerReference: sub.companyId,
+      customerReference,
     });
     const payment = await this.prisma.payment.create({
       data: {
@@ -226,9 +231,15 @@ export class BillingService {
     if (!valid) return event;
 
     try {
-      const data = JSON.parse(payload) as { providerRef?: string; status?: string };
-      if (data.providerRef) {
-        await this.applyPaymentStatus(data.providerRef, data.status);
+      const parsed = JSON.parse(payload) as {
+        providerRef?: string;
+        status?: string;
+        data?: { reference?: string; status?: string };
+      };
+      const ref = parsed.providerRef ?? parsed.data?.reference;
+      const status = parsed.status ?? parsed.data?.status;
+      if (ref) {
+        await this.applyPaymentStatus(ref, status);
       }
       await this.prisma.webhookEvent.update({
         where: { id: event.id },
@@ -253,7 +264,7 @@ export class BillingService {
         : status === 'FAILED'
           ? PaymentStatus.FAILED
           : payment.status;
-    const updated = await this.prisma.payment.update({
+    await this.prisma.payment.update({
       where: { id: payment.id },
       data: { status: mapped, paidAt: mapped === PaymentStatus.SUCCESS ? new Date() : null },
     });
@@ -282,8 +293,8 @@ export class BillingService {
 
   private extractProviderRef(payload: string): string | null {
     try {
-      const parsed = JSON.parse(payload) as { providerRef?: string };
-      return parsed.providerRef ?? null;
+      const parsed = JSON.parse(payload) as { providerRef?: string; data?: { reference?: string } };
+      return parsed.providerRef ?? parsed.data?.reference ?? null;
     } catch {
       return null;
     }

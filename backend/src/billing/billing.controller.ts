@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards, Headers } from '@nestjs/common';
 import { ParseCuidPipe } from '../common/pipes/parse-cuid.pipe';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -100,13 +100,29 @@ export class BillingController {
   @Post('webhooks/money-fusion')
   @ApiOperation({ summary: 'Money Fusion webhook endpoint' })
   @Public()
-  async webhook(@Query() query: WebhookQueryDto, @Body() body: any) {
+  async webhookMoneyFusion(@Query() query: WebhookQueryDto, @Body() body: any) {
     const payload = JSON.stringify(body ?? {});
     return this.service.handleWebhook(
       'MONEY_FUSION',
       body?.event ?? 'payment',
       payload,
       query.signature,
+    );
+  }
+
+  @Post('webhooks/paystack')
+  @ApiOperation({ summary: 'Paystack webhook endpoint' })
+  @Public()
+  async webhookPaystack(
+    @Headers('x-paystack-signature') signature: string | undefined,
+    @Body() body: any,
+  ) {
+    const payload = JSON.stringify(body ?? {});
+    return this.service.handleWebhook(
+      'PAYSTACK',
+      body?.event ?? 'charge.success',
+      payload,
+      signature,
     );
   }
 

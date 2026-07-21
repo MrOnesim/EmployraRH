@@ -3,19 +3,22 @@ import { BillingController } from './billing.controller';
 import { BillingService } from './billing.service';
 import { ProviderRegistry } from './providers/provider.registry';
 import { MoneyFusionProvider } from './providers/money-fusion.provider';
+import { PaystackProvider } from './providers/paystack.provider';
 
 @Module({
   controllers: [BillingController],
   providers: [
     MoneyFusionProvider,
+    PaystackProvider,
     {
       provide: ProviderRegistry,
-      useFactory: (provider: MoneyFusionProvider) => {
+      useFactory: (mf: MoneyFusionProvider, ps: PaystackProvider) => {
         const registry = new ProviderRegistry();
-        registry.register(provider);
+        registry.register(mf);
+        registry.register(ps);
         return registry;
       },
-      inject: [MoneyFusionProvider],
+      inject: [MoneyFusionProvider, PaystackProvider],
     },
     BillingService,
   ],

@@ -1,5 +1,6 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { BillingProvider } from '@prisma/client';
 
 export class SubscribeDto {
   @ApiProperty()
@@ -14,4 +15,9 @@ export class SubscribeDto {
   @IsOptional()
   @IsString()
   couponCode?: string;
+
+  @ApiProperty({ enum: BillingProvider, required: false, default: BillingProvider.MONEY_FUSION })
+  @IsOptional()
+  @IsEnum(BillingProvider)
+  provider?: BillingProvider;
 }

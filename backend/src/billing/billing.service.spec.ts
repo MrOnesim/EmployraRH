@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BillingService } from './billing.service';
 import { ProviderRegistry } from './providers/provider.registry';
 import { MoneyFusionProvider } from './providers/money-fusion.provider';
-import { BillingProvider, PaymentStatus, SubscriptionStatus } from '@prisma/client';
+import { BillingProvider, SubscriptionStatus } from '@prisma/client';
 
 function mockPrisma() {
   const store: any = {
@@ -48,6 +48,10 @@ function mockPrisma() {
         },
       },
       company: { findUnique: async (q: any) => (q.where.id ? { id: q.where.id } : null) },
+      employee: {
+        findFirst: async (q: any) =>
+          store.employees?.find((e) => e.companyId === q.where.companyId) ?? null,
+      },
       subscription: {
         create: async (q: any) => {
           const row = { id: id(), ...q.data };
@@ -203,7 +207,7 @@ describe('BillingService', () => {
   it('applies coupon discount', async () => {
     const plan = await service.createPlan({ name: 'Std', price: 10000, currency: 'XOF' });
     const coupon = await service.createCoupon({ code: 'WELCOME20', type: 'percent', value: 20 });
-    const sub = await service.subscribe({
+    await service.subscribe({
       companyId: 'comp_2',
       planId: plan.id,
       couponCode: 'WELCOME20',
