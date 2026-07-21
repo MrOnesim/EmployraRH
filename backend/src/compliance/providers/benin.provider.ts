@@ -116,7 +116,7 @@ export class BeninProvider implements CountryProvider {
       where: {
         countryCode: 'BJ',
         effectiveFrom: { lte: new Date() },
-        AND: [{ effectiveTo: null }, { effectiveTo: { gte: new Date() } }],
+        OR: [{ effectiveTo: null }, { effectiveTo: { gte: new Date() } }],
       },
       orderBy: { effectiveFrom: 'desc' },
     });
