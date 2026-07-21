@@ -41,6 +41,7 @@ export class PaystackProvider implements PaymentProvider {
     const data = await this.request('POST', '/transaction/initialize', {
       email: input.customerReference,
       amount: amountKobo,
+      currency: input.currency ?? 'XOF',
       reference: `emp_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`,
       callback_url: input.callbackUrl,
     });
