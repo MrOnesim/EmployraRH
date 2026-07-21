@@ -62,6 +62,7 @@ const LeavePolicyPage = lazy(() => import('./pages/LeavePolicyPage'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 const SecurityGuardsPage = lazy(() => import('./pages/SecurityGuardsPage'));
 const GuardScanPage = lazy(() => import('./pages/GuardScanPage'));
+const CompliancePage = lazy(() => import('./pages/CompliancePage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 function ProtectedRoute({
@@ -538,6 +539,14 @@ function AppRoutes() {
                 element={
                   <PageTransition>
                     <SecurityGuardsPage />
+                  </PageTransition>
+                }
+              />
+              <Route
+                path="compliance"
+                element={
+                  <PageTransition>
+                    <CompliancePage />
                   </PageTransition>
                 }
               />

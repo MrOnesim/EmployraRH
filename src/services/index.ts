@@ -201,3 +201,4 @@ export {
 } from './rewardService';
 export { getContractsByEmployee, createContract, updateContract } from './contractService';
 export { getTimeline, getTimelineByEmployee, createTimelineEvent } from './timelineService';
+export { getSupportedCountries, simulatePayslip, simulatePayslipPdf } from './complianceService';

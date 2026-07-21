@@ -31,6 +31,7 @@ import {
   Rss,
   CheckCircle2,
   PartyPopper,
+  ShieldCheck,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useTheme } from '../context/ThemeContext';
@@ -116,9 +117,10 @@ export function AppSidebar() {
         { path: '/admin/payslips', icon: FileText, label: 'Bulletins' },
         { path: '/admin/salary', icon: DollarSign, label: 'Salaires' },
         { path: '/admin/banking', icon: Landmark, label: 'Banque' },
-        { path: '/admin/tax', icon: Receipt, label: 'Déclarations' },
+        { path: '/admin/tax', icon: Receipt, label: 'Declarations' },
+        { path: '/admin/compliance', icon: ShieldCheck, label: 'Conformite' },
         { path: '/admin/fintech', icon: PiggyBank, label: 'Banque salariale' },
-        { path: '/admin/rewards', icon: Award, label: 'Récompenses' },
+        { path: '/admin/rewards', icon: Award, label: 'Recompenses' },
       ]
     : [{ path: '/employee-dashboard/payslips', icon: FileText, label: 'Bulletins' }];
 
