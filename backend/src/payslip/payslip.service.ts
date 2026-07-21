@@ -8,11 +8,13 @@ import {
 } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '../prisma/prisma.service';
+import { ComplianceService } from '../compliance/compliance.service';
 
 @Injectable()
 export class PayslipService {
   constructor(
     private prisma: PrismaService,
+    private compliance: ComplianceService,
     @Optional() @Inject(CACHE_MANAGER) private cache?: Cache,
   ) {}
 
@@ -29,20 +31,33 @@ export class PayslipService {
     if (existing)
       throw new ConflictException('Payslip already exists for this employee, month, and year');
 
-    const config = await this.prisma.payrollConfig.findUnique({
-      where: { companyId: employee.companyId },
-    });
+    const countryCode = employee.company?.country ?? 'FR';
 
-    if (!config) throw new NotFoundException('Payroll config not found for employee company');
+    const { result } = await this.compliance.calculatePayslip(
+      employeeId,
+      month,
+      year,
+      employee.salary ?? 0,
+      countryCode,
+    );
 
-    const grossSalary = employee.salary ?? 0;
-    const netSalary = grossSalary * (1 - config.taxRate - config.socialChargesRate);
-
-    if (netSalary < 0)
+    if (result.netPayable < 0)
       throw new BadRequestException('Net salary cannot be negative; check tax/social rates');
 
     const created = await this.prisma.payslip.create({
-      data: { employeeId, month, year, grossSalary, netSalary },
+      data: {
+        employeeId,
+        month,
+        year,
+        grossSalary: result.grossSalary,
+        netSalary: result.netPayable,
+        totalContributions: result.totalEmployeeContributions,
+        incomeTax: result.incomeTax,
+        netSocial: result.netSocial,
+        netPayable: result.netPayable,
+        countryCode,
+        complianceSnapshot: JSON.parse(JSON.stringify(result.metadata)),
+      },
     });
 
     await this.bustCaches(employeeId, employee.companyId);

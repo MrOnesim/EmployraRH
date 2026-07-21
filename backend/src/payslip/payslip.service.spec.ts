@@ -1,26 +1,43 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { PayslipService } from './payslip.service';
+import { ComplianceService } from '../compliance/compliance.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 describe('PayslipService', () => {
   let service: PayslipService;
   let prisma: any;
+  let complianceMock: any;
 
-  const mockEmployee = { id: 'emp-1', companyId: 'comp-1', salary: 5000, company: { id: 'comp-1', name: 'Test Corp' } };
-  const mockConfig = { companyId: 'comp-1', taxRate: 0.15, socialChargesRate: 0.10, currency: 'EUR' };
-  const mockPayslip = { id: 'payslip-1', employeeId: 'emp-1', month: 7, year: 2026, grossSalary: 5000, netSalary: 3750 };
+  const mockEmployee = {
+    id: 'emp-1',
+    companyId: 'comp-1',
+    salary: 5000,
+    company: { id: 'comp-1', name: 'Test Corp', country: 'FR' },
+  };
+  const mockPayslip = {
+    id: 'payslip-1',
+    employeeId: 'emp-1',
+    month: 7,
+    year: 2026,
+    grossSalary: 5000,
+    netSalary: 3750,
+  };
 
   beforeEach(async () => {
+    complianceMock = {
+      calculatePayslip: vi.fn(),
+    };
+
     prisma = {
       employee: { findUnique: vi.fn() },
       payslip: { findUnique: vi.fn(), findMany: vi.fn(), create: vi.fn() },
-      payrollConfig: { findUnique: vi.fn() },
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PayslipService,
+        { provide: ComplianceService, useValue: complianceMock },
         { provide: PrismaService, useValue: prisma },
       ],
     }).compile();
@@ -32,15 +49,42 @@ describe('PayslipService', () => {
     it('should generate a payslip with correct net salary calculation', async () => {
       prisma.employee.findUnique.mockResolvedValue(mockEmployee);
       prisma.payslip.findUnique.mockResolvedValue(null);
-      prisma.payrollConfig.findUnique.mockResolvedValue(mockConfig);
-      prisma.payslip.create.mockImplementation((d: any) => Promise.resolve({ id: 'payslip-1', ...d.data }));
+      complianceMock.calculatePayslip.mockResolvedValue({
+        result: {
+          grossSalary: 5000,
+          netPayable: 3750,
+          totalEmployeeContributions: 500,
+          incomeTax: 750,
+          netSocial: 4500,
+          totalEmployerContributions: 300,
+          contributions: [],
+          taxBracketsApplied: [],
+          metadata: { countryCode: 'FR', rulesVersion: 1, effectiveDate: '2026-07-01' },
+        },
+        countryCode: 'FR',
+      });
+      prisma.payslip.create.mockImplementation((d: any) =>
+        Promise.resolve({ id: 'payslip-1', ...d.data }),
+      );
 
       const result = await service.generate('emp-1', 7, 2026);
 
       expect(result).toBeDefined();
       expect(result.netSalary).toBe(3750);
       expect(prisma.payslip.create).toHaveBeenCalledWith({
-        data: { employeeId: 'emp-1', month: 7, year: 2026, grossSalary: 5000, netSalary: 3750 },
+        data: {
+          employeeId: 'emp-1',
+          month: 7,
+          year: 2026,
+          grossSalary: 5000,
+          netSalary: 3750,
+          totalContributions: 500,
+          incomeTax: 750,
+          netSocial: 4500,
+          netPayable: 3750,
+          countryCode: 'FR',
+          complianceSnapshot: expect.any(Object),
+        },
       });
     });
 
@@ -57,18 +101,23 @@ describe('PayslipService', () => {
       await expect(service.generate('emp-1', 7, 2026)).rejects.toThrow(NotFoundException);
     });
 
-    it('should throw NotFoundException when company has no payroll config', async () => {
-      prisma.employee.findUnique.mockResolvedValue(mockEmployee);
-      prisma.payslip.findUnique.mockResolvedValue(null);
-      prisma.payrollConfig.findUnique.mockResolvedValue(null);
-
-      await expect(service.generate('emp-1', 7, 2026)).rejects.toThrow(NotFoundException);
-    });
-
     it('should throw BadRequestException when net salary is negative', async () => {
       prisma.employee.findUnique.mockResolvedValue(mockEmployee);
       prisma.payslip.findUnique.mockResolvedValue(null);
-      prisma.payrollConfig.findUnique.mockResolvedValue({ ...mockConfig, taxRate: 0.6, socialChargesRate: 0.5 });
+      complianceMock.calculatePayslip.mockResolvedValue({
+        result: {
+          grossSalary: 5000,
+          netPayable: -100,
+          totalEmployeeContributions: 3000,
+          incomeTax: 2100,
+          netSocial: 2000,
+          totalEmployerContributions: 0,
+          contributions: [],
+          taxBracketsApplied: [],
+          metadata: { countryCode: 'FR', rulesVersion: 1, effectiveDate: '2026-07-01' },
+        },
+        countryCode: 'FR',
+      });
 
       await expect(service.generate('emp-1', 7, 2026)).rejects.toThrow(BadRequestException);
     });
@@ -128,7 +177,9 @@ describe('PayslipService', () => {
     it('should throw NotFoundException when payslip not found', async () => {
       prisma.payslip.findUnique.mockResolvedValue(null);
 
-      await expect(service.findByEmployeeAndPeriod('emp-1', 7, 2026)).rejects.toThrow(NotFoundException);
+      await expect(service.findByEmployeeAndPeriod('emp-1', 7, 2026)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

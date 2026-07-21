@@ -49,6 +49,7 @@ import { RewardModule } from './reward/reward.module';
 import { EmployeeVaultModule } from './employee-vault/employee-vault.module';
 import { RbacModule } from './rbac/rbac.module';
 import { BillingModule } from './billing/billing.module';
+import { ComplianceModule } from './compliance/compliance.module';
 import { AppCacheModule } from './cache/cache.module';
 import { HealthController } from './health.controller';
 import { AuthGuard } from './common/guards/auth.guard';
@@ -111,6 +112,7 @@ import { ThrottlerBehindProxyGuard } from './common/throttler-behind-proxy.guard
     EmployeeVaultModule,
     RbacModule,
     BillingModule,
+    ComplianceModule,
   ],
   controllers: [HealthController],
   providers: [

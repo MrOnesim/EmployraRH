@@ -209,6 +209,8 @@ model Payslip {
   bonusTotal         Float    @default(0)
   rubrics            Json     @default("[]")
   pdfUrl             String?
+  complianceSnapshot Json?                   // règles appliquées au moment du calcul (audit immuable)
+  countryCode        String?                 // pays de référence au moment du calcul
   createdAt          DateTime @default(now())
 
   employeeId String
@@ -271,6 +273,140 @@ model PayrollConfig {
 
   companyId String  @unique
   company   Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+enum TaxType {
+  IRPP
+  IS
+  CNSS
+  TVA
+}
+
+enum ContributionType {
+  SOCIAL_SECURITY
+  HEALTH_INSURANCE
+  PENSION
+  UNEMPLOYMENT
+  OTHER
+}
+
+enum LeaveType {
+  ANNUAL
+  SICK
+  MATERNITY
+  PATERNITY
+  FAMILY
+  UNPAID
+  OTHER
+}
+
+enum Period {
+  HOURLY
+  DAILY
+  MONTHLY
+  YEARLY
+}
+
+model Country {
+  code      String   @id                      // "FR", "BJ", "SN", "CI"
+  name      String
+  currency  String                            // "EUR", "XOF"
+  region    String                            // "EUROPE", "UEMOA", "CEMAC"
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  taxBrackets         TaxBracket[]
+  socialContributions SocialContribution[]
+  leaveRules          LeaveRule[]
+  holidays            PublicHoliday[]
+  minimumWages        MinimumWage[]
+
+  @@map("countries")
+}
+
+model TaxBracket {
+  id             String   @id @default(cuid())
+  countryCode    String
+  country        Country  @relation(fields: [countryCode], references: [code])
+  type           TaxType
+  minIncome      Float                        // borne inférieure (0 = première tranche)
+  maxIncome      Float?                       // null = tranche infinie
+  rate           Float                        // 0.10 = 10%
+  deduction      Float    @default(0)         // montant déductible (système français)
+  effectiveFrom  DateTime
+  effectiveTo    DateTime?
+  version        Int      @default(1)
+
+  @@unique([countryCode, type, version, effectiveFrom, minIncome])
+  @@index([countryCode, type])
+  @@map("tax_brackets")
+}
+
+model SocialContribution {
+  id             String           @id @default(cuid())
+  countryCode    String
+  country        Country          @relation(fields: [countryCode], references: [code])
+  code           String                           // "URSSAF", "CNSS", "IPRES"
+  label          String
+  type           ContributionType
+  employerRate   Float            @default(0)
+  employeeRate   Float            @default(0)
+  cap            Float?                           // plafond mensuel (null = pas de plafond)
+  effectiveFrom  DateTime
+  effectiveTo    DateTime?
+  version        Int              @default(1)
+
+  @@unique([countryCode, code, version, effectiveFrom])
+  @@index([countryCode])
+  @@map("social_contributions")
+}
+
+model LeaveRule {
+  id                  String    @id @default(cuid())
+  countryCode         String
+  country             Country   @relation(fields: [countryCode], references: [code])
+  type                LeaveType
+  label               String
+  daysEntitled        Int                          // nombre de jours accordés
+  accrualRate         Float?                       // ex: 2.5 jours/mois
+  seniorityExtraDays  Int       @default(0)        // jours supplémentaires selon ancienneté
+  maxConsecutiveDays  Int?                         // limitation de durée consécutive
+  paidByEmployerPct   Float     @default(1)        // % du salaire maintenu (1 = 100%)
+  requiresMedicalCert Boolean  @default(false)
+  effectiveFrom       DateTime
+  effectiveTo         DateTime?
+
+  @@index([countryCode, type])
+  @@map("leave_rules")
+}
+
+model PublicHoliday {
+  id           String   @id @default(cuid())
+  countryCode  String
+  country      Country  @relation(fields: [countryCode], references: [code])
+  date         DateTime
+  name         String
+  isRecurring  Boolean  @default(true)
+  year         Int?                           // null si récurrent
+  createdAt    DateTime @default(now())
+
+  @@index([countryCode, date])
+  @@map("public_holidays")
+}
+
+model MinimumWage {
+  id           String   @id @default(cuid())
+  countryCode  String
+  country      Country  @relation(fields: [countryCode], references: [code])
+  amount       Float
+  period       Period
+  category     String?                        // secteur économique (null = général)
+  effectiveFrom DateTime
+  effectiveTo  DateTime?
+
+  @@index([countryCode])
+  @@map("minimum_wages")
 }
 
 model Session {
