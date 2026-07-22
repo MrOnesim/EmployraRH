@@ -31,7 +31,7 @@ describe('PayslipService', () => {
 
     prisma = {
       employee: { findUnique: vi.fn() },
-      payslip: { findUnique: vi.fn(), findMany: vi.fn(), create: vi.fn() },
+      payslip: { findUnique: vi.fn(), findMany: vi.fn(), create: vi.fn(), count: vi.fn() },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -124,38 +124,49 @@ describe('PayslipService', () => {
   });
 
   describe('findByCompany', () => {
-    it('should return payslips filtered by company', async () => {
+    it('should return paginated payslips filtered by company', async () => {
       prisma.payslip.findMany.mockResolvedValue([{ ...mockPayslip, employee: mockEmployee }]);
+      prisma.payslip.count.mockResolvedValue(1);
 
       const result = await service.findByCompany('comp-1');
 
-      expect(result).toHaveLength(1);
+      expect(result.data).toHaveLength(1);
+      expect(result.total).toBe(1);
+      expect(result.page).toBe(1);
       expect(prisma.payslip.findMany).toHaveBeenCalledWith({
         where: { employee: { companyId: 'comp-1' } },
         include: { employee: true },
         orderBy: [{ year: 'desc' }, { month: 'desc' }],
+        skip: 0,
+        take: 20,
       });
     });
 
-    it('should return empty array when no payslips exist for company', async () => {
+    it('should return empty pagination when no payslips exist for company', async () => {
       prisma.payslip.findMany.mockResolvedValue([]);
+      prisma.payslip.count.mockResolvedValue(0);
 
       const result = await service.findByCompany('comp-2');
 
-      expect(result).toEqual([]);
+      expect(result.data).toEqual([]);
+      expect(result.total).toBe(0);
     });
   });
 
   describe('findByEmployee', () => {
-    it('should return payslips filtered by employee', async () => {
+    it('should return paginated payslips filtered by employee', async () => {
       prisma.payslip.findMany.mockResolvedValue([mockPayslip]);
+      prisma.payslip.count.mockResolvedValue(1);
 
       const result = await service.findByEmployee('emp-1');
 
-      expect(result).toHaveLength(1);
+      expect(result.data).toHaveLength(1);
+      expect(result.total).toBe(1);
       expect(prisma.payslip.findMany).toHaveBeenCalledWith({
         where: { employeeId: 'emp-1' },
         orderBy: [{ year: 'desc' }, { month: 'desc' }],
+        skip: 0,
+        take: 20,
       });
     });
   });

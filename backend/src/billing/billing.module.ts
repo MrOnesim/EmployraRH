@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { PrismaModule } from '../prisma/prisma.module';
 import { BillingController } from './billing.controller';
 import { BillingService } from './billing.service';
 import { ProviderRegistry } from './providers/provider.registry';
@@ -6,6 +7,7 @@ import { MoneyFusionProvider } from './providers/money-fusion.provider';
 import { PaystackProvider } from './providers/paystack.provider';
 
 @Module({
+  imports: [PrismaModule],
   controllers: [BillingController],
   providers: [
     MoneyFusionProvider,

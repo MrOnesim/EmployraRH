@@ -64,33 +64,33 @@ export class PayslipService {
     return created;
   }
 
-  async findByCompany(companyId: string) {
-    const key = `payslip:company:${companyId}`;
-    if (this.cache) {
-      const cached = await this.cache.get(key).catch(() => null);
-      if (cached) return cached;
-    }
-    const data = await this.prisma.payslip.findMany({
-      where: { employee: { companyId } },
-      include: { employee: true },
-      orderBy: [{ year: 'desc' }, { month: 'desc' }],
-    });
-    if (this.cache) await this.cache.set(key, data).catch(() => {});
-    return data;
+  async findByCompany(companyId: string, page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      this.prisma.payslip.findMany({
+        where: { employee: { companyId } },
+        include: { employee: true },
+        orderBy: [{ year: 'desc' }, { month: 'desc' }],
+        skip,
+        take: limit,
+      }),
+      this.prisma.payslip.count({ where: { employee: { companyId } } }),
+    ]);
+    return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
-  async findByEmployee(employeeId: string) {
-    const key = `payslip:hist:${employeeId}`;
-    if (this.cache) {
-      const cached = await this.cache.get(key).catch(() => null);
-      if (cached) return cached;
-    }
-    const data = await this.prisma.payslip.findMany({
-      where: { employeeId },
-      orderBy: [{ year: 'desc' }, { month: 'desc' }],
-    });
-    if (this.cache) await this.cache.set(key, data).catch(() => {});
-    return data;
+  async findByEmployee(employeeId: string, page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+    const [data, total] = await Promise.all([
+      this.prisma.payslip.findMany({
+        where: { employeeId },
+        orderBy: [{ year: 'desc' }, { month: 'desc' }],
+        skip,
+        take: limit,
+      }),
+      this.prisma.payslip.count({ where: { employeeId } }),
+    ]);
+    return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
   async findByEmployeeAndPeriod(employeeId: string, month: number, year: number) {

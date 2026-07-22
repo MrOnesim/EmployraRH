@@ -1,5 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaClient, BillingProvider, PaymentStatus, SubscriptionStatus } from '@prisma/client';
+import { BillingProvider, PaymentStatus, SubscriptionStatus } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
 import { ProviderRegistry } from './providers/provider.registry';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
@@ -11,9 +12,11 @@ const PERIOD_DAYS: Record<string, number> = { month: 30, year: 365, week: 7 };
 @Injectable()
 export class BillingService {
   private readonly logger = new Logger(BillingService.name);
-  private readonly prisma = new PrismaClient();
 
-  constructor(private readonly registry: ProviderRegistry) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly registry: ProviderRegistry,
+  ) {}
 
   private periodEnd(interval: string): Date {
     const days = PERIOD_DAYS[interval] ?? 30;

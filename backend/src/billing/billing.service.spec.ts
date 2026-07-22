@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BillingService } from './billing.service';
 import { ProviderRegistry } from './providers/provider.registry';
 import { MoneyFusionProvider } from './providers/money-fusion.provider';
+import { PrismaService } from '../prisma/prisma.service';
 import { BillingProvider, SubscriptionStatus } from '@prisma/client';
 
 function mockPrisma() {
@@ -170,7 +171,11 @@ describe('BillingService', () => {
     const registry = new ProviderRegistry();
     registry.register(provider);
     const module: TestingModule = await Test.createTestingModule({
-      providers: [BillingService, { provide: ProviderRegistry, useValue: registry }],
+      providers: [
+        BillingService,
+        { provide: ProviderRegistry, useValue: registry },
+        { provide: PrismaService, useValue: prisma.client },
+      ],
     }).compile();
     Object.assign((BillingService as any).prototype, {});
     service = module.get(BillingService);

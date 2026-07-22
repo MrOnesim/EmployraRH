@@ -5,6 +5,7 @@ import { Public } from '../common/decorators/public.decorator';
 import { ComplianceService } from './compliance.service';
 import { PayslipPdfService } from './payslip-pdf.service';
 import { SimulatePayslipDto } from './dto/simulate-payslip.dto';
+import { SimulatePdfParamsDto } from './dto/simulate-pdf-params.dto';
 
 @ApiTags('compliance')
 @Controller('compliance')
@@ -59,26 +60,20 @@ export class ComplianceController {
   @Get('simulate/pdf/:countryCode/:grossSalary/:month/:year')
   @Public()
   @ApiOperation({ summary: 'Simulate payslip PDF via GET (convenience)' })
-  async simulatePdfGet(
-    @Param('countryCode') countryCode: string,
-    @Param('grossSalary') grossSalary: string,
-    @Param('month') month: string,
-    @Param('year') year: string,
-    @Res() res: Response,
-  ) {
+  async simulatePdfGet(@Param() params: SimulatePdfParamsDto, @Res() res: Response) {
     const { result, countryCode: cc } = await this.service.calculatePayslip(
       'simulation',
-      +month,
-      +year,
-      +grossSalary,
-      countryCode,
+      params.month,
+      params.year,
+      params.grossSalary,
+      params.countryCode,
     );
 
     res.set({
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename="bulletin-paie-${cc}-${month}-${year}.pdf"`,
+      'Content-Disposition': `attachment; filename="bulletin-paie-${cc}-${params.month}-${params.year}.pdf"`,
     });
 
-    this.pdf.generate(result, cc, +month, +year).pipe(res);
+    this.pdf.generate(result, cc, params.month, params.year).pipe(res);
   }
 }
