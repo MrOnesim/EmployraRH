@@ -26,13 +26,16 @@ export class FranceProvider implements CountryProvider {
       },
     });
 
-    const contribBreakdown = contributions.map((c) => ({
-      code: c.code,
-      label: c.label,
-      employerAmount: Math.round(grossSalary * c.employerRate * 100) / 100,
-      employeeAmount: Math.round(grossSalary * c.employeeRate * 100) / 100,
-      cap: c.cap,
-    }));
+    const contribBreakdown = contributions.map((c) => {
+      const base = c.cap ? Math.min(grossSalary, c.cap) : grossSalary;
+      return {
+        code: c.code,
+        label: c.label,
+        employerAmount: Math.round(base * c.employerRate * 100) / 100,
+        employeeAmount: Math.round(base * c.employeeRate * 100) / 100,
+        cap: c.cap,
+      };
+    });
 
     const totalEmployeeContributions = contribBreakdown.reduce((s, c) => s + c.employeeAmount, 0);
     const totalEmployerContributions = contribBreakdown.reduce((s, c) => s + c.employerAmount, 0);

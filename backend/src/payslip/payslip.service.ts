@@ -5,6 +5,7 @@ import {
   BadRequestException,
   Optional,
   Inject,
+  Logger,
 } from '@nestjs/common';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { PrismaService } from '../prisma/prisma.service';
@@ -12,6 +13,8 @@ import { ComplianceService } from '../compliance/compliance.service';
 
 @Injectable()
 export class PayslipService {
+  private readonly logger = new Logger(PayslipService.name);
+
   constructor(
     private prisma: PrismaService,
     private compliance: ComplianceService,
@@ -113,7 +116,13 @@ export class PayslipService {
 
   private async bustCaches(employeeId: string, companyId?: string) {
     if (!this.cache) return;
-    await this.cache.del(`payslip:hist:${employeeId}`).catch(() => {});
-    if (companyId) await this.cache.del(`payslip:company:${companyId}`).catch(() => {});
+    try {
+      await this.cache.del(`payslip:hist:${employeeId}`);
+      if (companyId) await this.cache.del(`payslip:company:${companyId}`);
+    } catch (err) {
+      this.logger.warn(
+        `Cache invalidation failed for payslip ${employeeId}: ${(err as Error).message}`,
+      );
+    }
   }
 }

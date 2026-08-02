@@ -218,7 +218,19 @@ describe('ComplianceService', () => {
 
       const retraite = result.result.contributions.find((c) => c.code === 'RETRAITE_COMPL');
       expect(retraite).toBeDefined();
-      expect(retraite!.employeeAmount).toBe(300);
+      expect(retraite!.employeeAmount).toBe(240);
+    });
+
+    it('should cap contribution base when gross exceeds the cap', async () => {
+      const result = await service.calculatePayslip('emp-1', 7, 2026, 5000, 'FR');
+
+      const retraite = result.result.contributions.find((c) => c.code === 'RETRAITE_COMPL');
+      expect(retraite!.employerAmount).toBe(320);
+      expect(retraite!.employeeAmount).toBe(240);
+
+      const urssaf = result.result.contributions.find((c) => c.code === 'URSSAF_MALADIE');
+      expect(urssaf!.employerAmount).toBe(650);
+      expect(urssaf!.employeeAmount).toBe(350);
     });
   });
 

@@ -61,11 +61,16 @@ describe('LeaveService', () => {
   });
 
   describe('create', () => {
+    const inDays = (days: number) => {
+      const d = new Date();
+      d.setDate(d.getDate() + days);
+      return d;
+    };
     const validInput = {
       employeeId: 'emp-1',
       type: 'annual' as const,
-      startDate: new Date('2026-08-01'),
-      endDate: new Date('2026-08-05'),
+      startDate: inDays(7),
+      endDate: inDays(11),
       reason: 'Vacances',
     };
 
@@ -92,11 +97,16 @@ describe('LeaveService', () => {
     });
 
     it('should reject endDate before startDate', async () => {
+      const inDays = (days: number) => {
+        const d = new Date();
+        d.setDate(d.getDate() + days);
+        return d;
+      };
       await expect(
         service.create({
           ...validInput,
-          startDate: new Date('2026-08-10'),
-          endDate: new Date('2026-08-05'),
+          startDate: inDays(10),
+          endDate: inDays(5),
         }),
       ).rejects.toThrow(BadRequestException);
     });
