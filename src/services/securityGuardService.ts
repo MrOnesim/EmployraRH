@@ -31,7 +31,7 @@ export async function getTerminals(companyId: string) {
 }
 
 export async function generateQrToken(employeeId: string, companyId: string) {
-  const { data } = await api.post('/qr-tokens/generate', { employeeId, companyId });
+  const { data } = await api.post('/qr-tokens/generate-for-employee', { employeeId, companyId });
   return data;
 }
 

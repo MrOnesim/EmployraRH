@@ -30,12 +30,4 @@ export async function deleteDocument(id: string): Promise<void> {
   await api.delete(`/documents/${id}`);
 }
 
-export async function uploadDocument(file: File, metadata: Record<string, string>): Promise<AppDocument> {
-  const formData = new FormData();
-  formData.append('file', file);
-  Object.entries(metadata).forEach(([k, v]) => formData.append(k, v));
-  const { data } = await api.post('/documents/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
-  return data;
-}
+export const uploadDocument = createDocument;

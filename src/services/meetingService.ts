@@ -22,20 +22,25 @@ export async function getMeetings(params?: {
   return data;
 }
 
-export async function createMeeting(meeting: Omit<Meeting, 'id' | 'createdAt' | 'status'>): Promise<Meeting> {
+export async function createMeeting(
+  meeting: Omit<Meeting, 'id' | 'createdAt' | 'status'>,
+): Promise<Meeting> {
   const { data } = await api.post('/meetings', meeting);
   return data;
 }
 
 export async function updateMeeting(id: string, updates: Partial<Meeting>): Promise<Meeting> {
-  const { data } = await api.put(`/meetings/${id}`, updates);
+  const { data } = await api.patch(`/meetings/${id}`, updates);
   return data;
 }
 
-export async function joinMeeting(meetingId: string): Promise<void> {
-  await api.post(`/meetings/${meetingId}/join`);
+export async function joinMeeting(
+  meetingId: string,
+  participant?: { name?: string; email?: string; employeeId?: string },
+): Promise<void> {
+  await api.post(`/meetings/${meetingId}/participants`, participant ?? {});
 }
 
-export async function leaveMeeting(meetingId: string): Promise<void> {
-  await api.post(`/meetings/${meetingId}/leave`);
+export async function leaveMeeting(meetingId: string, participantId: string): Promise<void> {
+  await api.delete(`/meetings/${meetingId}/participants/${participantId}`);
 }
