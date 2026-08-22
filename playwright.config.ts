@@ -7,8 +7,23 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   webServer: {
-    command: 'npm run dev',
+    // Use the production preview server in CI (build already run in CI job)
+    command: process.env.CI ? 'npx vite preview --port 5173' : 'npm run dev',
     port: 5173,
     reuseExistingServer: !process.env.CI,
   },
+  projects: [
+    {
+      name: 'chromium',
+      use: { browserName: 'chromium' },
+    },
+    {
+      name: 'firefox',
+      use: { browserName: 'firefox' },
+    },
+    {
+      name: 'webkit',
+      use: { browserName: 'webkit' },
+    },
+  ],
 });
