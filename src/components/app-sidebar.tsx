@@ -194,9 +194,11 @@ export function AppSidebar() {
     >
       <SidebarHeader>
         <Link to="/" className="flex items-center gap-2 px-2">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
-            EP
-          </div>
+          <img
+            src="/images/employra-rh-logo.png"
+            alt="Logo EmployraRH"
+            className="size-8 rounded-lg object-cover"
+          />
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold">{currentCompany?.name || 'EmployraRH'}</span>
             {currentCompany?.uniqueId && (

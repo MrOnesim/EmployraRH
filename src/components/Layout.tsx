@@ -40,6 +40,11 @@ export default function Layout() {
         <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4">
           <div className="flex items-center gap-2 flex-1">
             <SidebarTrigger />
+            <img
+              src="/images/employra-rh-logo.png"
+              alt="Logo EmployraRH"
+              className="size-7 rounded-md object-cover"
+            />
             <h1 className="text-xl font-semibold text-foreground">{getPageTitle()}</h1>
           </div>
 
